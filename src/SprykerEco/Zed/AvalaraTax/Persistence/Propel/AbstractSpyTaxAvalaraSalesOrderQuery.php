@@ -7,10 +7,10 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Persistence\Propel;
 
-use Orm\Zed\AvalaraTax\Persistence\Base\SpyTaxAvalaraApiLogQuery as BaseSpyTaxAvalaraApiLogQuery;
+use Orm\Zed\AvalaraTax\Persistence\Base\SpyTaxAvalaraSalesOrderQuery as BaseSpyTaxAvalaraSalesOrderQuery;
 
 /**
- * Skeleton subclass for performing query and update operations on the 'spy_tax_avalara_api_log' table.
+ * Skeleton subclass for performing query and update operations on the 'spy_tax_avalara_sales_order' table.
  *
  *
  *
@@ -18,6 +18,6 @@ use Orm\Zed\AvalaraTax\Persistence\Base\SpyTaxAvalaraApiLogQuery as BaseSpyTaxAv
  * application requirements. This class will only be generated as
  * long as it does not already exist in the output directory.
  */
-abstract class AbstractSpyTaxAvalaraApiLogQuery extends BaseSpyTaxAvalaraApiLogQuery
+class AbstractSpyTaxAvalaraSalesOrderQuery extends BaseSpyTaxAvalaraSalesOrderQuery
 {
 }

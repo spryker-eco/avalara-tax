@@ -7,7 +7,7 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Persistence\Propel;
 
-use Orm\Zed\AvalaraTax\Persistence\Base\SpyTaxAvalaraApiLog;
+use Orm\Zed\AvalaraTax\Persistence\Base\SpyTaxAvalaraApiLog as BaseSpyTaxAvalaraApiLog;
 
 /**
  * Skeleton subclass for representing a row from the 'spy_tax_avalara_api_log' table.
@@ -18,6 +18,6 @@ use Orm\Zed\AvalaraTax\Persistence\Base\SpyTaxAvalaraApiLog;
  * application requirements. This class will only be generated as
  * long as it does not already exist in the output directory.
  */
-abstract class AbstractSpyTaxAvalaraApiLog extends SpyTaxAvalaraApiLog
+abstract class AbstractSpyTaxAvalaraApiLog extends BaseSpyTaxAvalaraApiLog
 {
 }
