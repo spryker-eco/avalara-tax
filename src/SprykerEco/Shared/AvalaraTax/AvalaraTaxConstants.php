@@ -31,6 +31,8 @@ interface AvalaraTaxConstants
     /**
      * Specification:
      * - The machine name of the machine on which this code is executing.
+     *
+     * @api
      */
     public const AVALARA_TAX_MACHINE_NAME = 'AVALARA_TAX:MACHINE_NAME';
 
