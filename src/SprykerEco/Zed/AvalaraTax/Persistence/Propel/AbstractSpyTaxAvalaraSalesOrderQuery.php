@@ -18,6 +18,6 @@ use Orm\Zed\AvalaraTax\Persistence\Base\SpyTaxAvalaraSalesOrderQuery as BaseSpyT
  * application requirements. This class will only be generated as
  * long as it does not already exist in the output directory.
  */
-class AbstractSpyTaxAvalaraSalesOrderQuery extends BaseSpyTaxAvalaraSalesOrderQuery
+abstract class AbstractSpyTaxAvalaraSalesOrderQuery extends BaseSpyTaxAvalaraSalesOrderQuery
 {
 }

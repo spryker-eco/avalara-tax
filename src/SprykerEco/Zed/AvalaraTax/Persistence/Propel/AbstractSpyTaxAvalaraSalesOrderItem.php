@@ -18,6 +18,6 @@ use Orm\Zed\AvalaraTax\Persistence\Base\SpyTaxAvalaraSalesOrderItem as BaseSpyTa
  * application requirements. This class will only be generated as
  * long as it does not already exist in the output directory.
  */
-class AbstractSpyTaxAvalaraSalesOrderItem extends BaseSpyTaxAvalaraSalesOrderItem
+abstract class AbstractSpyTaxAvalaraSalesOrderItem extends BaseSpyTaxAvalaraSalesOrderItem
 {
 }
