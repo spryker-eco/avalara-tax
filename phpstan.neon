@@ -1,2 +1,6 @@
 parameters:
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
     ignoreErrors:
+        - '#Call to an undefined method Generated\\Zed\\Ide\\AutoCompletion\|Spryker\\Shared\\Kernel\\LocatorLocatorInterface::[a-zA-Z]*\(\)#'
+        - '#PHPDoc tag @param for parameter \$[\w\d]* with type Avalara\\[\w]*\|stdClass is not subtype of native type stdClass#'

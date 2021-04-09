@@ -25,6 +25,7 @@
         <property name="reference1" type="string"/>
         <property name="reference2" type="string"/>
         <property name="description" type="string"/>
+        <property name="sourceAddress" type="AvalaraAddress"/>
         <property name="shippingAddress" type="AvalaraAddress"/>
         <property name="taxIncluded" type="bool"/>
     </transfer>
@@ -83,10 +84,13 @@
         <property name="details" type="string"/>
         <property name="nonPassthroughDetails" type="string"/>
         <property name="lineLocationTypes" type="string"/>
+        <property name="parameters" type="string"/>
         <property name="hsCode" type="string"/>
         <property name="costInsuranceFreight" type="int"/>
         <property name="vatCode" type="string"/>
         <property name="vatNumberTypeId" type="int"/>
+        <property name="taxAmountByTaxTypes" type="string"/>
+        <property name="deemedSupplier" type="string"/>
     </transfer>
 
     <transfer name="AvalaraTransaction">
@@ -138,6 +142,12 @@
         <property name="addresses" type="string"/>
         <property name="locationTypes" type="string"/>
         <property name="summary" type="string"/>
+        <property name="taxDetailsByTaxType" type="string"/>
+        <property name="parameters" type="string"/>
+        <property name="messages" type="string"/>
+        <property name="invoiceMessages" type="string"/>
+        <property name="customerSupplierName" type="string"/>
+        <property name="dataSourceId" type="int"/>
     </transfer>
 
     <transfer name="AvalaraCreateTransactionResponse">
@@ -148,6 +158,65 @@
 
     <transfer name="Quote">
         <property name="avalaraCreateTransactionResponse" type="AvalaraCreateTransactionResponse"/>
+    </transfer>
+
+    <transfer name="ProductConcrete">
+        <property name="fkProductAbstract" type="int"/>
+        <property name="avalaraTaxCode" type="string"/>
+    </transfer>
+
+    <transfer name="ProductAbstract">
+        <property name="avalaraTaxCode" type="string"/>
+    </transfer>
+
+    <transfer name="Item">
+        <property name="avalaraTaxCode" type="string"/>
+        <property name="shipment" type="Shipment"/>
+        <property name="taxRate" type="float"/>
+        <property name="sumTaxAmount" type="int"/>
+        <property name="amount" type="decimal"/>
+        <property name="sku" type="string"/>
+        <property name="groupKey" type="string"/>
+        <property name="name" type="string"/>
+        <property name="sumDiscountAmountAggregation" type="int"/>
+        <property name="sumPrice" type="int"/>
+    </transfer>
+
+    <transfer name="Address">
+        <property name="address1" type="string"/>
+        <property name="address2" type="string"/>
+        <property name="address3" type="string"/>
+        <property name="city" type="string"/>
+        <property name="region" type="string"/>
+        <property name="zipCode" type="string"/>
+        <property name="iso2Code" type="string"/>
+    </transfer>
+
+    <transfer name="CalculableObject">
+        <property name="items" type="Item[]" singular="item"/>
+        <property name="shippingAddress" type="Address"/>
+        <property name="currency" type="Currency"/>
+        <property name="priceMode" type="string"/>
+        <property name="originalQuote" type="Quote"/>
+    </transfer>
+
+    <transfer name="CartChange">
+        <property name="items" type="Item[]" singular="item"/>
+    </transfer>
+
+    <transfer name="Shipment">
+        <property name="shippingAddress" type="Address"/>
+    </transfer>
+
+    <transfer name="Store">
+        <property name="name" type="string"/>
+    </transfer>
+
+    <transfer name="Currency">
+        <property name="code" type="string"/>
+    </transfer>
+
+    <transfer name="Message">
     </transfer>
 
 </transfers>

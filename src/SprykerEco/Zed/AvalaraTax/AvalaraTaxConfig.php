@@ -55,9 +55,9 @@ class AvalaraTaxConfig extends AbstractBundleConfig
     /**
      * @api
      *
-     * @return string
+     * @return int
      */
-    public function getAccountId(): string
+    public function getAccountId(): int
     {
         return $this->get(AvalaraTaxConstants::AVALARA_TAX_ACCOUNT_ID);
     }
@@ -85,9 +85,9 @@ class AvalaraTaxConfig extends AbstractBundleConfig
     /**
      * @api
      *
-     * @return string
+     * @return bool
      */
-    public function getIsTransactionCommitAfterOrderPlacementEnabled(): string
+    public function getIsTransactionCommitAfterOrderPlacementEnabled(): bool
     {
         return $this->get(AvalaraTaxConstants::AVALARA_TAX_IS_TRANSACTION_COMMIT_AFTER_ORDER_PLACEMENT_ENABLED);
     }
