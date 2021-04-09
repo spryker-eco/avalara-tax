@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/spryker-eco/avalara-tax.svg)](https://travis-ci.org/spryker-eco/avalara-tax)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg)](https://php.net/)
 
-AvalaraTax module allows a Spryker project to connect to Avalara tax service.
+AvalaraTax module allows the Spryker project to connect to the Avalara tax service.
 
 ## Installation
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2016-present Spryker Systems GmbH. All rights reserved.
+ * MIT License
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
@@ -36,7 +36,7 @@ interface AvalaraTaxConstants
 
     /**
      * Specification:
-     * - Indicates which server to use; acceptable values are "sandbox" or "production", or the full URL of your AvaTax instance.
+     * - Indicates which server to use, acceptable values are "sandbox" or "production", or the full URL of your AvaTax instance.
      *
      * @api
      */
@@ -44,7 +44,7 @@ interface AvalaraTaxConstants
 
     /**
      * Specification:
-     * - The account ID for your AvaTax account
+     * - The account ID for your AvaTax account.
      *
      * @api
      */
@@ -52,7 +52,7 @@ interface AvalaraTaxConstants
 
     /**
      * Specification:
-     * - The private license key for your AvaTax account
+     * - The private license key for your AvaTax account.
      *
      * @api
      */
@@ -65,12 +65,4 @@ interface AvalaraTaxConstants
      * @api
      */
     public const AVALARA_TAX_COMPANY_CODE = 'AVALARA_TAX:COMPANY_CODE';
-
-    /**
-     * Specification:
-     * - Commit a transaction for reporting after placing an order.
-     *
-     * @api
-     */
-    public const AVALARA_TAX_IS_TRANSACTION_COMMIT_AFTER_ORDER_PLACEMENT_ENABLED = 'AVALARA_TAX:IS_TRANSACTION_COMMIT_AFTER_ORDER_PLACEMENT_ENABLED';
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2016-present Spryker Systems GmbH. All rights reserved.
+ * MIT License
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
@@ -83,12 +83,15 @@ class AvalaraTaxConfig extends AbstractBundleConfig
     }
 
     /**
+     * Specification:
+     * - Commit the transaction for reporting after the order is placed.
+     *
      * @api
      *
      * @return string
      */
     public function getIsTransactionCommitAfterOrderPlacementEnabled(): string
     {
-        return $this->get(AvalaraTaxConstants::AVALARA_TAX_IS_TRANSACTION_COMMIT_AFTER_ORDER_PLACEMENT_ENABLED);
+        return true;
     }
 }
