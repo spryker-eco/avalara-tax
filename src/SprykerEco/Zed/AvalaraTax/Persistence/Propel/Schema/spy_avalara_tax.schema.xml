@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
-<database xmlns="spryker:schema-01"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          name="zed" xsi:schemaLocation="spryker:schema-01 https://static.spryker.com/schema-01.xsd"
+<database xmlns="spryker:schema-01" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="zed"
+          xsi:schemaLocation="spryker:schema-01 https://static.spryker.com/schema-01.xsd"
           namespace="Orm\Zed\AvalaraTax\Persistence"
           package="src.Orm.Zed.AvalaraTax.Persistence">
 
@@ -20,8 +19,7 @@
     </table>
 
     <table name="spy_tax_avalara_sales_order">
-        <column name="id_tax_avalara_sales_order" required="true" type="INTEGER" primaryKey="true"
-                autoIncrement="true"/>
+        <column name="id_tax_avalara_sales_order" required="true" type="INTEGER" primaryKey="true" autoIncrement="true"/>
         <column name="fk_tax_avalara_api_log" type="INTEGER" required="true"/>
         <column name="fk_sales_order" type="INTEGER" required="true"/>
         <column name="id" type="INTEGER" required="true"/>
@@ -58,7 +56,7 @@
         <column name="region" type="VARCHAR" required="true" size="255"/>
         <column name="country" type="VARCHAR" required="true" size="255"/>
         <column name="version" type="INTEGER" required="true"/>
-        <column name="softwareVersion" type="VARCHAR" required="true" size="255"/>
+        <column name="software_version" type="VARCHAR" required="true" size="255"/>
         <column name="origin_address_id" type="INTEGER" required="false"/>
         <column name="destination_address_id" type="INTEGER" required="false"/>
         <column name="exchange_rate_effective_date" type="DATE" required="true"/>
@@ -72,12 +70,12 @@
         <column name="addresses" type="CLOB" required="false"/>
         <column name="location_types" type="CLOB" required="false"/>
         <column name="summary" type="CLOB" required="false"/>
-        <column name="taxDetailsByTaxType" type="CLOB" required="false"/>
+        <column name="tax_details_by_tax_type" type="CLOB" required="false"/>
         <column name="parameters" type="CLOB" required="false"/>
         <column name="messages" type="CLOB" required="false"/>
-        <column name="invoiceMessages" type="CLOB" required="false"/>
-        <column name="customerSupplierName" type="VARCHAR" required="false" size="255"/>
-        <column name="dataSourceId" type="INTEGER" required="false"/>
+        <column name="invoice_messages" type="CLOB" required="false"/>
+        <column name="customer_supplier_name" type="VARCHAR" required="false" size="255"/>
+        <column name="data_aource_id" type="INTEGER" required="false"/>
 
         <foreign-key name="spy_tax_avalara_sales_order-fk_sales_order" foreignTable="spy_sales_order" phpName="Order">
             <reference local="fk_sales_order" foreign="id_sales_order"/>
@@ -99,10 +97,9 @@
     </table>
 
     <table name="spy_tax_avalara_sales_order_item">
-        <column name="id_tax_avalara_sales_order_item" required="true" type="INTEGER" primaryKey="true"
-                autoIncrement="true"/>
+        <column name="id_tax_avalara_sales_order_item" required="true" type="INTEGER" primaryKey="true" autoIncrement="true"/>
         <column name="fk_tax_avalara_sales_order" type="INTEGER" required="true"/>
-        <column name="fk_sales_order_item" type="INTEGER" required="false"/>
+        <column name="fk_sales_order_item" type="INTEGER" required="true"/>
 
         <foreign-key name="spy_tax_avalara_sales_order_item-fk_tax_avalara_sales_order"
                      foreignTable="spy_tax_avalara_sales_order" phpName="AvalaraSalesOrder"
@@ -126,8 +123,7 @@
     </table>
 
     <table name="spy_tax_avalara_sales_detail">
-        <column name="id_tax_avalara_sales_detail" required="true" type="INTEGER" primaryKey="true"
-                autoIncrement="true"/>
+        <column name="id_tax_avalara_sales_detail" required="true" type="INTEGER" primaryKey="true" autoIncrement="true"/>
         <column name="fk_tax_avalara_sales_order_item" type="INTEGER" required="false"/>
         <column name="id" type="INTEGER" required="true"/>
         <column name="transaction_id" type="INTEGER" required="true"/>
@@ -172,8 +168,8 @@
         <column name="cost_insurance_freight" type="DECIMAL" size="20" scale="10" defaultValue="0"/>
         <column name="vat_code" type="VARCHAR" required="false" size="255"/>
         <column name="vat_number_type_id" type="INTEGER" required="false"/>
-        <column name="taxAmountByTaxTypes" type="CLOB" required="false"/>
-        <column name="deemedSupplier" type="VARCHAR" required="false" size="255"/>
+        <column name="tax_amount_by_tax_types" type="CLOB" required="false"/>
+        <column name="deemed_supplier" type="VARCHAR" required="false" size="255"/>
 
         <foreign-key name="spy_tax_avalara_sales_detail-fk_tax_avalara_sales_order_item"
                      foreignTable="spy_tax_avalara_sales_order_item" phpName="AvalaraSalesOrderItem"

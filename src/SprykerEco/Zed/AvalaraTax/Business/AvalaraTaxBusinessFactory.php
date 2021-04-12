@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2016-present Spryker Systems GmbH. All rights reserved.
+ * MIT License
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
@@ -126,7 +126,7 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
             $this->createTransactionClient(),
             $this->getConfig()->getCompanyCode(),
             (string)DocumentType::C_SALESORDER,
-            'TESTCUSTOMER'
+            $this->getConfig()->getCustomerCode()
         );
     }
 

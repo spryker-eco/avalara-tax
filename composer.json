@@ -2,7 +2,7 @@
   "name": "spryker-eco/avalara-tax",
   "type": "library",
   "description": "AvalaraTax module",
-  "license": "proprietary",
+  "license": "MIT",
   "require": {
     "avalara/avataxclient": "^21.1.1",
     "php": ">=7.3",
