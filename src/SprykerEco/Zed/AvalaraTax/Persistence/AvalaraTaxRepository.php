@@ -31,9 +31,11 @@ class AvalaraTaxRepository extends AbstractRepository implements AvalaraTaxRepos
     }
 
     /**
+     * @phpstan-return array<string, string>
+     *
      * @param string[] $productConcreteSkus
      *
-     * @return array<string, string>
+     * @return string[]
      */
     public function getProductConcreteAvalaraTaxCodesBySkus(array $productConcreteSkus): array
     {
@@ -45,6 +47,6 @@ class AvalaraTaxRepository extends AbstractRepository implements AvalaraTaxRepos
                 SpyProductTableMap::COL_SKU,
             ])
             ->find()
-            ->getArrayCopy(SpyProductTableMap::COL_SKU);
+            ->toKeyValue(SpyProductTableMap::COL_SKU, SpyProductTableMap::COL_AVALARA_TAX_CODE);
     }
 }

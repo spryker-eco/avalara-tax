@@ -18,7 +18,7 @@ interface AvalaraTransactionResponseMapperInterface
      *
      * @return \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer
      */
-    public function mapAvalaraTransactionModelToAvalaraTransactionTransfer(
+    public function mapAvalaraTransactionModelToAvalaraCreateTransactionResponseTransfer(
         stdClass $transactionModel,
         AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
     ): AvalaraCreateTransactionResponseTransfer;

@@ -7,19 +7,19 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Business\Builder;
 
-use Avalara\TransactionBuilder;
 use Generated\Shared\Transfer\AvalaraCreateTransactionRequestTransfer;
+use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface;
 
 interface AvalaraTransactionBuilderInterface
 {
     /**
      * @param \Generated\Shared\Transfer\AvalaraCreateTransactionRequestTransfer $avalaraCreateTransactionRequestTransfer
-     * @param int $transactionType
+     * @param string $transactionTypeId
      *
-     * @return \Avalara\TransactionBuilder
+     * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
      */
     public function buildCreateTransaction(
         AvalaraCreateTransactionRequestTransfer $avalaraCreateTransactionRequestTransfer,
-        int $transactionType
-    ): TransactionBuilder;
+        string $transactionTypeId
+    ): AvalaraTaxToTransactionBuilderInterface;
 }

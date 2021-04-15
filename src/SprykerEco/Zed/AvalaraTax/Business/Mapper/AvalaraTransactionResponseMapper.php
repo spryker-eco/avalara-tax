@@ -16,6 +16,17 @@ use stdClass;
 
 class AvalaraTransactionResponseMapper implements AvalaraTransactionResponseMapperInterface
 {
+    protected const KEY_ADDRESSES = 'addresses';
+    protected const KEY_LOCATION_TYPES = 'locationTypes';
+    protected const KEY_SUMMARY = 'summary';
+    protected const KEY_MESSAGE = 'messages';
+    protected const KEY_INVOICE_MESSAGE = 'invoiceMessages';
+    protected const KEY_DETAILS = 'details';
+    protected const KEY_NON_PASSTHROUGH_DETAILS = 'nonPassthroughDetails';
+    protected const KEY_LINE_LOCATION_TYPES = 'lineLocationTypes';
+    protected const KEY_PARAMETERS = 'parameters';
+    protected const KEY_TAX_AMOUNT_BY_TAX_TYPES = 'taxAmountByTaxTypes';
+
     /**
      * @var \SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface
      */
@@ -35,17 +46,17 @@ class AvalaraTransactionResponseMapper implements AvalaraTransactionResponseMapp
      *
      * @return \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer
      */
-    public function mapAvalaraTransactionModelToAvalaraTransactionTransfer(
+    public function mapAvalaraTransactionModelToAvalaraCreateTransactionResponseTransfer(
         stdClass $transactionModel,
         AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
     ): AvalaraCreateTransactionResponseTransfer {
         $avalaraTransactionTransfer = (new AvalaraTransactionTransfer())->fromArray($this->convertStdClassToArray($transactionModel), true);
         $avalaraTransactionTransfer
-            ->setAddresses($this->encodeStdClassPropertyToJson($transactionModel, 'addresses'))
-            ->setLocationTypes($this->encodeStdClassPropertyToJson($transactionModel, 'locationTypes'))
-            ->setSummary($this->encodeStdClassPropertyToJson($transactionModel, 'summary'))
-            ->setMessages($this->encodeStdClassPropertyToJson($transactionModel, 'messages'))
-            ->setInvoiceMessages($this->encodeStdClassPropertyToJson($transactionModel, 'invoiceMessages'));
+            ->setAddresses($this->encodeStdClassPropertyToJson($transactionModel, static::KEY_ADDRESSES))
+            ->setLocationTypes($this->encodeStdClassPropertyToJson($transactionModel, static::KEY_LOCATION_TYPES))
+            ->setSummary($this->encodeStdClassPropertyToJson($transactionModel, static::KEY_SUMMARY))
+            ->setMessages($this->encodeStdClassPropertyToJson($transactionModel, static::KEY_MESSAGE))
+            ->setInvoiceMessages($this->encodeStdClassPropertyToJson($transactionModel, static::KEY_INVOICE_MESSAGE));
 
         $avalaraTransactionLineTransfers = [];
         foreach ($transactionModel->lines as $transactionLineModel) {
@@ -73,11 +84,11 @@ class AvalaraTransactionResponseMapper implements AvalaraTransactionResponseMapp
 
         $avalaraTransactionLineTransfer = $avalaraTransactionLineTransfer->fromArray($transactionLineModelData, true);
         $avalaraTransactionLineTransfer
-            ->setDetails($this->encodeStdClassPropertyToJson($transactionLineModel, 'details'))
-            ->setNonPassthroughDetails($this->encodeStdClassPropertyToJson($transactionLineModel, 'nonPassthroughDetails'))
-            ->setLineLocationTypes($this->encodeStdClassPropertyToJson($transactionLineModel, 'lineLocationTypes'))
-            ->setParameters($this->encodeStdClassPropertyToJson($transactionLineModel, 'parameters'))
-            ->setTaxAmountByTaxTypes($this->encodeStdClassPropertyToJson($transactionLineModel, 'taxAmountByTaxTypes'));
+            ->setDetails($this->encodeStdClassPropertyToJson($transactionLineModel, static::KEY_DETAILS))
+            ->setNonPassthroughDetails($this->encodeStdClassPropertyToJson($transactionLineModel, static::KEY_NON_PASSTHROUGH_DETAILS))
+            ->setLineLocationTypes($this->encodeStdClassPropertyToJson($transactionLineModel, static::KEY_LINE_LOCATION_TYPES))
+            ->setParameters($this->encodeStdClassPropertyToJson($transactionLineModel, static::KEY_PARAMETERS))
+            ->setTaxAmountByTaxTypes($this->encodeStdClassPropertyToJson($transactionLineModel, static::KEY_TAX_AMOUNT_BY_TAX_TYPES));
 
         return $avalaraTransactionLineTransfer;
     }
@@ -105,10 +116,8 @@ class AvalaraTransactionResponseMapper implements AvalaraTransactionResponseMapp
      */
     protected function encodeStdClassPropertyToJson(stdClass $stdClass, string $propertyName): ?string
     {
-        return $this->utilEncodingService->encodeJson(
-            property_exists($stdClass, $propertyName)
-                ? $stdClass->$propertyName
-                : []
-        );
+        $propertyData = property_exists($stdClass, $propertyName) ? $stdClass->$propertyName : [];
+
+        return $this->utilEncodingService->encodeJson($propertyData);
     }
 }

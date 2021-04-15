@@ -17,9 +17,11 @@ interface AvalaraTaxRepositoryInterface
     public function findProductAbstractAvalaraTaxCode(int $idProductAbstract): ?string;
 
     /**
+     * @phpstan-return array<string, string>
+     *
      * @param string[] $productConcreteSkus
      *
-     * @return array<string, string>
+     * @return string[]
      */
     public function getProductConcreteAvalaraTaxCodesBySkus(array $productConcreteSkus): array;
 }

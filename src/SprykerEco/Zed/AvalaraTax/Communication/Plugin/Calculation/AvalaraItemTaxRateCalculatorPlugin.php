@@ -19,6 +19,12 @@ class AvalaraItemTaxRateCalculatorPlugin extends AbstractPlugin implements Calcu
 {
     /**
      * {@inheritDoc}
+     * - Calculate taxes based on the response data received from Avalara Tax API.
+     * - Executes `CreateTransactionRequestExpanderPluginInterface` plugin stack to expand request before it's sent.
+     * - Sends a `createTransaction` request to Avalara Tax API.
+     * - In case of failure stops further plugin stack execution and logs the exceptions.
+     * - Executes `CreateTransactionRequestAfterPluginInterface` plugin stack after successful response.
+     * - Sets the received taxes to taxation objects.
      *
      * @api
      *

@@ -1,9 +1,15 @@
 <?php
 
+/**
+ * MIT License
+ * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
+ */
+
 namespace SpykerEcoTest\Zed\AvalaraTax\Business;
 
 use Avalara\TransactionBuilder;
 use Codeception\Test\Unit;
+use Generated\Shared\DataBuilder\AddressBuilder;
 use Generated\Shared\DataBuilder\CalculableObjectBuilder;
 use Generated\Shared\DataBuilder\ItemBuilder;
 use Generated\Shared\DataBuilder\QuoteBuilder;
@@ -14,6 +20,7 @@ use Generated\Shared\Transfer\ItemTransfer;
 use Generated\Shared\Transfer\ProductAbstractTransfer;
 use Generated\Shared\Transfer\ProductConcreteTransfer;
 use Generated\Shared\Transfer\ShipmentTransfer;
+use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface;
 use SprykerEco\Zed\AvalaraTax\Persistence\AvalaraTaxEntityManager;
 use stdClass;
 
@@ -54,7 +61,7 @@ class AvalaraTaxFacadeTest extends Unit
         $productConcreteTransfer = $this->tester->haveFullProduct([], [ProductAbstractTransfer::AVALARA_TAX_CODE => static::TEST_AVALARA_TAX_CODE]);
 
         // Act
-        $productConcreteTransfer = $this->tester->getFacade()->expandProductConcreteTransferWithAvalaraTaxCode($productConcreteTransfer);
+        $productConcreteTransfer = $this->tester->getFacade()->expandProductConcreteWithAvalaraTaxCode($productConcreteTransfer);
 
         // Assert
         $this->assertEquals(static::TEST_AVALARA_TAX_CODE, $productConcreteTransfer->getAvalaraTaxCode());
@@ -72,7 +79,7 @@ class AvalaraTaxFacadeTest extends Unit
         $cartChangeTransfer = (new CartChangeTransfer())->addItem($itemTransfer);
 
         // Act
-        $cartChangeTransfer = $this->tester->getFacade()->expandItemTransfersWithAvalaraTaxCode($cartChangeTransfer);
+        $cartChangeTransfer = $this->tester->getFacade()->expandCartItemsWithAvalaraTaxCode($cartChangeTransfer);
 
         // Assert
         $this->assertEquals(static::TEST_AVALARA_TAX_CODE, $cartChangeTransfer->getItems()->offsetGet(0)->getAvalaraTaxCode());
@@ -162,11 +169,11 @@ class AvalaraTaxFacadeTest extends Unit
     /**
      * @param \stdClass $transactionModelMock
      *
-     * @return \PHPUnit\Framework\MockObject\MockObject|\Avalara\TransactionBuilder
+     * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
      */
-    protected function createTransactionBuilderMock(stdClass $transactionModelMock): TransactionBuilder
+    protected function createTransactionBuilderMock(stdClass $transactionModelMock): AvalaraTaxToTransactionBuilderInterface
     {
-        $transactionBuilderMock = $this->getMockBuilder(TransactionBuilder::class)
+        $transactionBuilderMock = $this->getMockBuilder(AvalaraTaxToTransactionBuilderInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -215,12 +222,14 @@ class AvalaraTaxFacadeTest extends Unit
             return $itemBuilder->build();
         }
 
+        $addressTransfer = (new AddressBuilder([
+            AddressTransfer::COUNTRY => static::TEST_COUNTRY,
+            AddressTransfer::CITY => static::TEST_CITY_NAME_1,
+            AddressTransfer::ZIP_CODE => static::TEST_ZIP_CODE_1,
+        ]))->build();
+
         return $itemBuilder->withShipment([
-            ShipmentTransfer::SHIPPING_ADDRESS => [
-                AddressTransfer::COUNTRY => static::TEST_COUNTRY,
-                AddressTransfer::CITY => static::TEST_CITY_NAME_1,
-                AddressTransfer::ZIP_CODE => static::TEST_ZIP_CODE_1,
-            ],
+            ShipmentTransfer::SHIPPING_ADDRESS => $addressTransfer->toArray(),
         ])->build();
     }
 
@@ -244,12 +253,14 @@ class AvalaraTaxFacadeTest extends Unit
             return $itemBuilder->build();
         }
 
+        $addressTransfer = (new AddressBuilder([
+            AddressTransfer::COUNTRY => static::TEST_COUNTRY,
+            AddressTransfer::CITY => static::TEST_CITY_NAME_1,
+            AddressTransfer::ZIP_CODE => static::TEST_ZIP_CODE_1,
+        ]))->build();
+
         return $itemBuilder->withShipment([
-            ShipmentTransfer::SHIPPING_ADDRESS => [
-                AddressTransfer::COUNTRY => static::TEST_COUNTRY,
-                AddressTransfer::CITY => static::TEST_CITY_NAME_2,
-                AddressTransfer::ZIP_CODE => static::TEST_ZIP_CODE_2,
-            ],
+            ShipmentTransfer::SHIPPING_ADDRESS => $addressTransfer->toArray(),
         ])->build();
     }
 }

@@ -10,9 +10,24 @@ namespace SprykerEco\Zed\AvalaraTax\Business\Calculator;
 use ArrayObject;
 use Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer;
 use Generated\Shared\Transfer\AvalaraTransactionLineTransfer;
+use Generated\Shared\Transfer\CalculableObjectTransfer;
+use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapper;
 
+/**
+ * @deprecated Exists for Backward Compatibility reasons only.
+ */
 class SingleShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraTaxCalculator
 {
+    /**
+     * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
+     *
+     * @return bool
+     */
+    protected function hasShipmentAddress(CalculableObjectTransfer $calculableObjectTransfer): bool
+    {
+        return $calculableObjectTransfer->getShippingAddress() && $calculableObjectTransfer->getShippingAddressOrFail()->getZipCode();
+    }
+
     /**
      * @param \ArrayObject|\Generated\Shared\Transfer\ItemTransfer[] $itemTransfers
      * @param \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
@@ -23,7 +38,7 @@ class SingleShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalara
         ArrayObject $itemTransfers,
         AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
     ): void {
-        $avalaraTransactionLineTransfersIndexedByGroupKey = $this->getAvalaraTransactionLineTransfersIndexedByGroupKey(
+        $avalaraTransactionLineTransfersIndexedByGroupKey = $this->getCartItemAvalaraTransactionLineTransfersIndexedByGroupKey(
             $avalaraCreateTransactionResponseTransfer->getTransactionOrFail()->getLines()
         );
 
@@ -58,42 +73,16 @@ class SingleShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalara
      *
      * @return \Generated\Shared\Transfer\AvalaraTransactionLineTransfer[]
      */
-    protected function getAvalaraTransactionLineTransfersIndexedByGroupKey(ArrayObject $avalaraTransactionLineTransfers): array
+    protected function getCartItemAvalaraTransactionLineTransfersIndexedByGroupKey(ArrayObject $avalaraTransactionLineTransfers): array
     {
         $indexedAvalaraTransactionLineTransfers = [];
         foreach ($avalaraTransactionLineTransfers as $avalaraTransactionLineTransfer) {
+            if ($avalaraTransactionLineTransfer->getRef1OrFail() !== AvalaraTransactionRequestMapper::CART_ITEM_AVALARA_LINE_TYPE) {
+                continue;
+            }
             $indexedAvalaraTransactionLineTransfers[$avalaraTransactionLineTransfer->getRef2OrFail()] = $avalaraTransactionLineTransfer;
         }
 
         return $indexedAvalaraTransactionLineTransfers;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\AvalaraTransactionLineTransfer $avalaraTransactionLineTransfer
-     *
-     * @return int
-     */
-    protected function calculateAvalaraTransactionLineTaxRate(AvalaraTransactionLineTransfer $avalaraTransactionLineTransfer): int
-    {
-        $taxRateSum = $this->sumTaxRateFromTransactionLineDetails($avalaraTransactionLineTransfer->getDetailsOrFail());
-
-        return $this->moneyFacade->convertDecimalToInteger($taxRateSum);
-    }
-
-    /**
-     * @param string $transactionLineDetails
-     *
-     * @return float
-     */
-    protected function sumTaxRateFromTransactionLineDetails(string $transactionLineDetails): float
-    {
-        $taxRateSum = 0;
-
-        $transactionLineDetailsDecoded = $this->utilEncodingService->decodeJson($transactionLineDetails, true);
-        foreach ($transactionLineDetailsDecoded as $transactionLineDetail) {
-            $taxRateSum += $transactionLineDetail[static::KEY_TAX_RATE] ?? 0;
-        }
-
-        return $taxRateSum;
     }
 }

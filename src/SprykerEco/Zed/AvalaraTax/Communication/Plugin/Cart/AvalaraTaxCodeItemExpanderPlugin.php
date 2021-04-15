@@ -30,6 +30,6 @@ class AvalaraTaxCodeItemExpanderPlugin extends AbstractPlugin implements ItemExp
      */
     public function expandItems(CartChangeTransfer $cartChangeTransfer): CartChangeTransfer
     {
-        return $this->getFacade()->expandItemTransfersWithAvalaraTaxCode($cartChangeTransfer);
+        return $this->getFacade()->expandCartItemsWithAvalaraTaxCode($cartChangeTransfer);
     }
 }

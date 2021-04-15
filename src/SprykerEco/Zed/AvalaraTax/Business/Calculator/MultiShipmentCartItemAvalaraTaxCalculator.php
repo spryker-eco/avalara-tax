@@ -11,12 +11,31 @@ use ArrayObject;
 use Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer;
 use Generated\Shared\Transfer\AvalaraTransactionLineTransfer;
 use Generated\Shared\Transfer\AvalaraTransactionTransfer;
+use Generated\Shared\Transfer\CalculableObjectTransfer;
 use Generated\Shared\Transfer\ItemTransfer;
+use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapper;
 
 class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraTaxCalculator
 {
-    protected const KEY_REGION = 'region';
-    protected const KEY_POSTAL_CODE = 'postalCode';
+    /**
+     * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
+     *
+     * @return bool
+     */
+    protected function hasShipmentAddress(CalculableObjectTransfer $calculableObjectTransfer): bool
+    {
+        foreach ($calculableObjectTransfer->getItems() as $itemTransfer) {
+            if (
+                !$itemTransfer->getShipment()
+                || !$itemTransfer->getShipmentOrFail()->getShippingAddress()
+                || !$itemTransfer->getShipmentOrFail()->getShippingAddressOrFail()->getZipCode()
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     /**
      * @param \ArrayObject|\Generated\Shared\Transfer\ItemTransfer[] $itemTransfers
@@ -43,7 +62,7 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
     /**
      * @param \Generated\Shared\Transfer\ItemTransfer $itemTransfer
      * @param \ArrayObject|\Generated\Shared\Transfer\AvalaraTransactionLineTransfer[] $avalaraTransactionLineTransfers
-     * @param array $zipCodeRegionNameMap
+     * @param string[] $zipCodeRegionNameMap
      *
      * @return void
      */
@@ -68,30 +87,34 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
 
     /**
      * @param \Generated\Shared\Transfer\ItemTransfer $itemTransfer
-     * @param \ArrayObject|\Generated\Shared\Transfer\AvalaraTransactionLineTransfer[] $avalaraLineItemTransfers
-     * @param array $zipCodeRegionNameMap
+     * @param \ArrayObject|\Generated\Shared\Transfer\AvalaraTransactionLineTransfer[] $avalaraTransactionLineTransfers
+     * @param string[] $zipCodeRegionNameMap
      *
      * @return \Generated\Shared\Transfer\AvalaraTransactionLineTransfer|null
      */
     protected function findAvalaraLineItemTransferForItemTransfer(
         ItemTransfer $itemTransfer,
-        ArrayObject $avalaraLineItemTransfers,
+        ArrayObject $avalaraTransactionLineTransfers,
         array $zipCodeRegionNameMap
     ): ?AvalaraTransactionLineTransfer {
-        foreach ($avalaraLineItemTransfers as $avalaraLineItemTransfer) {
-            if (!$itemTransfer->getAmountOrFail()->equals($avalaraLineItemTransfer->getQuantityOrFail())) {
+        foreach ($avalaraTransactionLineTransfers as $avalaraTransactionLineTransfer) {
+            if ($avalaraTransactionLineTransfer->getRef1OrFail() !== AvalaraTransactionRequestMapper::CART_ITEM_AVALARA_LINE_TYPE) {
+                continue;
+            }
+
+            if (!$itemTransfer->getAmountOrFail()->equals($avalaraTransactionLineTransfer->getQuantityOrFail())) {
                 continue;
             }
 
             $itemShipmentAddressZipCode = $itemTransfer->getShipmentOrFail()->getShippingAddressOrFail()->getZipCodeOrFail();
             if (
                 !isset($zipCodeRegionNameMap[$itemShipmentAddressZipCode])
-                || $zipCodeRegionNameMap[$itemShipmentAddressZipCode] !== $this->extractRegionNameFromAvalaraTransactionLineTransfer($avalaraLineItemTransfer)
+                || $zipCodeRegionNameMap[$itemShipmentAddressZipCode] !== $this->extractRegionNameFromAvalaraTransactionLineTransfer($avalaraTransactionLineTransfer)
             ) {
                 continue;
             }
 
-            return $avalaraLineItemTransfer;
+            return $avalaraTransactionLineTransfer;
         }
 
         return null;
@@ -100,37 +123,23 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
     /**
      * @param \Generated\Shared\Transfer\AvalaraTransactionTransfer $avalaraTransactionTransfer
      *
-     * @return array
+     * @return string[]
      */
     protected function getRegionZipCodeMap(AvalaraTransactionTransfer $avalaraTransactionTransfer): array
     {
         $zipCodeRegionMap = [];
 
-        $avalaraTransactionAddresses = $this->utilEncodingService->decodeJson($avalaraTransactionTransfer->getAddressesOrFail(), true);
-        foreach ($avalaraTransactionAddresses as $avalaraTransactionAddress) {
-            if (array_key_exists($avalaraTransactionAddress[static::KEY_POSTAL_CODE], $zipCodeRegionMap)) {
+        /** @var \Avalara\TransactionAddressModel[] $avalaraTransactionAddressModels */
+        $avalaraTransactionAddressModels = $this->utilEncodingService->decodeJson($avalaraTransactionTransfer->getAddressesOrFail(), false);
+        foreach ($avalaraTransactionAddressModels as $avalaraTransactionAddressModel) {
+            if (array_key_exists($avalaraTransactionAddressModel->postalCode, $zipCodeRegionMap)) {
                 continue;
             }
 
-            $zipCodeRegionMap[$avalaraTransactionAddress[static::KEY_POSTAL_CODE]] = $avalaraTransactionAddress[static::KEY_REGION];
+            $zipCodeRegionMap[$avalaraTransactionAddressModel->postalCode] = $avalaraTransactionAddressModel->region;
         }
 
         return $zipCodeRegionMap;
-    }
-
-    /**
-     * @param \ArrayObject|\Generated\Shared\Transfer\AvalaraTransactionLineTransfer[] $avalaraTransactionLineTransfers
-     *
-     * @return \Generated\Shared\Transfer\AvalaraTransactionLineTransfer[][]
-     */
-    protected function getAvalaraTransactionLineTransfersIndexedByGroupKey(ArrayObject $avalaraTransactionLineTransfers): array
-    {
-        $indexedAvalaraTransactionLineTransfers = [];
-        foreach ($avalaraTransactionLineTransfers as $avalaraTransactionLineTransfer) {
-            $indexedAvalaraTransactionLineTransfers[$avalaraTransactionLineTransfer->getRef2OrFail()][] = $avalaraTransactionLineTransfer;
-        }
-
-        return $indexedAvalaraTransactionLineTransfers;
     }
 
     /**
@@ -140,13 +149,14 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
      */
     protected function extractRegionNameFromAvalaraTransactionLineTransfer(AvalaraTransactionLineTransfer $avalaraTransactionLineTransfer): ?string
     {
-        $avalaraTransactionDetails = $this->utilEncodingService->decodeJson($avalaraTransactionLineTransfer->getDetailsOrFail(), true);
-        foreach ($avalaraTransactionDetails as $avalaraTransactionDetail) {
-            if (!isset($avalaraTransactionDetail[static::KEY_REGION])) {
+        /** @var \Avalara\TransactionLineDetailModel[] $avalaraTransactionDetailModels */
+        $avalaraTransactionDetailModels = $this->utilEncodingService->decodeJson($avalaraTransactionLineTransfer->getDetailsOrFail(), false);
+        foreach ($avalaraTransactionDetailModels as $avalaraTransactionDetailModel) {
+            if ($avalaraTransactionDetailModel->region === null) {
                 continue;
             }
 
-            return $avalaraTransactionDetail[static::KEY_REGION];
+            return $avalaraTransactionDetailModel->region;
         }
 
         return null;

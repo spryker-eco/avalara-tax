@@ -7,7 +7,6 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Business\Mapper;
 
-use Avalara\TransactionAddressType;
 use Generated\Shared\Transfer\AvalaraAddressTransfer;
 use Generated\Shared\Transfer\AvalaraCreateTransactionRequestTransfer;
 use Generated\Shared\Transfer\AvalaraCreateTransactionTransfer;
@@ -20,10 +19,17 @@ use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeInterface
 
 class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapperInterface
 {
+    public const CART_ITEM_AVALARA_LINE_TYPE = 'cart-item';
+
     /**
      * @uses \Spryker\Shared\Price\PriceConfig::PRICE_MODE_GROSS
      */
     protected const PRICE_MODE_GROSS = 'GROSS_MODE';
+
+    /**
+     * @uses \Avalara\TransactionAddressType::C_SHIPTO
+     */
+    protected const AVALARA_SHIPPING_ADDRESS_TYPE = 'ShipTo';
 
     /**
      * @var \SprykerEco\Zed\AvalaraTax\AvalaraTaxConfig
@@ -87,10 +93,13 @@ class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapper
      */
     protected function createAvalaraCreateTransactionTransfer(CalculableObjectTransfer $calculableObjectTransfer): AvalaraCreateTransactionTransfer
     {
+        $orderReference = $this->extractOrderReferenceFromCalculableObjectTransfer($calculableObjectTransfer);
+
         $avalaraCreateTransactionTransfer = (new AvalaraCreateTransactionTransfer())
             ->setCurrencyCode($calculableObjectTransfer->getCurrencyOrFail()->getCodeOrFail())
             ->setCompanyCode($this->avalaraTaxConfig->getCompanyCode())
-            ->setWithCommit($this->avalaraTaxConfig->getIsTransactionCommitAfterOrderPlacementEnabled());
+            ->setWithCommit($this->isTransactionCommitable($orderReference))
+            ->setPurchaseOrderNo($orderReference);
 
         if (!$calculableObjectTransfer->getShippingAddress() || !$calculableObjectTransfer->getShippingAddressOrFail()->getZipCode()) {
             return $avalaraCreateTransactionTransfer;
@@ -98,7 +107,7 @@ class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapper
 
         $avalaraShippingAddressTransfer = (new AvalaraAddressTransfer())
             ->setAddress($calculableObjectTransfer->getShippingAddress())
-            ->setType(TransactionAddressType::C_SHIPTO);
+            ->setType(static::AVALARA_SHIPPING_ADDRESS_TYPE);
 
         return $avalaraCreateTransactionTransfer->setShippingAddress($avalaraShippingAddressTransfer);
     }
@@ -115,18 +124,18 @@ class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapper
     ): AvalaraLineItemTransfer {
         $avalaraLineItemTransfer->fromArray($itemTransfer->toArray(), true);
         $avalaraLineItemTransfer
-            ->setReference1('cart-item')
+            ->setReference1(static::CART_ITEM_AVALARA_LINE_TYPE)
             ->setReference2($itemTransfer->getGroupKeyOrFail())
             ->setAmount($this->calculateItemAmount($itemTransfer))
             ->setItemCode($itemTransfer->getSkuOrFail())
-            ->setTaxCode($itemTransfer->getAvalaraTaxCode())
+            ->setTaxCode($itemTransfer->getAvalaraTaxCodeOrFail())
             ->setDescription($itemTransfer->getNameOrFail());
 
         if (!$itemTransfer->getShipment()) {
             return $avalaraLineItemTransfer;
         }
 
-        $avalaraShippingAddressTransfer = (new AvalaraAddressTransfer())->setType(TransactionAddressType::C_SHIPTO);
+        $avalaraShippingAddressTransfer = (new AvalaraAddressTransfer())->setType(static::AVALARA_SHIPPING_ADDRESS_TYPE);
         $avalaraShippingAddressTransfer = $this->mapShipmentTransferToAvalaraAddressTransfer(
             $itemTransfer->getShipmentOrFail(),
             $avalaraShippingAddressTransfer
@@ -188,5 +197,29 @@ class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapper
     protected function isTaxIncluded(CalculableObjectTransfer $calculableObjectTransfer): bool
     {
         return $calculableObjectTransfer->getPriceModeOrFail() === static::PRICE_MODE_GROSS;
+    }
+
+    /**
+     * @param string|null $orderReference
+     *
+     * @return bool
+     */
+    protected function isTransactionCommitable(?string $orderReference): bool
+    {
+        return $orderReference !== null && $this->avalaraTaxConfig->getIsTransactionCommitAfterOrderPlacementEnabled();
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
+     *
+     * @return string|null
+     */
+    protected function extractOrderReferenceFromCalculableObjectTransfer(CalculableObjectTransfer $calculableObjectTransfer): ?string
+    {
+        if (!$calculableObjectTransfer->getOriginalQuote()) {
+            return null;
+        }
+
+        return $calculableObjectTransfer->getOriginalQuoteOrFail()->getOrderReference();
     }
 }

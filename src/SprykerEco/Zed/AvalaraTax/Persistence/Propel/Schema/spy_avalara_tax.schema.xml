@@ -75,7 +75,7 @@
         <column name="messages" type="CLOB" required="false"/>
         <column name="invoice_messages" type="CLOB" required="false"/>
         <column name="customer_supplier_name" type="VARCHAR" required="false" size="255"/>
-        <column name="data_aource_id" type="INTEGER" required="false"/>
+        <column name="data_source_id" type="INTEGER" required="false"/>
 
         <foreign-key name="spy_tax_avalara_sales_order-fk_sales_order" foreignTable="spy_sales_order" phpName="Order">
             <reference local="fk_sales_order" foreign="id_sales_order"/>

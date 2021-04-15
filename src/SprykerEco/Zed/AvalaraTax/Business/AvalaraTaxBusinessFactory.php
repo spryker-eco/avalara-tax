@@ -7,10 +7,8 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Business;
 
-use Avalara\AvaTaxClient;
-use Avalara\DocumentType;
-use Avalara\TransactionBuilder;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
+use SprykerEco\Zed\AvalaraTax\AvalaraTaxConfig;
 use SprykerEco\Zed\AvalaraTax\AvalaraTaxDependencyProvider;
 use SprykerEco\Zed\AvalaraTax\Business\Builder\AvalaraTransactionBuilder;
 use SprykerEco\Zed\AvalaraTax\Business\Builder\AvalaraTransactionBuilderInterface;
@@ -19,8 +17,8 @@ use SprykerEco\Zed\AvalaraTax\Business\Calculator\MultiShipmentCartItemAvalaraTa
 use SprykerEco\Zed\AvalaraTax\Business\Calculator\SingleShipmentCartItemAvalaraTaxCalculator;
 use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutor;
 use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutorInterface;
-use SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxSetExpander;
-use SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxSetExpanderInterface;
+use SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxCodeExpander;
+use SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxCodeExpanderInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLogger;
 use SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLoggerInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapper;
@@ -29,6 +27,10 @@ use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionResponseMapper;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionResponseMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Business\StrategyResolver\CartItemTaxCalculatorStrategyResolver;
 use SprykerEco\Zed\AvalaraTax\Business\StrategyResolver\CartItemTaxCalculatorStrategyResolverInterface;
+use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraAvaTaxClientAdapter;
+use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTaxClientInterface;
+use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTransactionBuilderAdapter;
+use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToStoreFacadeInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface;
@@ -48,7 +50,8 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
         return new SingleShipmentCartItemAvalaraTaxCalculator(
             $this->createAvalaraTransactionExecutor(),
             $this->getMoneyFacade(),
-            $this->getUtilEncodingService()
+            $this->getUtilEncodingService(),
+            $this->getCreateTransactionRequestAfterPlugins()
         );
     }
 
@@ -60,7 +63,8 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
         return new MultiShipmentCartItemAvalaraTaxCalculator(
             $this->createAvalaraTransactionExecutor(),
             $this->getMoneyFacade(),
-            $this->getUtilEncodingService()
+            $this->getUtilEncodingService(),
+            $this->getCreateTransactionRequestAfterPlugins()
         );
     }
 
@@ -73,7 +77,8 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
             $this->createAvalaraTransactionBuilder(),
             $this->createAvalaraTransactionRequestMapper(),
             $this->createAvalaraTransactionResponseMapper(),
-            $this->createAvalaraTransactionLogger()
+            $this->createAvalaraTransactionLogger(),
+            $this->getUtilEncodingService()
         );
     }
 
@@ -112,30 +117,29 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     {
         return new AvalaraTransactionLogger(
             $this->getEntityManager(),
-            $this->getStoreFacade(),
-            $this->getUtilEncodingService()
+            $this->getStoreFacade()
         );
     }
 
     /**
-     * @return \Avalara\TransactionBuilder
+     * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
      */
-    public function createTransactionBuilder(): TransactionBuilder
+    public function createTransactionBuilder(): AvalaraTaxToTransactionBuilderInterface
     {
-        return new TransactionBuilder(
+        return new AvalaraTaxToAvalaraTransactionBuilderAdapter(
             $this->createTransactionClient(),
             $this->getConfig()->getCompanyCode(),
-            (string)DocumentType::C_SALESORDER,
-            $this->getConfig()->getCustomerCode()
+            (string)AvalaraTaxConfig::AVALARA_TRANSACTION_TYPE_ID_SALES_ORDER,
+            $this->getConfig()->getDefaultCustomerCode()
         );
     }
 
     /**
-     * @return \Avalara\AvaTaxClient
+     * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTaxClientInterface
      */
-    public function createTransactionClient(): AvaTaxClient
+    public function createTransactionClient(): AvalaraTaxToAvalaraTaxClientInterface
     {
-        $avaTaxClient = new AvaTaxClient(
+        $avaTaxClient = new AvalaraTaxToAvalaraAvaTaxClientAdapter(
             $this->getConfig()->getApplicationName(),
             $this->getConfig()->getApplicationVersion(),
             $this->getConfig()->getMachineName(),
@@ -153,11 +157,11 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxSetExpanderInterface
+     * @return \SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxCodeExpanderInterface
      */
-    public function createAvalaraTaxSetExpander(): AvalaraTaxSetExpanderInterface
+    public function createAvalaraTaxCodeExpander(): AvalaraTaxCodeExpanderInterface
     {
-        return new AvalaraTaxSetExpander($this->getRepository());
+        return new AvalaraTaxCodeExpander($this->getRepository());
     }
 
     /**
@@ -193,7 +197,15 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @deprecated Exists for Backward Compatibility reasons only. Use $this->createProductOptionTaxRateWithItemShipmentTaxRateCalculator() instead.
+     * @return \SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestAfterPluginInterface[]
+     */
+    public function getCreateTransactionRequestAfterPlugins(): array
+    {
+        return $this->getProvidedDependency(AvalaraTaxDependencyProvider::PLUGINS_CREATE_TRANSACTION_REQUEST_AFTER);
+    }
+
+    /**
+     * @deprecated Exists for Backward Compatibility reasons only. {@Link createMultiShipmentCartItemTaxCalculator()} instead.
      *
      * @return \SprykerEco\Zed\AvalaraTax\Business\StrategyResolver\CartItemTaxCalculatorStrategyResolverInterface
      */

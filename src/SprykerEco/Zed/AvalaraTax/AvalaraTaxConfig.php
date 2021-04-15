@@ -13,6 +13,11 @@ use SprykerEco\Shared\AvalaraTax\AvalaraTaxConstants;
 class AvalaraTaxConfig extends AbstractBundleConfig
 {
     /**
+     * @uses \Avalara\DocumentType::C_SALESORDER
+     */
+    public const AVALARA_TRANSACTION_TYPE_ID_SALES_ORDER = 0;
+
+    /**
      * @api
      *
      * @return string
@@ -87,9 +92,9 @@ class AvalaraTaxConfig extends AbstractBundleConfig
      *
      * @return string
      */
-    public function getCustomerCode(): string
+    public function getDefaultCustomerCode(): string
     {
-        return 'TESTCUSTOMER';
+        return '';
     }
 
     /**
@@ -102,6 +107,6 @@ class AvalaraTaxConfig extends AbstractBundleConfig
      */
     public function getIsTransactionCommitAfterOrderPlacementEnabled(): bool
     {
-        return true;
+        return false;
     }
 }

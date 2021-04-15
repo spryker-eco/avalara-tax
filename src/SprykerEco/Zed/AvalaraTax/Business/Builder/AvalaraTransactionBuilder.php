@@ -7,45 +7,48 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Business\Builder;
 
-use Avalara\TransactionAddressType;
-use Avalara\TransactionBuilder;
 use Generated\Shared\Transfer\AvalaraAddressTransfer;
 use Generated\Shared\Transfer\AvalaraCreateTransactionRequestTransfer;
 use Generated\Shared\Transfer\AvalaraLineItemTransfer;
+use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface;
 
 class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
 {
     /**
-     * @var \Avalara\TransactionBuilder
+     * @var \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
      */
     protected $transactionBuilder;
 
     /**
-     * @param \Avalara\TransactionBuilder $transactionBuilder
+     * @param \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface $transactionBuilder
      */
-    public function __construct(TransactionBuilder $transactionBuilder)
+    public function __construct(AvalaraTaxToTransactionBuilderInterface $transactionBuilder)
     {
         $this->transactionBuilder = $transactionBuilder;
     }
 
     /**
      * @param \Generated\Shared\Transfer\AvalaraCreateTransactionRequestTransfer $avalaraCreateTransactionRequestTransfer
-     * @param int $transactionType
+     * @param string $transactionTypeId
      *
-     * @return \Avalara\TransactionBuilder
+     * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
      */
     public function buildCreateTransaction(
         AvalaraCreateTransactionRequestTransfer $avalaraCreateTransactionRequestTransfer,
-        int $transactionType
-    ): TransactionBuilder {
+        string $transactionTypeId
+    ): AvalaraTaxToTransactionBuilderInterface {
         $avalaraCreateTransactionTransfer = $avalaraCreateTransactionRequestTransfer->getTransactionOrFail();
 
         $transactionBuilder = $this->transactionBuilder
-            ->withType($transactionType)
+            ->withType($transactionTypeId)
             ->withCurrencyCode($avalaraCreateTransactionTransfer->getCurrencyCodeOrFail());
 
+        if ($avalaraCreateTransactionTransfer->getPurchaseOrderNo()) {
+            $transactionBuilder->withPurchaseOrderNo($avalaraCreateTransactionTransfer->getPurchaseOrderNoOrFail());
+        }
+
         if ($avalaraCreateTransactionTransfer->getShippingAddress()) {
-            $transactionBuilder = $this->addTransactionLevelShippingAddress(
+            $transactionBuilder = $this->addTransactionLevelAddress(
                 $transactionBuilder,
                 $avalaraCreateTransactionTransfer->getShippingAddressOrFail()
             );
@@ -59,39 +62,39 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
     }
 
     /**
-     * @param \Avalara\TransactionBuilder $transactionBuilder
+     * @param \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface $transactionBuilder
      * @param \Generated\Shared\Transfer\AvalaraAddressTransfer $avalaraAddressTransfer
      *
-     * @return \Avalara\TransactionBuilder
+     * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
      */
-    protected function addTransactionLevelShippingAddress(
-        TransactionBuilder $transactionBuilder,
+    protected function addTransactionLevelAddress(
+        AvalaraTaxToTransactionBuilderInterface $transactionBuilder,
         AvalaraAddressTransfer $avalaraAddressTransfer
-    ): TransactionBuilder {
+    ): AvalaraTaxToTransactionBuilderInterface {
         $addressTransfer = $avalaraAddressTransfer->getAddressOrFail();
 
         return $transactionBuilder->withAddress(
-            TransactionAddressType::C_SHIPTO,
-            $addressTransfer->getAddress1(),
-            $addressTransfer->getAddress2(),
-            $addressTransfer->getAddress3(),
-            $addressTransfer->getCity(),
-            $addressTransfer->getRegion(),
-            $addressTransfer->getZipCode(),
-            $addressTransfer->getIso2Code()
+            $avalaraAddressTransfer->getTypeOrFail(),
+            $addressTransfer->getAddress1OrFail(),
+            $addressTransfer->getAddress2OrFail(),
+            $addressTransfer->getAddress3OrFail(),
+            $addressTransfer->getCityOrFail(),
+            $addressTransfer->getZipCodeOrFail(),
+            $addressTransfer->getIso2CodeOrFail(),
+            $addressTransfer->getRegion()
         );
     }
 
     /**
-     * @param \Avalara\TransactionBuilder $transactionBuilder
+     * @param \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface $transactionBuilder
      * @param \Generated\Shared\Transfer\AvalaraLineItemTransfer $avalaraLineItemTransfer
      *
-     * @return \Avalara\TransactionBuilder
+     * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
      */
     protected function addItem(
-        TransactionBuilder $transactionBuilder,
+        AvalaraTaxToTransactionBuilderInterface $transactionBuilder,
         AvalaraLineItemTransfer $avalaraLineItemTransfer
-    ): TransactionBuilder {
+    ): AvalaraTaxToTransactionBuilderInterface {
         $transactionBuilder->withLine(
             $avalaraLineItemTransfer->getAmountOrFail()->toFloat(),
             $avalaraLineItemTransfer->getQuantityOrFail(),
@@ -100,7 +103,7 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
         );
         $transactionBuilder->withLineCustomFields(
             $avalaraLineItemTransfer->getReference1OrFail(),
-            $avalaraLineItemTransfer->getReference2()
+            $avalaraLineItemTransfer->getReference2OrFail()
         );
         $transactionBuilder->withLineDescription($avalaraLineItemTransfer->getDescriptionOrFail());
 
@@ -108,34 +111,38 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
             $transactionBuilder->withLineTaxIncluded();
         }
 
-        if ($avalaraLineItemTransfer->getShippingAddress() === null) {
-            return $transactionBuilder;
+        if ($avalaraLineItemTransfer->getShippingAddress() !== null) {
+            $transactionBuilder = $this->addItemLevelAddress($transactionBuilder, $avalaraLineItemTransfer->getShippingAddressOrFail());
         }
 
-        return $this->addItemShipmentAddress($transactionBuilder, $avalaraLineItemTransfer);
+        if ($avalaraLineItemTransfer->getSourceAddress() !== null) {
+            $transactionBuilder = $this->addItemLevelAddress($transactionBuilder, $avalaraLineItemTransfer->getSourceAddressOrFail());
+        }
+
+        return $transactionBuilder;
     }
 
     /**
-     * @param \Avalara\TransactionBuilder $transactionBuilder
-     * @param \Generated\Shared\Transfer\AvalaraLineItemTransfer $avalaraLineItemTransfer
+     * @param \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface $transactionBuilder
+     * @param \Generated\Shared\Transfer\AvalaraAddressTransfer $avalaraAddressTransfer
      *
-     * @return \Avalara\TransactionBuilder
+     * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
      */
-    protected function addItemShipmentAddress(
-        TransactionBuilder $transactionBuilder,
-        AvalaraLineItemTransfer $avalaraLineItemTransfer
-    ): TransactionBuilder {
-        $addressTransfer = $avalaraLineItemTransfer->getShippingAddressOrFail()->getAddressOrFail();
+    protected function addItemLevelAddress(
+        AvalaraTaxToTransactionBuilderInterface $transactionBuilder,
+        AvalaraAddressTransfer $avalaraAddressTransfer
+    ): AvalaraTaxToTransactionBuilderInterface {
+        $addressTransfer = $avalaraAddressTransfer->getAddressOrFail();
 
         return $transactionBuilder->withLineAddress(
-            TransactionAddressType::C_SHIPTO,
-            $addressTransfer->getAddress1(),
-            $addressTransfer->getAddress2(),
-            $addressTransfer->getAddress3(),
-            $addressTransfer->getCity(),
-            $addressTransfer->getRegion(),
-            $addressTransfer->getZipCode(),
-            $addressTransfer->getIso2Code()
+            $avalaraAddressTransfer->getTypeOrFail(),
+            $addressTransfer->getAddress1OrFail(),
+            $addressTransfer->getAddress2OrFail(),
+            $addressTransfer->getAddress3OrFail(),
+            $addressTransfer->getCityOrFail(),
+            $addressTransfer->getZipCodeOrFail(),
+            $addressTransfer->getIso2CodeOrFail(),
+            $addressTransfer->getRegion()
         );
     }
 }

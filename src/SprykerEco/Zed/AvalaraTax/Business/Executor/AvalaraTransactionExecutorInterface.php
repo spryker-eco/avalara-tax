@@ -14,10 +14,12 @@ interface AvalaraTransactionExecutorInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
+     * @param string $transactionTypeId
      *
      * @return \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer
      */
-    public function executeAvalaraSalesOrderTransaction(
-        CalculableObjectTransfer $calculableObjectTransfer
+    public function executeAvalaraCreateTransaction(
+        CalculableObjectTransfer $calculableObjectTransfer,
+        string $transactionTypeId
     ): AvalaraCreateTransactionResponseTransfer;
 }

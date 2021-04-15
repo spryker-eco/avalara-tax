@@ -47,11 +47,11 @@ class AvalaraTaxFacade extends AbstractFacade implements AvalaraTaxFacadeInterfa
      *
      * @return \Generated\Shared\Transfer\ProductConcreteTransfer
      */
-    public function expandProductConcreteTransferWithAvalaraTaxCode(ProductConcreteTransfer $productConcreteTransfer): ProductConcreteTransfer
+    public function expandProductConcreteWithAvalaraTaxCode(ProductConcreteTransfer $productConcreteTransfer): ProductConcreteTransfer
     {
         return $this->getFactory()
-            ->createAvalaraTaxSetExpander()
-            ->expandProductConcreteTransferWithAvalaraTaxCode($productConcreteTransfer);
+            ->createAvalaraTaxCodeExpander()
+            ->expandProductConcreteWithAvalaraTaxCode($productConcreteTransfer);
     }
 
     /**
@@ -63,10 +63,10 @@ class AvalaraTaxFacade extends AbstractFacade implements AvalaraTaxFacadeInterfa
      *
      * @return \Generated\Shared\Transfer\CartChangeTransfer
      */
-    public function expandItemTransfersWithAvalaraTaxCode(CartChangeTransfer $cartChangeTransfer): CartChangeTransfer
+    public function expandCartItemsWithAvalaraTaxCode(CartChangeTransfer $cartChangeTransfer): CartChangeTransfer
     {
         return $this->getFactory()
-            ->createAvalaraTaxSetExpander()
-            ->expandCartItemTransfersWithAvalaraTaxCode($cartChangeTransfer);
+            ->createAvalaraTaxCodeExpander()
+            ->expandCartItemsWithAvalaraTaxCode($cartChangeTransfer);
     }
 }

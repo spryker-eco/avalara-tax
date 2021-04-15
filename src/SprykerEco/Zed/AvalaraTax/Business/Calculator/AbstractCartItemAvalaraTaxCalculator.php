@@ -12,14 +12,13 @@ use Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer;
 use Generated\Shared\Transfer\AvalaraTransactionLineTransfer;
 use Generated\Shared\Transfer\CalculableObjectTransfer;
 use Generated\Shared\Transfer\ItemTransfer;
+use SprykerEco\Zed\AvalaraTax\AvalaraTaxConfig;
 use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutorInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface;
 
 abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTaxCalculatorInterface
 {
-    protected const KEY_TAX_RATE = 'rate';
-
     /**
      * @var \SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutorInterface
      */
@@ -36,18 +35,26 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
     protected $utilEncodingService;
 
     /**
+     * @var \SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestAfterPluginInterface[]
+     */
+    protected $createTransactionRequestAfterPlugins;
+
+    /**
      * @param \SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutorInterface $avalaraTransactionExecutor
      * @param \SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeInterface $moneyFacade
      * @param \SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface $utilEncodingService
+     * @param \SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestAfterPluginInterface[] $createTransactionRequestAfterPlugins
      */
     public function __construct(
         AvalaraTransactionExecutorInterface $avalaraTransactionExecutor,
         AvalaraTaxToMoneyFacadeInterface $moneyFacade,
-        AvalaraTaxToUtilEncodingServiceInterface $utilEncodingService
+        AvalaraTaxToUtilEncodingServiceInterface $utilEncodingService,
+        array $createTransactionRequestAfterPlugins
     ) {
         $this->avalaraTransactionExecutor = $avalaraTransactionExecutor;
         $this->moneyFacade = $moneyFacade;
         $this->utilEncodingService = $utilEncodingService;
+        $this->createTransactionRequestAfterPlugins = $createTransactionRequestAfterPlugins;
     }
 
     /**
@@ -61,8 +68,9 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
             return;
         }
 
-        $avalaraCreateTransactionResponseTransfer = $this->avalaraTransactionExecutor->executeAvalaraSalesOrderTransaction(
-            $calculableObjectTransfer
+        $avalaraCreateTransactionResponseTransfer = $this->avalaraTransactionExecutor->executeAvalaraCreateTransaction(
+            $calculableObjectTransfer,
+            (string)AvalaraTaxConfig::AVALARA_TRANSACTION_TYPE_ID_SALES_ORDER
         );
 
         $calculableObjectTransfer->getOriginalQuoteOrFail()->setAvalaraCreateTransactionResponse($avalaraCreateTransactionResponseTransfer);
@@ -71,7 +79,16 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
         }
 
         $this->calculateTaxForItemTransfers($calculableObjectTransfer->getItems(), $avalaraCreateTransactionResponseTransfer);
+
+        $this->executeCreateTransactionRequestAfterPlugins($calculableObjectTransfer, $avalaraCreateTransactionResponseTransfer);
     }
+
+    /**
+     * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
+     *
+     * @return bool
+     */
+    abstract protected function hasShipmentAddress(CalculableObjectTransfer $calculableObjectTransfer): bool;
 
     /**
      * @param \ArrayObject|\Generated\Shared\Transfer\ItemTransfer[] $itemTransfers
@@ -86,33 +103,17 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
 
     /**
      * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
+     * @param \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
      *
-     * @return bool
+     * @return void
      */
-    protected function hasShipmentAddress(CalculableObjectTransfer $calculableObjectTransfer): bool
-    {
-        return ($calculableObjectTransfer->getShippingAddress() && $calculableObjectTransfer->getShippingAddressOrFail()->getZipCode())
-            || $this->isMultiAddressShipment($calculableObjectTransfer) !== false;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
-     *
-     * @return bool
-     */
-    protected function isMultiAddressShipment(CalculableObjectTransfer $calculableObjectTransfer): bool
-    {
-        foreach ($calculableObjectTransfer->getItems() as $itemTransfer) {
-            if (
-                !$itemTransfer->getShipment()
-                || !$itemTransfer->getShipmentOrFail()->getShippingAddress()
-                || !$itemTransfer->getShipmentOrFail()->getShippingAddressOrFail()->getZipCode()
-            ) {
-                return false;
-            }
+    protected function executeCreateTransactionRequestAfterPlugins(
+        CalculableObjectTransfer $calculableObjectTransfer,
+        AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
+    ): void {
+        foreach ($this->createTransactionRequestAfterPlugins as $createTransactionRequestAfterPlugin) {
+            $calculableObjectTransfer = $createTransactionRequestAfterPlugin->execute($calculableObjectTransfer, $avalaraCreateTransactionResponseTransfer);
         }
-
-        return true;
     }
 
     /**
@@ -125,7 +126,7 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
         ItemTransfer $itemTransfer,
         AvalaraTransactionLineTransfer $avalaraTransactionLineTransfer
     ): void {
-        $taxRate = $this->calculateAvalaraTransactionLineTaxRate($avalaraTransactionLineTransfer);
+        $taxRate = $this->calculateAvalaraTransactionLineTaxRate($avalaraTransactionLineTransfer->getDetailsOrFail());
         $taxAmount = $this->moneyFacade->convertDecimalToInteger($avalaraTransactionLineTransfer->getTaxOrFail()->toFloat());
 
         $itemTransfer
@@ -134,29 +135,18 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
     }
 
     /**
-     * @param \Generated\Shared\Transfer\AvalaraTransactionLineTransfer $avalaraTransactionLineTransfer
-     *
-     * @return int
-     */
-    protected function calculateAvalaraTransactionLineTaxRate(AvalaraTransactionLineTransfer $avalaraTransactionLineTransfer): int
-    {
-        $taxRateSum = $this->sumTaxRateFromTransactionLineDetails($avalaraTransactionLineTransfer->getDetailsOrFail());
-
-        return $this->moneyFacade->convertDecimalToInteger($taxRateSum);
-    }
-
-    /**
      * @param string $transactionLineDetails
      *
      * @return float
      */
-    protected function sumTaxRateFromTransactionLineDetails(string $transactionLineDetails): float
+    protected function calculateAvalaraTransactionLineTaxRate(string $transactionLineDetails): float
     {
-        $taxRateSum = 0;
+        $taxRateSum = 0.0;
 
-        $transactionLineDetailsDecoded = $this->utilEncodingService->decodeJson($transactionLineDetails, true);
+        /** @var \Avalara\TransactionLineDetailModel[] $transactionLineDetailsDecoded */
+        $transactionLineDetailsDecoded = $this->utilEncodingService->decodeJson($transactionLineDetails, false);
         foreach ($transactionLineDetailsDecoded as $transactionLineDetail) {
-            $taxRateSum += $transactionLineDetail[static::KEY_TAX_RATE] ?? 0;
+            $taxRateSum += $transactionLineDetail->rate ?? 0.0;
         }
 
         return $taxRateSum;

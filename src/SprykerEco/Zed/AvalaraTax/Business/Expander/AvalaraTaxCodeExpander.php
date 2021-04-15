@@ -13,13 +13,8 @@ use Generated\Shared\Transfer\ItemTransfer;
 use Generated\Shared\Transfer\ProductConcreteTransfer;
 use SprykerEco\Zed\AvalaraTax\Persistence\AvalaraTaxRepositoryInterface;
 
-class AvalaraTaxSetExpander implements AvalaraTaxSetExpanderInterface
+class AvalaraTaxCodeExpander implements AvalaraTaxCodeExpanderInterface
 {
-    /**
-     * @uses \Orm\Zed\Product\Persistence\Map\SpyProductTableMap::COL_AVALARA_TAX_CODE
-     */
-    protected const COL_PRODUCT_AVALARA_TAX_CODE = 'spy_product.avalara_tax_code';
-
     /**
      * @var \SprykerEco\Zed\AvalaraTax\Persistence\AvalaraTaxRepositoryInterface
      */
@@ -38,7 +33,7 @@ class AvalaraTaxSetExpander implements AvalaraTaxSetExpanderInterface
      *
      * @return \Generated\Shared\Transfer\ProductConcreteTransfer
      */
-    public function expandProductConcreteTransferWithAvalaraTaxCode(ProductConcreteTransfer $productConcreteTransfer): ProductConcreteTransfer
+    public function expandProductConcreteWithAvalaraTaxCode(ProductConcreteTransfer $productConcreteTransfer): ProductConcreteTransfer
     {
         $productAbstractAvalaraTaxCode = $this->avalaraTaxRepository->findProductAbstractAvalaraTaxCode($productConcreteTransfer->getFkProductAbstractOrFail());
 
@@ -50,7 +45,7 @@ class AvalaraTaxSetExpander implements AvalaraTaxSetExpanderInterface
      *
      * @return \Generated\Shared\Transfer\CartChangeTransfer
      */
-    public function expandCartItemTransfersWithAvalaraTaxCode(CartChangeTransfer $cartChangeTransfer): CartChangeTransfer
+    public function expandCartItemsWithAvalaraTaxCode(CartChangeTransfer $cartChangeTransfer): CartChangeTransfer
     {
         $productConcreteSkus = $this->extractProductConcreteSkuFromItemTransfers($cartChangeTransfer->getItems());
         $productConcreteAvalaraTaxCodesIndexedBySku = $this->avalaraTaxRepository->getProductConcreteAvalaraTaxCodesBySkus($productConcreteSkus);
@@ -60,7 +55,7 @@ class AvalaraTaxSetExpander implements AvalaraTaxSetExpanderInterface
                 continue;
             }
 
-            $itemTransfer->setAvalaraTaxCode($productConcreteAvalaraTaxCodesIndexedBySku[$itemTransfer->getSkuOrFail()][static::COL_PRODUCT_AVALARA_TAX_CODE]);
+            $itemTransfer->setAvalaraTaxCode($productConcreteAvalaraTaxCodesIndexedBySku[$itemTransfer->getSkuOrFail()]);
         }
 
         return $cartChangeTransfer;
@@ -69,7 +64,7 @@ class AvalaraTaxSetExpander implements AvalaraTaxSetExpanderInterface
     /**
      * @param \ArrayObject|\Generated\Shared\Transfer\ItemTransfer[] $itemTransfers
      *
-     * @return array
+     * @return string[]
      */
     protected function extractProductConcreteSkuFromItemTransfers(ArrayObject $itemTransfers): array
     {

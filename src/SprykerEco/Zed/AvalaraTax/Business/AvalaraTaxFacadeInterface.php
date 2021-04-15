@@ -20,6 +20,7 @@ interface AvalaraTaxFacadeInterface
      * - Sends a `createTransaction` request to Avalara Tax API.
      * - In case of failure stops further plugin stack execution and logs the exceptions.
      * - Executes `CreateTransactionRequestAfterPluginInterface` plugin stack after successful response.
+     * - Sets the received taxes to taxation objects.
      *
      * @api
      *
@@ -42,10 +43,10 @@ interface AvalaraTaxFacadeInterface
      *
      * @return \Generated\Shared\Transfer\ProductConcreteTransfer
      */
-    public function expandProductConcreteTransferWithAvalaraTaxCode(ProductConcreteTransfer $productConcreteTransfer): ProductConcreteTransfer;
+    public function expandProductConcreteWithAvalaraTaxCode(ProductConcreteTransfer $productConcreteTransfer): ProductConcreteTransfer;
 
     /**
-     *  Specification:
+     * Specification:
      * - Expands `CartChangeTransfer.items` with avalara tax code.
      * - Requires `CartChangeTransfer.items.sku` to be provided.
      *
@@ -55,5 +56,5 @@ interface AvalaraTaxFacadeInterface
      *
      * @return \Generated\Shared\Transfer\CartChangeTransfer
      */
-    public function expandItemTransfersWithAvalaraTaxCode(CartChangeTransfer $cartChangeTransfer): CartChangeTransfer;
+    public function expandCartItemsWithAvalaraTaxCode(CartChangeTransfer $cartChangeTransfer): CartChangeTransfer;
 }

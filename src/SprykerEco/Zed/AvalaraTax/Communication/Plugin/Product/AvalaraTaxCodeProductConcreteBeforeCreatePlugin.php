@@ -9,13 +9,13 @@ namespace SprykerEco\Zed\AvalaraTax\Communication\Plugin\Product;
 
 use Generated\Shared\Transfer\ProductConcreteTransfer;
 use Spryker\Zed\Kernel\Communication\AbstractPlugin;
-use Spryker\Zed\Product\Dependency\Plugin\ProductConcretePluginCreateInterface;
+use Spryker\Zed\ProductExtension\Dependency\Plugin\ProductConcreteCreatePluginInterface;
 
 /**
  * @method \SprykerEco\Zed\AvalaraTax\Business\AvalaraTaxFacadeInterface getFacade()
  * @method \SprykerEco\Zed\AvalaraTax\AvalaraTaxConfig getConfig()
  */
-class AvalaraTaxCodeProductConcreteBeforeCreatePlugin extends AbstractPlugin implements ProductConcretePluginCreateInterface
+class AvalaraTaxCodeProductConcreteBeforeCreatePlugin extends AbstractPlugin implements ProductConcreteCreatePluginInterface
 {
     /**
      * {@inheritDoc}
@@ -30,6 +30,6 @@ class AvalaraTaxCodeProductConcreteBeforeCreatePlugin extends AbstractPlugin imp
      */
     public function create(ProductConcreteTransfer $productConcreteTransfer): ProductConcreteTransfer
     {
-        return $this->getFacade()->expandProductConcreteTransferWithAvalaraTaxCode($productConcreteTransfer);
+        return $this->getFacade()->expandProductConcreteWithAvalaraTaxCode($productConcreteTransfer);
     }
 }

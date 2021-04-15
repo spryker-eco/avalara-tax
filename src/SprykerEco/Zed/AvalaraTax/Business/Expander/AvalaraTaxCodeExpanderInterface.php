@@ -10,19 +10,19 @@ namespace SprykerEco\Zed\AvalaraTax\Business\Expander;
 use Generated\Shared\Transfer\CartChangeTransfer;
 use Generated\Shared\Transfer\ProductConcreteTransfer;
 
-interface AvalaraTaxSetExpanderInterface
+interface AvalaraTaxCodeExpanderInterface
 {
     /**
      * @param \Generated\Shared\Transfer\ProductConcreteTransfer $productConcreteTransfer
      *
      * @return \Generated\Shared\Transfer\ProductConcreteTransfer
      */
-    public function expandProductConcreteTransferWithAvalaraTaxCode(ProductConcreteTransfer $productConcreteTransfer): ProductConcreteTransfer;
+    public function expandProductConcreteWithAvalaraTaxCode(ProductConcreteTransfer $productConcreteTransfer): ProductConcreteTransfer;
 
     /**
      * @param \Generated\Shared\Transfer\CartChangeTransfer $cartChangeTransfer
      *
      * @return \Generated\Shared\Transfer\CartChangeTransfer
      */
-    public function expandCartItemTransfersWithAvalaraTaxCode(CartChangeTransfer $cartChangeTransfer): CartChangeTransfer;
+    public function expandCartItemsWithAvalaraTaxCode(CartChangeTransfer $cartChangeTransfer): CartChangeTransfer;
 }

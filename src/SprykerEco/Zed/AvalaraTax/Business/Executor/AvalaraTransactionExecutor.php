@@ -7,8 +7,8 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Business\Executor;
 
-use Avalara\DocumentType;
 use Exception;
+use Generated\Shared\Transfer\AvalaraApiLogTransfer;
 use Generated\Shared\Transfer\AvalaraCreateTransactionRequestTransfer;
 use Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer;
 use Generated\Shared\Transfer\CalculableObjectTransfer;
@@ -16,6 +16,7 @@ use SprykerEco\Zed\AvalaraTax\Business\Builder\AvalaraTransactionBuilderInterfac
 use SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLoggerInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionResponseMapperInterface;
+use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface;
 
 class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
 {
@@ -40,32 +41,42 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
     protected $avalaraTransactionLogger;
 
     /**
+     * @var \SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface
+     */
+    protected $utilEncodingService;
+
+    /**
      * @param \SprykerEco\Zed\AvalaraTax\Business\Builder\AvalaraTransactionBuilderInterface $avalaraTransactionBuilder
      * @param \SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapperInterface $avalaraTransactionRequestMapper
      * @param \SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionResponseMapperInterface $avalaraTransactionResponseMapper
      * @param \SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLoggerInterface $avalaraTransactionLogger
+     * @param \SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface $utilEncodingService
      */
     public function __construct(
         AvalaraTransactionBuilderInterface $avalaraTransactionBuilder,
         AvalaraTransactionRequestMapperInterface $avalaraTransactionRequestMapper,
         AvalaraTransactionResponseMapperInterface $avalaraTransactionResponseMapper,
-        AvalaraTransactionLoggerInterface $avalaraTransactionLogger
+        AvalaraTransactionLoggerInterface $avalaraTransactionLogger,
+        AvalaraTaxToUtilEncodingServiceInterface $utilEncodingService
     ) {
         $this->avalaraTransactionBuilder = $avalaraTransactionBuilder;
         $this->avalaraTransactionRequestMapper = $avalaraTransactionRequestMapper;
         $this->avalaraTransactionResponseMapper = $avalaraTransactionResponseMapper;
         $this->avalaraTransactionLogger = $avalaraTransactionLogger;
+        $this->utilEncodingService = $utilEncodingService;
     }
 
     /**
      * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
+     * @param string $transactionTypeId
      *
      * @throws \Exception
      *
      * @return \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer
      */
-    public function executeAvalaraSalesOrderTransaction(
-        CalculableObjectTransfer $calculableObjectTransfer
+    public function executeAvalaraCreateTransaction(
+        CalculableObjectTransfer $calculableObjectTransfer,
+        string $transactionTypeId
     ): AvalaraCreateTransactionResponseTransfer {
         $avalaraCreateTransactionRequestTransfer = $this->avalaraTransactionRequestMapper
             ->mapCalculableObjectTransferToAvalaraCreateTransactionRequestTransfer(
@@ -75,32 +86,32 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
 
         $transactionBuilder = $this->avalaraTransactionBuilder->buildCreateTransaction(
             $avalaraCreateTransactionRequestTransfer,
-            DocumentType::C_SALESORDER,
+            $transactionTypeId,
         );
 
+        $avalaraTransactionLogData = [
+            AvalaraApiLogTransfer::REQUEST => $this->utilEncodingService->encodeJson((array)$transactionBuilder),
+            AvalaraApiLogTransfer::TRANSACTION_TYPE => $transactionTypeId,
+        ];
+
         try {
-            /** @var \stdClass $transactionModel */
             $transactionModel = $transactionBuilder->create();
 
-            $this->avalaraTransactionLogger->logSuccessfulAvalaraApiTransaction(
-                $transactionBuilder,
-                (string)DocumentType::C_SALESORDER,
-                $transactionModel
-            );
+            $avalaraTransactionLogData[AvalaraApiLogTransfer::IS_SUCCESSFUL] = true;
+            $avalaraTransactionLogData[AvalaraApiLogTransfer::RESPONSE] = $this->utilEncodingService->encodeJson((array)$transactionModel);
         } catch (Exception $e) {
-            $this->avalaraTransactionLogger->logFailedAvalaraApiTransaction(
-                $transactionBuilder,
-                (string)DocumentType::C_SALESORDER,
-                $e->getMessage()
-            );
+            $avalaraTransactionLogData[AvalaraApiLogTransfer::IS_SUCCESSFUL] = false;
+            $avalaraTransactionLogData[AvalaraApiLogTransfer::ERROR_MESSAGE] = $e->getMessage();
 
             throw $e;
+        } finally {
+            $this->avalaraTransactionLogger->logAvalaraApiTransaction($avalaraTransactionLogData);
         }
 
         $avalaraCreateTransactionResponseTransfer = (new AvalaraCreateTransactionResponseTransfer())
             ->setIsSuccessful(true);
 
-        return $this->avalaraTransactionResponseMapper->mapAvalaraTransactionModelToAvalaraTransactionTransfer(
+        return $this->avalaraTransactionResponseMapper->mapAvalaraTransactionModelToAvalaraCreateTransactionResponseTransfer(
             $transactionModel,
             $avalaraCreateTransactionResponseTransfer
         );

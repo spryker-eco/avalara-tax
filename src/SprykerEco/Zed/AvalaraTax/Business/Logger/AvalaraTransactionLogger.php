@@ -7,12 +7,9 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Business\Logger;
 
-use Avalara\TransactionBuilder;
 use Generated\Shared\Transfer\AvalaraApiLogTransfer;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToStoreFacadeInterface;
-use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface;
 use SprykerEco\Zed\AvalaraTax\Persistence\AvalaraTaxEntityManagerInterface;
-use stdClass;
 
 class AvalaraTransactionLogger implements AvalaraTransactionLoggerInterface
 {
@@ -27,68 +24,38 @@ class AvalaraTransactionLogger implements AvalaraTransactionLoggerInterface
     protected $storeFacade;
 
     /**
-     * @var \SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface
-     */
-    protected $utilEncodingService;
-
-    /**
      * @param \SprykerEco\Zed\AvalaraTax\Persistence\AvalaraTaxEntityManagerInterface $avalaraTaxEntityManager
      * @param \SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToStoreFacadeInterface $storeFacade
-     * @param \SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface $utilEncodingService
      */
     public function __construct(
         AvalaraTaxEntityManagerInterface $avalaraTaxEntityManager,
-        AvalaraTaxToStoreFacadeInterface $storeFacade,
-        AvalaraTaxToUtilEncodingServiceInterface $utilEncodingService
+        AvalaraTaxToStoreFacadeInterface $storeFacade
     ) {
         $this->avalaraTaxEntityManager = $avalaraTaxEntityManager;
         $this->storeFacade = $storeFacade;
-        $this->utilEncodingService = $utilEncodingService;
     }
 
     /**
-     * @param \Avalara\TransactionBuilder $transactionBuilder
-     * @param string $transactionType
-     * @param \stdClass $transactionModel
+     * @param array $logData
      *
      * @return void
      */
-    public function logSuccessfulAvalaraApiTransaction(TransactionBuilder $transactionBuilder, string $transactionType, stdClass $transactionModel): void
+    public function logAvalaraApiTransaction(array $logData): void
     {
-        $avalaraApiLogTransfer = $this->createAvalaraApiLogTransfer($transactionBuilder, $transactionType);
-        $avalaraApiLogTransfer->setResponse($this->utilEncodingService->encodeJson((array)$transactionModel));
-        $avalaraApiLogTransfer->setIsSuccessful(true);
+        $avalaraApiLogTransfer = $this->createAvalaraApiLogTransfer($logData);
 
         $this->avalaraTaxEntityManager->saveTaxAvalaraApiLog($avalaraApiLogTransfer);
     }
 
     /**
-     * @param \Avalara\TransactionBuilder $transactionBuilder
-     * @param string $transactionType
-     * @param string $message
-     *
-     * @return void
-     */
-    public function logFailedAvalaraApiTransaction(TransactionBuilder $transactionBuilder, string $transactionType, string $message): void
-    {
-        $avalaraApiLogTransfer = $this->createAvalaraApiLogTransfer($transactionBuilder, $transactionType);
-        $avalaraApiLogTransfer->setErrorMessage($message);
-        $avalaraApiLogTransfer->setIsSuccessful(false);
-
-        $this->avalaraTaxEntityManager->saveTaxAvalaraApiLog($avalaraApiLogTransfer);
-    }
-
-    /**
-     * @param \Avalara\TransactionBuilder $transactionBuilder
-     * @param string $transactionType
+     * @param array $logData
      *
      * @return \Generated\Shared\Transfer\AvalaraApiLogTransfer
      */
-    protected function createAvalaraApiLogTransfer(TransactionBuilder $transactionBuilder, string $transactionType): AvalaraApiLogTransfer
+    protected function createAvalaraApiLogTransfer(array $logData): AvalaraApiLogTransfer
     {
         return (new AvalaraApiLogTransfer())
-            ->setTransactionType($transactionType)
-            ->setStoreName($this->storeFacade->getCurrentStore()->getNameOrFail())
-            ->setRequest($this->utilEncodingService->encodeJson((array)$transactionBuilder));
+            ->fromArray($logData, true)
+            ->setStoreName($this->storeFacade->getCurrentStore()->getNameOrFail());
     }
 }
