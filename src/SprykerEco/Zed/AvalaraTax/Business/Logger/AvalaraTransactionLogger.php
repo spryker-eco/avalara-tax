@@ -36,26 +36,24 @@ class AvalaraTransactionLogger implements AvalaraTransactionLoggerInterface
     }
 
     /**
-     * @param array $logData
+     * @param \Generated\Shared\Transfer\AvalaraApiLogTransfer $avalaraApiLogTransfer
      *
      * @return void
      */
-    public function logAvalaraApiTransaction(array $logData): void
+    public function logAvalaraApiTransaction(AvalaraApiLogTransfer $avalaraApiLogTransfer): void
     {
-        $avalaraApiLogTransfer = $this->createAvalaraApiLogTransfer($logData);
+        $avalaraApiLogTransfer = $this->expandWithCurrentStoreName($avalaraApiLogTransfer);
 
         $this->avalaraTaxEntityManager->saveTaxAvalaraApiLog($avalaraApiLogTransfer);
     }
 
     /**
-     * @param array $logData
+     * @param \Generated\Shared\Transfer\AvalaraApiLogTransfer $avalaraApiLogTransfer
      *
      * @return \Generated\Shared\Transfer\AvalaraApiLogTransfer
      */
-    protected function createAvalaraApiLogTransfer(array $logData): AvalaraApiLogTransfer
+    protected function expandWithCurrentStoreName(AvalaraApiLogTransfer $avalaraApiLogTransfer): AvalaraApiLogTransfer
     {
-        return (new AvalaraApiLogTransfer())
-            ->fromArray($logData, true)
-            ->setStoreName($this->storeFacade->getCurrentStore()->getNameOrFail());
+        return $avalaraApiLogTransfer->setStoreName($this->storeFacade->getCurrentStore()->getNameOrFail());
     }
 }

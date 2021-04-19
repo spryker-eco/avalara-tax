@@ -100,12 +100,7 @@ class AvalaraTransactionResponseMapper implements AvalaraTransactionResponseMapp
      */
     protected function convertStdClassToArray(stdClass $stdClass): array
     {
-        $stdClassEncoded = $this->utilEncodingService->encodeJson((array)$stdClass);
-        if (!$stdClassEncoded) {
-            return [];
-        }
-
-        return $this->utilEncodingService->decodeJson($stdClassEncoded, true);
+        return (array)$stdClass;
     }
 
     /**

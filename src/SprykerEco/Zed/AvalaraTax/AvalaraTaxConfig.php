@@ -18,6 +18,11 @@ class AvalaraTaxConfig extends AbstractBundleConfig
     public const AVALARA_TRANSACTION_TYPE_ID_SALES_ORDER = 0;
 
     /**
+     * @uses \Avalara\DocumentType::C_SALESINVOICE
+     */
+    public const AVALARA_TRANSACTION_TYPE_ID_SALES_INVOICE = 1;
+
+    /**
      * @api
      *
      * @return string
@@ -108,5 +113,25 @@ class AvalaraTaxConfig extends AbstractBundleConfig
     public function getIsTransactionCommitAfterOrderPlacementEnabled(): bool
     {
         return false;
+    }
+
+    /**
+     * @api
+     *
+     * @return int
+     */
+    public function getBeforeOrderPlacedTransactionTypeId(): int
+    {
+        return static::AVALARA_TRANSACTION_TYPE_ID_SALES_ORDER;
+    }
+
+    /**
+     * @api
+     *
+     * @return int
+     */
+    public function getAfterOrderPlacedTransactionTypeId(): int
+    {
+        return static::AVALARA_TRANSACTION_TYPE_ID_SALES_INVOICE;
     }
 }

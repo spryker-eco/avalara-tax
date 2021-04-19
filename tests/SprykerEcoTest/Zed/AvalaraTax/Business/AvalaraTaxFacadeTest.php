@@ -7,7 +7,6 @@
 
 namespace SpykerEcoTest\Zed\AvalaraTax\Business;
 
-use Avalara\TransactionBuilder;
 use Codeception\Test\Unit;
 use Generated\Shared\DataBuilder\AddressBuilder;
 use Generated\Shared\DataBuilder\CalculableObjectBuilder;
@@ -92,7 +91,7 @@ class AvalaraTaxFacadeTest extends Unit
     {
         // Arrange
         $transactionModelMock = $this->getTransactionModelMock('avalara_api_multi_address_response.json');
-        $this->tester->mockFactoryMethod('createTransactionBuilder', $this->createTransactionBuilderMock($transactionModelMock));
+        $this->tester->mockFactoryMethod('getAvalaraTransactionBuilder', $this->createTransactionBuilderMock($transactionModelMock));
         $this->tester->mockFactoryMethod('getEntityManager', new AvalaraTaxEntityManager());
 
         $itemTransfer1 = $this->createItemTransfer1();
@@ -130,7 +129,7 @@ class AvalaraTaxFacadeTest extends Unit
     {
         // Arrange
         $transactionModelMock = $this->getTransactionModelMock('avalara_api_multi_address_response.json');
-        $this->tester->mockFactoryMethod('createTransactionBuilder', $this->createTransactionBuilderMock($transactionModelMock));
+        $this->tester->mockFactoryMethod('getAvalaraTransactionBuilder', $this->createTransactionBuilderMock($transactionModelMock));
         $this->tester->mockFactoryMethod('getEntityManager', new AvalaraTaxEntityManager());
 
         $itemTransfer1 = $this->createItemTransfer1(false);
@@ -185,6 +184,8 @@ class AvalaraTaxFacadeTest extends Unit
         $transactionBuilderMock->method('withLineDescription')->willReturnSelf();
         $transactionBuilderMock->method('withLineTaxIncluded')->willReturnSelf();
         $transactionBuilderMock->method('withLineAddress')->willReturnSelf();
+        $transactionBuilderMock->method('withCommit')->willReturnSelf();
+        $transactionBuilderMock->method('withPurchaseOrderNo')->willReturnSelf();
         $transactionBuilderMock->method('create')->willReturn($transactionModelMock);
 
         return $transactionBuilderMock;

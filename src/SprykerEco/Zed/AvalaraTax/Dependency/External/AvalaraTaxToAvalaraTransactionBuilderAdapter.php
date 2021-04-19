@@ -8,6 +8,7 @@
 namespace SprykerEco\Zed\AvalaraTax\Dependency\External;
 
 use Avalara\TransactionBuilder;
+use SprykerEco\Zed\AvalaraTax\AvalaraTaxConfig;
 use stdClass;
 
 class AvalaraTaxToAvalaraTransactionBuilderAdapter implements AvalaraTaxToTransactionBuilderInterface
@@ -18,20 +19,19 @@ class AvalaraTaxToAvalaraTransactionBuilderAdapter implements AvalaraTaxToTransa
     protected $transactionBuilder;
 
     /**
-     * @param \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTaxClientInterface $client
-     * @param string $companyCode
-     * @param string $type
-     * @param string $customerCode
-     * @param string|null $dateTime
+     * @param \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTaxClientInterface $avalaraTaxClient
+     * @param \SprykerEco\Zed\AvalaraTax\AvalaraTaxConfig $avalaraTaxConfig
      */
     public function __construct(
-        AvalaraTaxToAvalaraTaxClientInterface $client,
-        string $companyCode,
-        string $type,
-        string $customerCode,
-        ?string $dateTime = null
+        AvalaraTaxToAvalaraTaxClientInterface $avalaraTaxClient,
+        AvalaraTaxConfig $avalaraTaxConfig
     ) {
-        $this->transactionBuilder = new TransactionBuilder($client, $companyCode, $type, $customerCode, $dateTime);
+        $this->transactionBuilder = new TransactionBuilder(
+            $avalaraTaxClient,
+            $avalaraTaxConfig->getCompanyCode(),
+            $avalaraTaxConfig->getBeforeOrderPlacedTransactionTypeId(),
+            $avalaraTaxConfig->getDefaultCustomerCode()
+        );
     }
 
     /**
@@ -54,6 +54,16 @@ class AvalaraTaxToAvalaraTransactionBuilderAdapter implements AvalaraTaxToTransa
     public function withCurrencyCode(string $currencyCode)
     {
         $this->transactionBuilder->withCurrencyCode($currencyCode);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function withCommit()
+    {
+        $this->transactionBuilder->withCommit();
 
         return $this;
     }
@@ -152,8 +162,16 @@ class AvalaraTaxToAvalaraTransactionBuilderAdapter implements AvalaraTaxToTransa
      *
      * @return $this
      */
-    public function withLineAddress(string $type, string $line1, string $line2, string $line3, string $city, string $postalCode, string $country, ?string $region)
-    {
+    public function withLineAddress(
+        string $type,
+        string $line1,
+        string $line2,
+        string $line3,
+        string $city,
+        string $postalCode,
+        string $country,
+        ?string $region
+    ) {
         $this->transactionBuilder->withLineAddress($type, $line1, $line2, $line3, $city, $region, $postalCode, $country);
 
         return $this;

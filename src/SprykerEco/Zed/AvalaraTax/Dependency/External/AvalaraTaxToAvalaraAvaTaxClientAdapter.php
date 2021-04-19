@@ -8,6 +8,7 @@
 namespace SprykerEco\Zed\AvalaraTax\Dependency\External;
 
 use Avalara\AvaTaxClient;
+use SprykerEco\Zed\AvalaraTax\AvalaraTaxConfig;
 use stdClass;
 
 class AvalaraTaxToAvalaraAvaTaxClientAdapter implements AvalaraTaxToAvalaraTaxClientInterface
@@ -18,26 +19,20 @@ class AvalaraTaxToAvalaraAvaTaxClientAdapter implements AvalaraTaxToAvalaraTaxCl
     protected $avaTaxClient;
 
     /**
-     * @param string $applicationName
-     * @param string $applicationVersion
-     * @param string $environment
-     * @param string $machineName
-     * @param array $guzzleParams
+     * @param \SprykerEco\Zed\AvalaraTax\AvalaraTaxConfig $avalaraTaxConfig
      */
-    public function __construct(
-        string $applicationName,
-        string $applicationVersion,
-        string $environment,
-        string $machineName = '',
-        array $guzzleParams = []
-    ) {
+    public function __construct(AvalaraTaxConfig $avalaraTaxConfig)
+    {
         $this->avaTaxClient = new AvaTaxClient(
-            $applicationName,
-            $applicationVersion,
-            $environment,
-            $machineName,
-            $guzzleParams
+            $avalaraTaxConfig->getApplicationName(),
+            $avalaraTaxConfig->getApplicationVersion(),
+            $avalaraTaxConfig->getEnvironmentName(),
+            $avalaraTaxConfig->getMachineName()
         );
+
+        $this
+            ->withLicenseKey($avalaraTaxConfig->getAccountId(), $avalaraTaxConfig->getLicenseKey())
+            ->withCatchExceptions(false);
     }
 
     /**

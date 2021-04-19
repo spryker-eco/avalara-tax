@@ -89,23 +89,24 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
             $transactionTypeId,
         );
 
-        $avalaraTransactionLogData = [
-            AvalaraApiLogTransfer::REQUEST => $this->utilEncodingService->encodeJson((array)$transactionBuilder),
-            AvalaraApiLogTransfer::TRANSACTION_TYPE => $transactionTypeId,
-        ];
+        $avalaraApiLogTransfer = (new AvalaraApiLogTransfer())
+            ->setRequest($this->utilEncodingService->encodeJson((array)$transactionBuilder))
+            ->setTransactionType($transactionTypeId);
 
         try {
             $transactionModel = $transactionBuilder->create();
 
-            $avalaraTransactionLogData[AvalaraApiLogTransfer::IS_SUCCESSFUL] = true;
-            $avalaraTransactionLogData[AvalaraApiLogTransfer::RESPONSE] = $this->utilEncodingService->encodeJson((array)$transactionModel);
+            $avalaraApiLogTransfer
+                ->setIsSuccessful(true)
+                ->setResponse($this->utilEncodingService->encodeJson((array)$transactionModel));
         } catch (Exception $e) {
-            $avalaraTransactionLogData[AvalaraApiLogTransfer::IS_SUCCESSFUL] = false;
-            $avalaraTransactionLogData[AvalaraApiLogTransfer::ERROR_MESSAGE] = $e->getMessage();
+            $avalaraApiLogTransfer
+                ->setIsSuccessful(false)
+                ->setErrorMessage($e->getMessage());
 
             throw $e;
         } finally {
-            $this->avalaraTransactionLogger->logAvalaraApiTransaction($avalaraTransactionLogData);
+            $this->avalaraTransactionLogger->logAvalaraApiTransaction($avalaraApiLogTransfer);
         }
 
         $avalaraCreateTransactionResponseTransfer = (new AvalaraCreateTransactionResponseTransfer())

@@ -26,6 +26,11 @@ interface AvalaraTaxToTransactionBuilderInterface
     public function withCurrencyCode(string $currencyCode);
 
     /**
+     * @return $this
+     */
+    public function withCommit();
+
+    /**
      * @param string $no
      *
      * @return $this
@@ -89,7 +94,16 @@ interface AvalaraTaxToTransactionBuilderInterface
      *
      * @return $this
      */
-    public function withLineAddress(string $type, string $line1, string $line2, string $line3, string $city, string $postalCode, string $country, ?string $region);
+    public function withLineAddress(
+        string $type,
+        string $line1,
+        string $line2,
+        string $line3,
+        string $city,
+        string $postalCode,
+        string $country,
+        ?string $region
+    );
 
     /**
      * @param string|null $include

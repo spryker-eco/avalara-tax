@@ -7,12 +7,14 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Business\Logger;
 
+use Generated\Shared\Transfer\AvalaraApiLogTransfer;
+
 interface AvalaraTransactionLoggerInterface
 {
     /**
-     * @param array $logData
+     * @param \Generated\Shared\Transfer\AvalaraApiLogTransfer $avalaraApiLogTransfer
      *
      * @return void
      */
-    public function logAvalaraApiTransaction(array $logData): void;
+    public function logAvalaraApiTransaction(AvalaraApiLogTransfer $avalaraApiLogTransfer): void;
 }

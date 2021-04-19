@@ -43,6 +43,10 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
             ->withType($transactionTypeId)
             ->withCurrencyCode($avalaraCreateTransactionTransfer->getCurrencyCodeOrFail());
 
+        if ($avalaraCreateTransactionTransfer->getWithCommit()) {
+            $transactionBuilder->withCommit();
+        }
+
         if ($avalaraCreateTransactionTransfer->getPurchaseOrderNo()) {
             $transactionBuilder->withPurchaseOrderNo($avalaraCreateTransactionTransfer->getPurchaseOrderNoOrFail());
         }
