@@ -111,4 +111,9 @@ interface AvalaraTaxToTransactionBuilderInterface
      * @return \stdClass|\Avalara\TransactionModel
      */
     public function create(?string $include = null): stdClass;
+
+    /**
+     * @return array
+     */
+    public function toArray(): array;
 }

@@ -186,4 +186,12 @@ class AvalaraTaxToAvalaraTransactionBuilderAdapter implements AvalaraTaxToTransa
     {
         return $this->transactionBuilder->create($include);
     }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return (array)$this->transactionBuilder;
+    }
 }

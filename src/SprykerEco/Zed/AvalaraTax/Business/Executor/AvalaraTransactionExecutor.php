@@ -7,7 +7,6 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Business\Executor;
 
-use Exception;
 use Generated\Shared\Transfer\AvalaraApiLogTransfer;
 use Generated\Shared\Transfer\AvalaraCreateTransactionRequestTransfer;
 use Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer;
@@ -17,6 +16,7 @@ use SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLoggerInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionResponseMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface;
+use Throwable;
 
 class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
 {
@@ -90,7 +90,7 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
         );
 
         $avalaraApiLogTransfer = (new AvalaraApiLogTransfer())
-            ->setRequest($this->utilEncodingService->encodeJson((array)$transactionBuilder))
+            ->setRequest($this->utilEncodingService->encodeJson($transactionBuilder->toArray()))
             ->setTransactionType($transactionTypeId);
 
         try {
@@ -99,7 +99,8 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
             $avalaraApiLogTransfer
                 ->setIsSuccessful(true)
                 ->setResponse($this->utilEncodingService->encodeJson((array)$transactionModel));
-        } catch (Exception $e) {
+            file_put_contents(APPLICATION_ROOT_DIR . '/response-5.json', json_encode($transactionModel, JSON_PRETTY_PRINT));
+        } catch (Throwable $e) {
             $avalaraApiLogTransfer
                 ->setIsSuccessful(false)
                 ->setErrorMessage($e->getMessage());

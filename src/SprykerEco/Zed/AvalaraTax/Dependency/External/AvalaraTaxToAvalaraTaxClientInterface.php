@@ -12,10 +12,10 @@ use stdClass;
 interface AvalaraTaxToAvalaraTaxClientInterface
 {
     /**
-     * @param \stdClass|\Avalara\CreateTransactionModel $createTransactionModel
      * @param string|null $include
+     * @param array $createTransactionModel
      *
      * @return \stdClass|\Avalara\TransactionModel
      */
-    public function createTransaction(stdClass $createTransactionModel, ?string $include = null): stdClass;
+    public function createTransaction(?string $include = null, array $createTransactionModel): stdClass;
 }

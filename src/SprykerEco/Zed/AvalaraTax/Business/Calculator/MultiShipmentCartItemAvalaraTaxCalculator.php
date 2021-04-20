@@ -102,7 +102,7 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
                 continue;
             }
 
-            if (!$itemTransfer->getAmountOrFail()->equals($avalaraTransactionLineTransfer->getQuantityOrFail())) {
+            if (!$avalaraTransactionLineTransfer->getQuantityOrFail()->equals($itemTransfer->getQuantityOrFail())) {
                 continue;
             }
 

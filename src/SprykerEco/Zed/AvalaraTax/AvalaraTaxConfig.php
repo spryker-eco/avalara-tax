@@ -99,7 +99,7 @@ class AvalaraTaxConfig extends AbstractBundleConfig
      */
     public function getDefaultCustomerCode(): string
     {
-        return '';
+        return 'TESTCUSTOMER';
     }
 
     /**

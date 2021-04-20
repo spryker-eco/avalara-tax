@@ -26,8 +26,8 @@ class AvalaraTaxToAvalaraAvaTaxClientAdapter implements AvalaraTaxToAvalaraTaxCl
         $this->avaTaxClient = new AvaTaxClient(
             $avalaraTaxConfig->getApplicationName(),
             $avalaraTaxConfig->getApplicationVersion(),
-            $avalaraTaxConfig->getEnvironmentName(),
-            $avalaraTaxConfig->getMachineName()
+            $avalaraTaxConfig->getMachineName(),
+            $avalaraTaxConfig->getEnvironmentName()
         );
 
         $this->avaTaxClient
@@ -36,12 +36,12 @@ class AvalaraTaxToAvalaraAvaTaxClientAdapter implements AvalaraTaxToAvalaraTaxCl
     }
 
     /**
-     * @param \stdClass|\Avalara\CreateTransactionModel $createTransactionModel
      * @param string|null $include
+     * @param array $createTransactionModel
      *
      * @return \stdClass|\Avalara\TransactionModel
      */
-    public function createTransaction(stdClass $createTransactionModel, ?string $include = null): stdClass
+    public function createTransaction(?string $include = null, array $createTransactionModel): stdClass
     {
         return $this->avaTaxClient->createTransaction($include, $createTransactionModel);
     }

@@ -142,7 +142,7 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
             $avalaraAddressTransfer->getTypeOrFail(),
             $addressTransfer->getAddress1OrFail(),
             $addressTransfer->getAddress2OrFail(),
-            $addressTransfer->getAddress3OrFail(),
+            (string)$addressTransfer->getAddress3(),
             $addressTransfer->getCityOrFail(),
             $addressTransfer->getZipCodeOrFail(),
             $addressTransfer->getIso2CodeOrFail(),
