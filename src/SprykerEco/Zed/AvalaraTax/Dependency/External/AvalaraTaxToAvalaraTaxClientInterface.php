@@ -12,21 +12,6 @@ use stdClass;
 interface AvalaraTaxToAvalaraTaxClientInterface
 {
     /**
-     * @param int $accountId
-     * @param string $licenseKey
-     *
-     * @return $this
-     */
-    public function withLicenseKey(int $accountId, string $licenseKey);
-
-    /**
-     * @param bool $catchExceptions
-     *
-     * @return $this
-     */
-    public function withCatchExceptions(bool $catchExceptions = true);
-
-    /**
      * @param \stdClass|\Avalara\CreateTransactionModel $createTransactionModel
      * @param string|null $include
      *

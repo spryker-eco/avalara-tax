@@ -116,6 +116,9 @@ class AvalaraTaxConfig extends AbstractBundleConfig
     }
 
     /**
+     * Specification:
+     * - Returns the type of document that will be used for calculating taxes before the order is placed at the stage of forming a cart.
+     *
      * @api
      *
      * @return int
@@ -126,6 +129,9 @@ class AvalaraTaxConfig extends AbstractBundleConfig
     }
 
     /**
+     * Specification:
+     * - Returns the type of document that will be used for calculating taxes after the order is placed.
+     *
      * @api
      *
      * @return int

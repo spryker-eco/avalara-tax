@@ -30,34 +30,9 @@ class AvalaraTaxToAvalaraAvaTaxClientAdapter implements AvalaraTaxToAvalaraTaxCl
             $avalaraTaxConfig->getMachineName()
         );
 
-        $this
+        $this->avaTaxClient
             ->withLicenseKey($avalaraTaxConfig->getAccountId(), $avalaraTaxConfig->getLicenseKey())
             ->withCatchExceptions(false);
-    }
-
-    /**
-     * @param int $accountId
-     * @param string $licenseKey
-     *
-     * @return $this
-     */
-    public function withLicenseKey(int $accountId, string $licenseKey)
-    {
-        $this->avaTaxClient->withLicenseKey($accountId, $licenseKey);
-
-        return $this;
-    }
-
-    /**
-     * @param bool $catchExceptions
-     *
-     * @return $this
-     */
-    public function withCatchExceptions(bool $catchExceptions = true)
-    {
-        $this->avaTaxClient->withCatchExceptions($catchExceptions);
-
-        return $this;
     }
 
     /**
