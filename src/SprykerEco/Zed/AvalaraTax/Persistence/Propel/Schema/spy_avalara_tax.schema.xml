@@ -9,7 +9,7 @@
         <column name="store_name" required="true" type="VARCHAR"/>
         <column name="transaction_type" required="true" type="VARCHAR"/>
         <column name="is_successful" required="true" type="BOOLEAN"/>
-        <column name="error_message" required="false" type="VARCHAR"/>
+        <column name="error_message" required="false" type="CLOB"/>
         <column name="request" required="true" type="CLOB"/>
         <column name="response" required="false" type="CLOB"/>
 
@@ -70,6 +70,12 @@
         <column name="addresses" type="CLOB" required="false"/>
         <column name="location_types" type="CLOB" required="false"/>
         <column name="summary" type="CLOB" required="false"/>
+        <column name="tax_details_by_tax_type" type="CLOB" required="false"/>
+        <column name="parameters" type="CLOB" required="false"/>
+        <column name="messages" type="CLOB" required="false"/>
+        <column name="invoice_messages" type="CLOB" required="false"/>
+        <column name="customer_supplier_name" type="VARCHAR" required="false" size="255"/>
+        <column name="data_source_id" type="INTEGER" required="false"/>
 
         <foreign-key name="spy_tax_avalara_sales_order-fk_sales_order" foreignTable="spy_sales_order" phpName="Order">
             <reference local="fk_sales_order" foreign="id_sales_order"/>
@@ -157,10 +163,13 @@
         <column name="details" type="CLOB" required="false"/>
         <column name="non_passthrough_details" type="CLOB" required="false"/>
         <column name="line_location_types" type="CLOB" required="false"/>
+        <column name="parameters" type="CLOB" required="false"/>
         <column name="hs_code" type="VARCHAR" required="false" size="255"/>
         <column name="cost_insurance_freight" type="DECIMAL" size="20" scale="10" defaultValue="0"/>
         <column name="vat_code" type="VARCHAR" required="false" size="255"/>
         <column name="vat_number_type_id" type="INTEGER" required="false"/>
+        <column name="tax_amount_by_tax_types" type="CLOB" required="false"/>
+        <column name="deemed_supplier" type="VARCHAR" required="false" size="255"/>
 
         <foreign-key name="spy_tax_avalara_sales_detail-fk_tax_avalara_sales_order_item"
                      foreignTable="spy_tax_avalara_sales_order_item" phpName="AvalaraSalesOrderItem"
