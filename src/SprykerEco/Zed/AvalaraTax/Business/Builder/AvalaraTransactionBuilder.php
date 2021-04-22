@@ -7,6 +7,7 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Business\Builder;
 
+use ArrayObject;
 use Generated\Shared\Transfer\AvalaraAddressTransfer;
 use Generated\Shared\Transfer\AvalaraCreateTransactionRequestTransfer;
 use Generated\Shared\Transfer\AvalaraLineItemTransfer;
@@ -119,8 +120,8 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
             $transactionBuilder = $this->addItemLevelAddress($transactionBuilder, $avalaraLineItemTransfer->getShippingAddressOrFail());
         }
 
-        if ($avalaraLineItemTransfer->getSourceAddress() !== null) {
-            $transactionBuilder = $this->addItemLevelAddress($transactionBuilder, $avalaraLineItemTransfer->getSourceAddressOrFail());
+        if ($avalaraLineItemTransfer->getSourceAddresses()->count() !== 0) {
+            $transactionBuilder = $this->addItemLevelAddresses($transactionBuilder, $avalaraLineItemTransfer->getSourceAddresses());
         }
 
         return $transactionBuilder;
@@ -128,7 +129,24 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
 
     /**
      * @param \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface $transactionBuilder
-     * @param \Generated\Shared\Transfer\AvalaraAddressTransfer $avalaraAddressTransfer
+     * @param \ArrayObject|\Generated\Shared\Transfer\AvalaraAddressTransfer[] $avalaraAddressTransfers
+     *
+     * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
+     */
+    protected function addItemLevelAddresses(
+        AvalaraTaxToTransactionBuilderInterface $transactionBuilder,
+        ArrayObject $avalaraAddressTransfers
+    ): AvalaraTaxToTransactionBuilderInterface {
+        foreach ($avalaraAddressTransfers as $avalaraAddressTransfer) {
+            $transactionBuilder = $this->addItemLevelAddress($transactionBuilder, $avalaraAddressTransfer);
+        }
+
+        return $transactionBuilder;
+    }
+
+    /**
+     * @param \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface $transactionBuilder
+     * @param \ArrayObject|\Generated\Shared\Transfer\AvalaraAddressTransfer $avalaraAddressTransfer
      *
      * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
      */

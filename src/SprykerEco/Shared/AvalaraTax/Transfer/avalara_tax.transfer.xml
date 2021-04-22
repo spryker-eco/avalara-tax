@@ -25,7 +25,7 @@
         <property name="reference1" type="string"/>
         <property name="reference2" type="string"/>
         <property name="description" type="string"/>
-        <property name="sourceAddress" type="AvalaraAddress"/>
+        <property name="sourceAddresses" type="AvalaraAddress[]" singular="sourceAddress"/>
         <property name="shippingAddress" type="AvalaraAddress"/>
         <property name="taxIncluded" type="bool"/>
     </transfer>
@@ -181,6 +181,7 @@
         <property name="name" type="string"/>
         <property name="sumDiscountAmountAggregation" type="int"/>
         <property name="sumPrice" type="int"/>
+        <property name="warehouses" type="Stock[]" singular="warehouse"/>
     </transfer>
 
     <transfer name="Address">
