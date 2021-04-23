@@ -9,7 +9,9 @@ namespace SprykerEco\Zed\AvalaraTax\Business;
 
 use Generated\Shared\Transfer\CalculableObjectTransfer;
 use Generated\Shared\Transfer\CartChangeTransfer;
+use Generated\Shared\Transfer\CheckoutResponseTransfer;
 use Generated\Shared\Transfer\ProductConcreteTransfer;
+use Generated\Shared\Transfer\QuoteTransfer;
 use Spryker\Zed\Kernel\Business\AbstractFacade;
 
 /**
@@ -68,5 +70,22 @@ class AvalaraTaxFacade extends AbstractFacade implements AvalaraTaxFacadeInterfa
         return $this->getFactory()
             ->createAvalaraTaxCodeExpander()
             ->expandCartItemsWithAvalaraTaxCode($cartChangeTransfer);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     * @param \Generated\Shared\Transfer\CheckoutResponseTransfer $checkoutResponseTransfer
+     *
+     * @return bool
+     */
+    public function isQuoteTaxCalculationValid(QuoteTransfer $quoteTransfer, CheckoutResponseTransfer $checkoutResponseTransfer): bool
+    {
+        return $this->getFactory()
+            ->createAvalaraTaxQuoteChecker()
+            ->isQuoteTaxCalculationValid($quoteTransfer, $checkoutResponseTransfer);
     }
 }

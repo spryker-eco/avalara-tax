@@ -17,5 +17,5 @@ interface AvalaraTaxToAvalaraTaxClientInterface
      *
      * @return \stdClass|\Avalara\TransactionModel
      */
-    public function createTransaction(?string $include = null, array $createTransactionModel): stdClass;
+    public function createTransaction(?string $include, array $createTransactionModel): stdClass;
 }

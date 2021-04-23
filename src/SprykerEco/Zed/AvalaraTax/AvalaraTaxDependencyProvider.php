@@ -13,6 +13,7 @@ use Spryker\Zed\Kernel\AbstractBundleDependencyProvider;
 use Spryker\Zed\Kernel\Container;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraAvaTaxClientAdapter;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTransactionBuilderAdapter;
+use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToCalculationFacadeBridge;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeBridge;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToStoreFacadeBridge;
 use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceBridge;
@@ -22,6 +23,7 @@ use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingService
  */
 class AvalaraTaxDependencyProvider extends AbstractBundleDependencyProvider
 {
+    public const FACADE_CALCULATION = 'FACADE_CALCULATION';
     public const FACADE_MONEY = 'FACADE_MONEY';
     public const FACADE_STORE = 'FACADE_STORE';
 
@@ -45,6 +47,7 @@ class AvalaraTaxDependencyProvider extends AbstractBundleDependencyProvider
     {
         $container = parent::provideBusinessLayerDependencies($container);
 
+        $container = $this->addCalculationFacade($container);
         $container = $this->addMoneyFacade($container);
         $container = $this->addStoreFacade($container);
         $container = $this->addUtilEncodingService($container);
@@ -67,6 +70,20 @@ class AvalaraTaxDependencyProvider extends AbstractBundleDependencyProvider
 
         $container = $this->addProductAbstractPropelQuery($container);
         $container = $this->addProductPropelQuery($container);
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Zed\Kernel\Container $container
+     *
+     * @return \Spryker\Zed\Kernel\Container
+     */
+    protected function addCalculationFacade(Container $container): Container
+    {
+        $container->set(static::FACADE_CALCULATION, function (Container $container) {
+            return new AvalaraTaxToCalculationFacadeBridge($container->getLocator()->calculation()->facade());
+        });
 
         return $container;
     }

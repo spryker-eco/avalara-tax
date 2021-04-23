@@ -14,6 +14,8 @@ use SprykerEco\Zed\AvalaraTax\Business\Builder\AvalaraTransactionBuilderInterfac
 use SprykerEco\Zed\AvalaraTax\Business\Calculator\CartItemAvalaraTaxCalculatorInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Calculator\MultiShipmentCartItemAvalaraTaxCalculator;
 use SprykerEco\Zed\AvalaraTax\Business\Calculator\SingleShipmentCartItemAvalaraTaxCalculator;
+use SprykerEco\Zed\AvalaraTax\Business\Checker\AvalaraTaxQuoteChecker;
+use SprykerEco\Zed\AvalaraTax\Business\Checker\AvalaraTaxQuoteCheckerInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutor;
 use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutorInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxCodeExpander;
@@ -28,6 +30,7 @@ use SprykerEco\Zed\AvalaraTax\Business\StrategyResolver\CartItemTaxCalculatorStr
 use SprykerEco\Zed\AvalaraTax\Business\StrategyResolver\CartItemTaxCalculatorStrategyResolverInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTaxClientInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface;
+use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToCalculationFacadeInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToStoreFacadeInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface;
@@ -126,6 +129,22 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     public function createAvalaraTaxCodeExpander(): AvalaraTaxCodeExpanderInterface
     {
         return new AvalaraTaxCodeExpander($this->getRepository());
+    }
+
+    /**
+     * @return \SprykerEco\Zed\AvalaraTax\Business\Checker\AvalaraTaxQuoteCheckerInterface
+     */
+    public function createAvalaraTaxQuoteChecker(): AvalaraTaxQuoteCheckerInterface
+    {
+        return new AvalaraTaxQuoteChecker($this->getCalculationFacade());
+    }
+
+    /**
+     * @return \SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToCalculationFacadeInterface
+     */
+    public function getCalculationFacade(): AvalaraTaxToCalculationFacadeInterface
+    {
+        return $this->getProvidedDependency(AvalaraTaxDependencyProvider::FACADE_CALCULATION);
     }
 
     /**
