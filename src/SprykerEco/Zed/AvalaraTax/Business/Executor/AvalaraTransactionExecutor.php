@@ -99,7 +99,6 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
             $avalaraApiLogTransfer
                 ->setIsSuccessful(true)
                 ->setResponse($this->utilEncodingService->encodeJson((array)$transactionModel));
-            file_put_contents(APPLICATION_ROOT_DIR . '/response-5.json', json_encode($transactionModel, JSON_PRETTY_PRINT));
         } catch (Throwable $e) {
             $avalaraApiLogTransfer
                 ->setIsSuccessful(false)
