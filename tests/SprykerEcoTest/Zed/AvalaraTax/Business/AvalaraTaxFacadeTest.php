@@ -14,12 +14,17 @@ use Generated\Shared\DataBuilder\CalculableObjectBuilder;
 use Generated\Shared\DataBuilder\CheckoutDataBuilder;
 use Generated\Shared\DataBuilder\ItemBuilder;
 use Generated\Shared\DataBuilder\QuoteBuilder;
+use Generated\Shared\DataBuilder\RestAddressBuilder;
+use Generated\Shared\DataBuilder\RestShipmentsBuilder;
 use Generated\Shared\Transfer\AddressTransfer;
 use Generated\Shared\Transfer\CalculableObjectTransfer;
 use Generated\Shared\Transfer\CartChangeTransfer;
+use Generated\Shared\Transfer\CheckoutDataTransfer;
 use Generated\Shared\Transfer\ItemTransfer;
 use Generated\Shared\Transfer\ProductAbstractTransfer;
 use Generated\Shared\Transfer\ProductConcreteTransfer;
+use Generated\Shared\Transfer\RestAddressTransfer;
+use Generated\Shared\Transfer\RestShipmentsTransfer;
 use Generated\Shared\Transfer\ShipmentTransfer;
 use RuntimeException;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTaxClientInterface;
@@ -188,13 +193,40 @@ class AvalaraTaxFacadeTest extends Unit
     /**
      * @return void
      */
-    public function testValidateCheckoutDataShippingAddressWillReturnSuccessfulResponseWhenValidationWasSuccessful(): void
+    public function testValidateCheckoutDataShippingAddressWithSingleAddressWillReturnSuccessfulResponseWhenValidationWasSuccessful(): void
     {
         // Arrange
         $shippingAddress = (new AddressBuilder())->withCountry()->build();
         $checkoutDataTransfer = (new CheckoutDataBuilder())
             ->withShippingAddress($shippingAddress->toArray())
             ->build();
+
+        $addressResolutionModel = (new stdClass());
+        $addressResolutionModel->messages = [];
+        $avalaraTaxClientMock = $this->createAvalaraTaxClientMock($addressResolutionModel);
+
+        $this->tester->mockFactoryMethod('getAvalaraTaxClient', $avalaraTaxClientMock);
+
+        // Act
+        $checkoutResponseTransfer = $this->tester->getFacade()->validateCheckoutDataShippingAddress($checkoutDataTransfer);
+
+        // Assert
+        $this->assertTrue($checkoutResponseTransfer->getIsSuccess());
+    }
+
+    /**
+     * @return void
+     */
+    public function testValidateCheckoutDataShippingAddressWithMultipleAddressesWillReturnSuccessfulResponseWhenValidationWasSuccessful(): void
+    {
+        // Arrange
+        $checkoutDataTransfer = (new CheckoutDataBuilder([
+            CheckoutDataTransfer::SHIPMENTS => [
+                $this->createRestShipmentTransfer(),
+                $this->createRestShipmentTransfer(),
+                $this->createRestShipmentTransfer(),
+            ],
+        ]))->build();
 
         $addressResolutionModel = (new stdClass());
         $addressResolutionModel->messages = [];
@@ -378,5 +410,15 @@ class AvalaraTaxFacadeTest extends Unit
         return $itemBuilder->withShipment([
             ShipmentTransfer::SHIPPING_ADDRESS => $addressTransfer->toArray(),
         ])->build();
+    }
+
+    /**
+     * @return \Generated\Shared\Transfer\RestShipmentsTransfer
+     */
+    protected function createRestShipmentTransfer(): RestShipmentsTransfer
+    {
+        return (new RestShipmentsBuilder([
+            RestShipmentsTransfer::SHIPPING_ADDRESS => (new RestAddressBuilder([RestAddressTransfer::COUNTRY => static::TEST_COUNTRY]))->build(),
+        ]))->build();
     }
 }

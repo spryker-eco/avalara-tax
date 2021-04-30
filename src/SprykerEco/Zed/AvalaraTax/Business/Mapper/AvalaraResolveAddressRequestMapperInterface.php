@@ -7,19 +7,18 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Business\Mapper;
 
-use Generated\Shared\Transfer\AddressTransfer;
 use Generated\Shared\Transfer\AvalaraResolveAddressRequestTransfer;
 
 interface AvalaraResolveAddressRequestMapperInterface
 {
     /**
-     * @param \Generated\Shared\Transfer\AddressTransfer $addressTransfer
+     * @param \Generated\Shared\Transfer\AddressTransfer[] $addressTransfers
      * @param \Generated\Shared\Transfer\AvalaraResolveAddressRequestTransfer $avalaraResolveAddressRequestTransfer
      *
      * @return \Generated\Shared\Transfer\AvalaraResolveAddressRequestTransfer
      */
-    public function mapAddressTransferToAvalaraResolveAddressRequestTransfer(
-        AddressTransfer $addressTransfer,
+    public function mapAddressTransfersToAvalaraResolveAddressRequestTransfer(
+        array $addressTransfers,
         AvalaraResolveAddressRequestTransfer $avalaraResolveAddressRequestTransfer
     ): AvalaraResolveAddressRequestTransfer;
 }

@@ -170,7 +170,12 @@
     </transfer>
 
     <transfer name="AvalaraResolveAddressRequest">
-        <property name="address" type="AvalaraAddressValidationInfo"/>
+        <property name="addresses" type="AvalaraAddressValidationInfo[]" singular="address"/>
+    </transfer>
+
+    <transfer name="AvalaraResolveAddressResponse">
+        <property name="isSuccessful" type="bool"/>
+        <property name="messages" type="Message[]" singular="message"/>
     </transfer>
 
     <transfer name="Quote">

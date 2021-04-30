@@ -7,15 +7,14 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Business\Executor;
 
-use Generated\Shared\Transfer\AddressTransfer;
-use Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer;
+use Generated\Shared\Transfer\AvalaraResolveAddressResponseTransfer;
 
 interface AvalaraResolveAddressExecutorInterface
 {
     /**
-     * @param \Generated\Shared\Transfer\AddressTransfer $addressTransfer
+     * @param \Generated\Shared\Transfer\AddressTransfer[] $addressTransfers
      *
-     * @return \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer
+     * @return \Generated\Shared\Transfer\AvalaraResolveAddressResponseTransfer
      */
-    public function executeResolveAddressRequest(AddressTransfer $addressTransfer): AvalaraCreateTransactionResponseTransfer;
+    public function executeResolveAddressRequest(array $addressTransfers): AvalaraResolveAddressResponseTransfer;
 }

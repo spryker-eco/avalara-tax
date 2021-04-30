@@ -14,18 +14,22 @@ use Generated\Shared\Transfer\AvalaraResolveAddressRequestTransfer;
 class AvalaraResolveAddressRequestMapper implements AvalaraResolveAddressRequestMapperInterface
 {
     /**
-     * @param \Generated\Shared\Transfer\AddressTransfer $addressTransfer
+     * @param \Generated\Shared\Transfer\AddressTransfer[] $addressTransfers
      * @param \Generated\Shared\Transfer\AvalaraResolveAddressRequestTransfer $avalaraResolveAddressRequestTransfer
      *
      * @return \Generated\Shared\Transfer\AvalaraResolveAddressRequestTransfer
      */
-    public function mapAddressTransferToAvalaraResolveAddressRequestTransfer(
-        AddressTransfer $addressTransfer,
+    public function mapAddressTransfersToAvalaraResolveAddressRequestTransfer(
+        array $addressTransfers,
         AvalaraResolveAddressRequestTransfer $avalaraResolveAddressRequestTransfer
     ): AvalaraResolveAddressRequestTransfer {
-        return $avalaraResolveAddressRequestTransfer->setAddress(
-            $this->mapAddressTransferToAvalaraAddressValidationInfoTransfer($addressTransfer, new AvalaraAddressValidationInfoTransfer())
-        );
+        foreach ($addressTransfers as $addressTransfer) {
+            $avalaraAddressValidationInfoTransfer = $this->mapAddressTransferToAvalaraAddressValidationInfoTransfer($addressTransfer, new AvalaraAddressValidationInfoTransfer());
+
+            $avalaraResolveAddressRequestTransfer->addAddress($avalaraAddressValidationInfoTransfer);
+        }
+
+        return $avalaraResolveAddressRequestTransfer;
     }
 
     /**
