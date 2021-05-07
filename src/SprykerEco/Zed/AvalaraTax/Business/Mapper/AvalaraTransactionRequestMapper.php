@@ -196,7 +196,7 @@ class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapper
      */
     protected function calculateItemAmount(ItemTransfer $itemTransfer): float
     {
-        return $this->moneyFacade->convertIntegerToDecimal($itemTransfer->getSumPriceOrFail() - $itemTransfer->getSumDiscountAmountAggregationOrFail());
+        return $this->moneyFacade->convertIntegerToDecimal($itemTransfer->getSumPriceOrFail() - $itemTransfer->getSumDiscountAmountAggregation() ?? 0);
     }
 
     /**

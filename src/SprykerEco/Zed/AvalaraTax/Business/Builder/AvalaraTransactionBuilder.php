@@ -109,7 +109,10 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
             $avalaraLineItemTransfer->getReference1OrFail(),
             $avalaraLineItemTransfer->getReference2OrFail()
         );
-        $transactionBuilder->withLineDescription($avalaraLineItemTransfer->getDescriptionOrFail());
+
+        if ($avalaraLineItemTransfer->getDescription()) {
+            $transactionBuilder->withLineDescription($avalaraLineItemTransfer->getDescriptionOrFail());
+        }
 
         if ($avalaraLineItemTransfer->getTaxIncluded()) {
             $transactionBuilder->withLineTaxIncluded();
