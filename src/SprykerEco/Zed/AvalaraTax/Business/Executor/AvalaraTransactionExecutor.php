@@ -24,7 +24,7 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
     /**
      * @var \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer|null
      */
-    protected static $avalaraCreateTransactionResponseTransferCache;
+    protected static $avalaraCreateTransactionResponseCache;
 
     /**
      * @var \SprykerEco\Zed\AvalaraTax\Business\Builder\AvalaraTransactionBuilderInterface
@@ -84,6 +84,10 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
         CalculableObjectTransfer $calculableObjectTransfer,
         string $transactionTypeId
     ): AvalaraCreateTransactionResponseTransfer {
+        if (static::$avalaraCreateTransactionResponseCache) {
+            return static::$avalaraCreateTransactionResponseCache;
+        }
+
         $avalaraCreateTransactionRequestTransfer = $this->avalaraTransactionRequestMapper
             ->mapCalculableObjectTransferToAvalaraCreateTransactionRequestTransfer(
                 $calculableObjectTransfer,
@@ -126,19 +130,15 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
     protected function buildAvalaraCreateTransactionResponse(
         stdClass $transactionModel
     ): AvalaraCreateTransactionResponseTransfer {
-        if (static::$avalaraCreateTransactionResponseTransferCache) {
-            return static::$avalaraCreateTransactionResponseTransferCache;
-        }
-
         $avalaraCreateTransactionResponseTransfer = (new AvalaraCreateTransactionResponseTransfer())
             ->setIsSuccessful(true);
 
-        static::$avalaraCreateTransactionResponseTransferCache = $this->avalaraTransactionResponseMapper
+        static::$avalaraCreateTransactionResponseCache = $this->avalaraTransactionResponseMapper
             ->mapAvalaraTransactionModelToAvalaraCreateTransactionResponseTransfer(
                 $transactionModel,
                 $avalaraCreateTransactionResponseTransfer
             );
 
-        return static::$avalaraCreateTransactionResponseTransferCache;
+        return static::$avalaraCreateTransactionResponseCache;
     }
 }
