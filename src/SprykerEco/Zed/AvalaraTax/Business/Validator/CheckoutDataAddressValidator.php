@@ -85,7 +85,7 @@ class CheckoutDataAddressValidator implements CheckoutDataAddressValidatorInterf
             $restAddressTransfer = $restShipmentsTransfer->getShippingAddressOrFail();
             $addressTransfers[] = (new AddressTransfer())
                 ->fromArray($restAddressTransfer->toArray(), true)
-                ->setCountry((new CountryTransfer())->setIso2Code($restAddressTransfer->getCountryOrFail()));
+                ->setCountry((new CountryTransfer())->setIso2Code($restAddressTransfer->getIso2CodeOrFail()));
         }
 
         return $addressTransfers;

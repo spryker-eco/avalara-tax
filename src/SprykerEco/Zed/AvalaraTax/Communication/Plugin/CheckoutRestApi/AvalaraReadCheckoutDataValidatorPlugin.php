@@ -21,6 +21,7 @@ class AvalaraReadCheckoutDataValidatorPlugin extends AbstractPlugin implements R
     /**
      * {@inheritDoc}
      * - Validates `CheckoutDataTransfer.shippingAddress` if it is set.
+     * - Validates `CheckoutDataTransfer.shipments.shippingAddress`.
      * - Sends request to Avalara address resolve endpoint.
      * - Maps response from avalara to `CheckoutResponseTransfer`.
      *

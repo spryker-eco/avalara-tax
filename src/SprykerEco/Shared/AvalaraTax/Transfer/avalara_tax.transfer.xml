@@ -203,6 +203,7 @@
         <property name="name" type="string"/>
         <property name="sumDiscountAmountAggregation" type="int"/>
         <property name="sumPrice" type="int"/>
+        <property name="quantity" type="int"/>
     </transfer>
 
     <transfer name="Address">
@@ -246,6 +247,7 @@
 
     <transfer name="CheckoutData">
         <property name="shippingAddress" type="Address"/>
+        <property name="shipments" type="RestShipments[]" singular="shipment"/>
     </transfer>
 
     <transfer name="CheckoutResponse">
@@ -257,6 +259,14 @@
     </transfer>
 
     <transfer name="Country">
+        <property name="iso2Code" type="string"/>
+    </transfer>
+
+    <transfer name="RestShipments">
+        <property name="shippingAddress" type="RestAddress"/>
+    </transfer>
+
+    <transfer name="RestAddress">
         <property name="iso2Code" type="string"/>
     </transfer>
 
