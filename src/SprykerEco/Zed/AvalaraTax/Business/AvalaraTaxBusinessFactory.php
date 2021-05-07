@@ -30,7 +30,6 @@ use SprykerEco\Zed\AvalaraTax\Business\StrategyResolver\CartItemTaxCalculatorStr
 use SprykerEco\Zed\AvalaraTax\Business\StrategyResolver\CartItemTaxCalculatorStrategyResolverInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTaxClientInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface;
-use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToCalculationFacadeInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToStoreFacadeInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface;
@@ -136,15 +135,7 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
      */
     public function createAvalaraTaxQuoteChecker(): AvalaraTaxQuoteCheckerInterface
     {
-        return new AvalaraTaxQuoteChecker($this->getCalculationFacade());
-    }
-
-    /**
-     * @return \SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToCalculationFacadeInterface
-     */
-    public function getCalculationFacade(): AvalaraTaxToCalculationFacadeInterface
-    {
-        return $this->getProvidedDependency(AvalaraTaxDependencyProvider::FACADE_CALCULATION);
+        return new AvalaraTaxQuoteChecker();
     }
 
     /**

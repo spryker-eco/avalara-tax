@@ -24,6 +24,13 @@
     "spryker/propel": "*",
     "spryker/testify": "*"
   },
+  "suggest": {
+    "spryker-eco/avalara-tax-product-option": "If you want to calculate product option taxes using Avalara tax provider.",
+    "spryker-eco/avalara-tax-shipment": "If you want to calculate shipment taxes using Avalara tax provider.",
+    "spryker/calculation": "If you want to use Calculation plugins.",
+    "spryker/cart": "If you want to use Cart plugins.",
+    "spryker/checkout": "If you want to use Checkout plugins."
+  },
   "autoload": {
     "psr-4": {
       "SprykerEco\\": "src/SprykerEco/"
@@ -33,13 +40,6 @@
     "psr-4": {
       "SprykerEcoTest\\": "tests/SprykerEcoTest/"
     }
-  },
-  "suggest": {
-    "spryker-eco/avalara-tax-product-option": "If you want to calculate product option taxes using Avalara",
-    "spryker-eco/avalara-tax-shipment": "If you want to calculate shipment taxes using Avalara",
-    "spryker/calculation": "If you want to use Calculation plugins.",
-    "spryker/cart": "If you want to use Cart plugins.",
-    "spryker/checkout": "If you want to use Checkout plugins."
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

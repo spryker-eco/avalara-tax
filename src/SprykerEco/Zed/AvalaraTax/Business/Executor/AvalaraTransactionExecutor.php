@@ -16,10 +16,16 @@ use SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLoggerInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionResponseMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface;
+use stdClass;
 use Throwable;
 
 class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
 {
+    /**
+     * @var \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer|null
+     */
+    protected static $avalaraCreateTransactionResponseTransferCache;
+
     /**
      * @var \SprykerEco\Zed\AvalaraTax\Business\Builder\AvalaraTransactionBuilderInterface
      */
@@ -109,12 +115,30 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
             $this->avalaraTransactionLogger->logAvalaraApiTransaction($avalaraApiLogTransfer);
         }
 
+        return $this->buildAvalaraCreateTransactionResponse($transactionModel);
+    }
+
+    /**
+     * @param \stdClass|\Avalara\TransactionModel $transactionModel
+     *
+     * @return \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer
+     */
+    protected function buildAvalaraCreateTransactionResponse(
+        stdClass $transactionModel
+    ): AvalaraCreateTransactionResponseTransfer {
+        if (static::$avalaraCreateTransactionResponseTransferCache) {
+            return static::$avalaraCreateTransactionResponseTransferCache;
+        }
+
         $avalaraCreateTransactionResponseTransfer = (new AvalaraCreateTransactionResponseTransfer())
             ->setIsSuccessful(true);
 
-        return $this->avalaraTransactionResponseMapper->mapAvalaraTransactionModelToAvalaraCreateTransactionResponseTransfer(
-            $transactionModel,
-            $avalaraCreateTransactionResponseTransfer
-        );
+        static::$avalaraCreateTransactionResponseTransferCache = $this->avalaraTransactionResponseMapper
+            ->mapAvalaraTransactionModelToAvalaraCreateTransactionResponseTransfer(
+                $transactionModel,
+                $avalaraCreateTransactionResponseTransfer
+            );
+
+        return static::$avalaraCreateTransactionResponseTransferCache;
     }
 }

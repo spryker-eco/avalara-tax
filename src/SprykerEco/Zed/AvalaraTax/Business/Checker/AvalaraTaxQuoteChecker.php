@@ -11,23 +11,9 @@ use Generated\Shared\Transfer\CheckoutErrorTransfer;
 use Generated\Shared\Transfer\CheckoutResponseTransfer;
 use Generated\Shared\Transfer\MessageTransfer;
 use Generated\Shared\Transfer\QuoteTransfer;
-use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToCalculationFacadeInterface;
 
 class AvalaraTaxQuoteChecker implements AvalaraTaxQuoteCheckerInterface
 {
-    /**
-     * @var \SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToCalculationFacadeInterface
-     */
-    protected $calculationFacade;
-
-    /**
-     * @param \SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToCalculationFacadeInterface $calculationFacade
-     */
-    public function __construct(AvalaraTaxToCalculationFacadeInterface $calculationFacade)
-    {
-        $this->calculationFacade = $calculationFacade;
-    }
-
     /**
      * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
      * @param \Generated\Shared\Transfer\CheckoutResponseTransfer $checkoutResponseTransfer
@@ -36,8 +22,6 @@ class AvalaraTaxQuoteChecker implements AvalaraTaxQuoteCheckerInterface
      */
     public function isQuoteTaxCalculationValid(QuoteTransfer $quoteTransfer, CheckoutResponseTransfer $checkoutResponseTransfer): bool
     {
-        $quoteTransfer = $this->calculationFacade->recalculateQuote($quoteTransfer);
-
         if ($quoteTransfer->getAvalaraCreateTransactionResponseOrFail()->getIsSuccessful()) {
             return true;
         }
