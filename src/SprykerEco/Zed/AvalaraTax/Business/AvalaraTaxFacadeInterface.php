@@ -78,7 +78,6 @@ interface AvalaraTaxFacadeInterface
 
     /**
      * Specification:
-     * - Recalculates quote.
      * - Requires `QuoteTransfer.avalaraCreateTransactionResponse` to be set.
      * - Returns `true` if calculation request to Avalara was successful.
      * - Adds errors from `QuoteTransfer.avalaraCreateTransactionResponse.messages` to `CheckoutResponseTransfer.errors` in case of failed request.

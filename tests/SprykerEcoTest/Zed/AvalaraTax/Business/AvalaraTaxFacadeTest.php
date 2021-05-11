@@ -22,18 +22,17 @@ use Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer;
 use Generated\Shared\Transfer\CalculableObjectTransfer;
 use Generated\Shared\Transfer\CartChangeTransfer;
 use Generated\Shared\Transfer\CheckoutDataTransfer;
+use Generated\Shared\Transfer\CheckoutResponseTransfer;
 use Generated\Shared\Transfer\ItemTransfer;
 use Generated\Shared\Transfer\MessageTransfer;
 use Generated\Shared\Transfer\ProductAbstractTransfer;
 use Generated\Shared\Transfer\ProductConcreteTransfer;
-use Generated\Shared\Transfer\QuoteTransfer;
 use Generated\Shared\Transfer\RestAddressTransfer;
 use Generated\Shared\Transfer\RestShipmentsTransfer;
 use Generated\Shared\Transfer\ShipmentTransfer;
 use RuntimeException;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTaxClientInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface;
-use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToCalculationFacadeInterface;
 use SprykerEco\Zed\AvalaraTax\Persistence\AvalaraTaxEntityManager;
 use stdClass;
 
@@ -319,8 +318,6 @@ class AvalaraTaxFacadeTest extends Unit
             ->setAvalaraCreateTransactionResponse($avalaraCreateTransactionResponseTransfer);
         $checkoutResponseTransfer = new CheckoutResponseTransfer();
 
-        $this->tester->mockFactoryMethod('getCalculationFacade', $this->createCalculationFacadeMock($quoteTransfer));
-
         // Act
         $result = $this->tester->getFacade()->isQuoteTaxCalculationValid($quoteTransfer, $checkoutResponseTransfer);
 
@@ -344,8 +341,6 @@ class AvalaraTaxFacadeTest extends Unit
             ->build()
             ->setAvalaraCreateTransactionResponse($avalaraCreateTransactionResponseTransfer);
         $checkoutResponseTransfer = new CheckoutResponseTransfer();
-
-        $this->tester->mockFactoryMethod('getCalculationFacade', $this->createCalculationFacadeMock($quoteTransfer));
 
         // Act
         $result = $this->tester->getFacade()->isQuoteTaxCalculationValid($quoteTransfer, $checkoutResponseTransfer);
@@ -406,19 +401,6 @@ class AvalaraTaxFacadeTest extends Unit
         $avalaraApiResponseJson = file_get_contents(codecept_data_dir($fileName));
 
         return json_decode($avalaraApiResponseJson);
-    }
-
-    /**
-     * @param \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
-     *
-     * @return \SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToCalculationFacadeInterface
-     */
-    protected function createCalculationFacadeMock(QuoteTransfer $quoteTransfer): AvalaraTaxToCalculationFacadeInterface
-    {
-        $calculationFacadeMock = $this->getMockBuilder(AvalaraTaxToCalculationFacadeInterface::class)->getMock();
-        $calculationFacadeMock->method('recalculateQuote')->willReturn($quoteTransfer);
-
-        return $calculationFacadeMock;
     }
 
     /**
