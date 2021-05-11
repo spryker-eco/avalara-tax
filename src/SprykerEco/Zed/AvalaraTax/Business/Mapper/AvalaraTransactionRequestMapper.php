@@ -128,7 +128,7 @@ class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapper
             ->setReference2($itemTransfer->getGroupKeyOrFail())
             ->setAmount($this->calculateItemAmount($itemTransfer))
             ->setItemCode($itemTransfer->getSkuOrFail())
-            ->setTaxCode($itemTransfer->getAvalaraTaxCodeOrFail())
+            ->setTaxCode($itemTransfer->getAvalaraTaxCode() ?? '')
             ->setDescription($itemTransfer->getNameOrFail());
 
         if (!$itemTransfer->getShipment()) {
