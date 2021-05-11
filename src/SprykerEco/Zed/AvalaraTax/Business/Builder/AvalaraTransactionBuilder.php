@@ -120,25 +120,8 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
             $transactionBuilder = $this->addItemLevelAddress($transactionBuilder, $avalaraLineItemTransfer->getShippingAddressOrFail());
         }
 
-        if ($avalaraLineItemTransfer->getSourceAddresses()->count() !== 0) {
-            $transactionBuilder = $this->addItemLevelAddresses($transactionBuilder, $avalaraLineItemTransfer->getSourceAddresses());
-        }
-
-        return $transactionBuilder;
-    }
-
-    /**
-     * @param \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface $transactionBuilder
-     * @param \ArrayObject|\Generated\Shared\Transfer\AvalaraAddressTransfer[] $avalaraAddressTransfers
-     *
-     * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
-     */
-    protected function addItemLevelAddresses(
-        AvalaraTaxToTransactionBuilderInterface $transactionBuilder,
-        ArrayObject $avalaraAddressTransfers
-    ): AvalaraTaxToTransactionBuilderInterface {
-        foreach ($avalaraAddressTransfers as $avalaraAddressTransfer) {
-            $transactionBuilder = $this->addItemLevelAddress($transactionBuilder, $avalaraAddressTransfer);
+        if ($avalaraLineItemTransfer->getSourceAddress() !== null) {
+            $transactionBuilder = $this->addItemLevelAddress($transactionBuilder, $avalaraLineItemTransfer->getSourceAddress());
         }
 
         return $transactionBuilder;
