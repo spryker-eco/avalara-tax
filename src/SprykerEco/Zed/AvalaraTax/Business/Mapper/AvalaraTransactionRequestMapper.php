@@ -128,7 +128,7 @@ class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapper
             ->setReference2($itemTransfer->getGroupKeyOrFail())
             ->setAmount($this->calculateItemAmount($itemTransfer))
             ->setItemCode($itemTransfer->getSkuOrFail())
-            ->setTaxCode($itemTransfer->getAvalaraTaxCodeOrFail())
+            ->setTaxCode($itemTransfer->getAvalaraTaxCode() ?? '')
             ->setDescription($itemTransfer->getNameOrFail());
 
         if (!$itemTransfer->getShipment()) {
@@ -196,7 +196,7 @@ class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapper
      */
     protected function calculateItemAmount(ItemTransfer $itemTransfer): float
     {
-        return $this->moneyFacade->convertIntegerToDecimal($itemTransfer->getSumPriceOrFail() - $itemTransfer->getSumDiscountAmountAggregationOrFail());
+        return $this->moneyFacade->convertIntegerToDecimal($itemTransfer->getSumPriceOrFail() - $itemTransfer->getSumDiscountAmountAggregation() ?? 0);
     }
 
     /**

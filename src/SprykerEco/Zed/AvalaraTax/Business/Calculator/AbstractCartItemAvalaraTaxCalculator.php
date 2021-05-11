@@ -72,7 +72,7 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
      */
     public function calculateTax(CalculableObjectTransfer $calculableObjectTransfer): void
     {
-        if (!$this->hasShipmentAddress($calculableObjectTransfer)) {
+        if (!$this->isCalculationApplicable($calculableObjectTransfer)) {
             return;
         }
 
@@ -89,6 +89,20 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
         $this->calculateTaxForItemTransfers($calculableObjectTransfer->getItems(), $avalaraCreateTransactionResponseTransfer);
 
         $this->executeCreateTransactionRequestAfterPlugins($calculableObjectTransfer, $avalaraCreateTransactionResponseTransfer);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
+     *
+     * @return bool
+     */
+    protected function isCalculationApplicable(CalculableObjectTransfer $calculableObjectTransfer): bool
+    {
+        if (!$calculableObjectTransfer->getItems()->count()) {
+            return false;
+        }
+
+        return $this->hasShipmentAddress($calculableObjectTransfer);
     }
 
     /**
