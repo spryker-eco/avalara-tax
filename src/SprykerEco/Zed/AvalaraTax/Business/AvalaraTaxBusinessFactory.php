@@ -14,18 +14,24 @@ use SprykerEco\Zed\AvalaraTax\Business\Builder\AvalaraTransactionBuilderInterfac
 use SprykerEco\Zed\AvalaraTax\Business\Calculator\CartItemAvalaraTaxCalculatorInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Calculator\MultiShipmentCartItemAvalaraTaxCalculator;
 use SprykerEco\Zed\AvalaraTax\Business\Calculator\SingleShipmentCartItemAvalaraTaxCalculator;
+use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraResolveAddressExecutor;
+use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraResolveAddressExecutorInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutor;
 use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutorInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxCodeExpander;
 use SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxCodeExpanderInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLogger;
 use SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLoggerInterface;
+use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraResolveAddressRequestMapper;
+use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraResolveAddressRequestMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapper;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionResponseMapper;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionResponseMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Business\StrategyResolver\CartItemTaxCalculatorStrategyResolver;
 use SprykerEco\Zed\AvalaraTax\Business\StrategyResolver\CartItemTaxCalculatorStrategyResolverInterface;
+use SprykerEco\Zed\AvalaraTax\Business\Validator\CheckoutDataAddressValidator;
+use SprykerEco\Zed\AvalaraTax\Business\Validator\CheckoutDataAddressValidatorInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTaxClientInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeInterface;
@@ -68,6 +74,14 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
+     * @return \SprykerEco\Zed\AvalaraTax\Business\Validator\CheckoutDataAddressValidatorInterface
+     */
+    public function createCheckoutDataAddressValidator(): CheckoutDataAddressValidatorInterface
+    {
+        return new CheckoutDataAddressValidator($this->createAvalaraResolveAddressExecutor());
+    }
+
+    /**
      * @return \SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutorInterface
      */
     public function createAvalaraTransactionExecutor(): AvalaraTransactionExecutorInterface
@@ -78,6 +92,17 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
             $this->createAvalaraTransactionResponseMapper(),
             $this->createAvalaraTransactionLogger(),
             $this->getUtilEncodingService()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraResolveAddressExecutorInterface
+     */
+    public function createAvalaraResolveAddressExecutor(): AvalaraResolveAddressExecutorInterface
+    {
+        return new AvalaraResolveAddressExecutor(
+            $this->createAvalaraResolveAddressRequestMapper(),
+            $this->getAvalaraTaxClient()
         );
     }
 
@@ -99,6 +124,14 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     public function createAvalaraTransactionResponseMapper(): AvalaraTransactionResponseMapperInterface
     {
         return new AvalaraTransactionResponseMapper($this->getUtilEncodingService());
+    }
+
+    /**
+     * @return \SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraResolveAddressRequestMapperInterface
+     */
+    public function createAvalaraResolveAddressRequestMapper(): AvalaraResolveAddressRequestMapperInterface
+    {
+        return new AvalaraResolveAddressRequestMapper();
     }
 
     /**

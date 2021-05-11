@@ -9,6 +9,8 @@ namespace SprykerEco\Zed\AvalaraTax\Business;
 
 use Generated\Shared\Transfer\CalculableObjectTransfer;
 use Generated\Shared\Transfer\CartChangeTransfer;
+use Generated\Shared\Transfer\CheckoutDataTransfer;
+use Generated\Shared\Transfer\CheckoutResponseTransfer;
 use Generated\Shared\Transfer\ProductConcreteTransfer;
 use Spryker\Zed\Kernel\Business\AbstractFacade;
 
@@ -68,5 +70,21 @@ class AvalaraTaxFacade extends AbstractFacade implements AvalaraTaxFacadeInterfa
         return $this->getFactory()
             ->createAvalaraTaxCodeExpander()
             ->expandCartItemsWithAvalaraTaxCode($cartChangeTransfer);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\CheckoutDataTransfer $checkoutDataTransfer
+     *
+     * @return \Generated\Shared\Transfer\CheckoutResponseTransfer
+     */
+    public function validateCheckoutDataShippingAddress(CheckoutDataTransfer $checkoutDataTransfer): CheckoutResponseTransfer
+    {
+        return $this->getFactory()
+            ->createCheckoutDataAddressValidator()
+            ->validateCheckoutDataShippingAddress($checkoutDataTransfer);
     }
 }

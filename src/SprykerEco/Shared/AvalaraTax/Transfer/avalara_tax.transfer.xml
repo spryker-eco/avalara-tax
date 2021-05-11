@@ -156,6 +156,28 @@
         <property name="transaction" type="AvalaraTransaction"/>
     </transfer>
 
+    <transfer name="AvalaraAddressValidationInfo">
+        <property name="line1" type="string"/>
+        <property name="line2" type="string"/>
+        <property name="line3" type="string"/>
+        <property name="textCase" type="string"/>
+        <property name="city" type="string"/>
+        <property name="region" type="string"/>
+        <property name="country" type="string"/>
+        <property name="postalCode" type="string"/>
+        <property name="latitude" type="float"/>
+        <property name="longitude" type="float"/>
+    </transfer>
+
+    <transfer name="AvalaraResolveAddressRequest">
+        <property name="addresses" type="AvalaraAddressValidationInfo[]" singular="address"/>
+    </transfer>
+
+    <transfer name="AvalaraResolveAddressResponse">
+        <property name="isSuccessful" type="bool"/>
+        <property name="messages" type="Message[]" singular="message"/>
+    </transfer>
+
     <transfer name="Quote">
         <property name="orderReference" type="string"/>
         <property name="avalaraCreateTransactionResponse" type="AvalaraCreateTransactionResponse"/>
@@ -181,6 +203,7 @@
         <property name="name" type="string"/>
         <property name="sumDiscountAmountAggregation" type="int"/>
         <property name="sumPrice" type="int"/>
+        <property name="quantity" type="int"/>
     </transfer>
 
     <transfer name="Address">
@@ -191,6 +214,7 @@
         <property name="region" type="string"/>
         <property name="zipCode" type="string"/>
         <property name="iso2Code" type="string"/>
+        <property name="country" type="Country"/>
     </transfer>
 
     <transfer name="CalculableObject">
@@ -218,6 +242,32 @@
     </transfer>
 
     <transfer name="Message">
+        <property name="message" type="string"/>
+    </transfer>
+
+    <transfer name="CheckoutData">
+        <property name="shippingAddress" type="Address"/>
+        <property name="shipments" type="RestShipments[]" singular="shipment"/>
+    </transfer>
+
+    <transfer name="CheckoutResponse">
+        <property name="isSuccess" type="bool"/>
+        <property name="errors" type="CheckoutError[]" singular="error"/>
+    </transfer>
+
+    <transfer name="CheckoutError">
+    </transfer>
+
+    <transfer name="Country">
+        <property name="iso2Code" type="string"/>
+    </transfer>
+
+    <transfer name="RestShipments">
+        <property name="shippingAddress" type="RestAddress"/>
+    </transfer>
+
+    <transfer name="RestAddress">
+        <property name="iso2Code" type="string"/>
     </transfer>
 
 </transfers>
