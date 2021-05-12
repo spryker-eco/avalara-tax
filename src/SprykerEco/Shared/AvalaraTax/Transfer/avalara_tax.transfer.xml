@@ -198,6 +198,7 @@
         <property name="taxRate" type="float"/>
         <property name="sumTaxAmount" type="int"/>
         <property name="amount" type="decimal"/>
+        <property name="quantity" type="int"/>
         <property name="sku" type="string"/>
         <property name="groupKey" type="string"/>
         <property name="name" type="string"/>
@@ -268,6 +269,14 @@
 
     <transfer name="RestAddress">
         <property name="iso2Code" type="string"/>
+    </transfer>
+
+    <transfer name="CheckoutResponse">
+        <property name="errors" type="CheckoutError[]" singular="error"/>
+        <property name="isSuccess" type="bool"/>
+    </transfer>
+
+    <transfer name="CheckoutError">
     </transfer>
 
 </transfers>

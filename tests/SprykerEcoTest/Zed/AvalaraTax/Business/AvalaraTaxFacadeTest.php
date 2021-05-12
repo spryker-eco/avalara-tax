@@ -10,6 +10,7 @@ namespace SpykerEcoTest\Zed\AvalaraTax\Business;
 use Avalara\AvaTaxMessage;
 use Codeception\Test\Unit;
 use Generated\Shared\DataBuilder\AddressBuilder;
+use Generated\Shared\DataBuilder\AvalaraCreateTransactionResponseBuilder;
 use Generated\Shared\DataBuilder\CalculableObjectBuilder;
 use Generated\Shared\DataBuilder\CheckoutDataBuilder;
 use Generated\Shared\DataBuilder\ItemBuilder;
@@ -17,10 +18,13 @@ use Generated\Shared\DataBuilder\QuoteBuilder;
 use Generated\Shared\DataBuilder\RestAddressBuilder;
 use Generated\Shared\DataBuilder\RestShipmentsBuilder;
 use Generated\Shared\Transfer\AddressTransfer;
+use Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer;
 use Generated\Shared\Transfer\CalculableObjectTransfer;
 use Generated\Shared\Transfer\CartChangeTransfer;
 use Generated\Shared\Transfer\CheckoutDataTransfer;
+use Generated\Shared\Transfer\CheckoutResponseTransfer;
 use Generated\Shared\Transfer\ItemTransfer;
+use Generated\Shared\Transfer\MessageTransfer;
 use Generated\Shared\Transfer\ProductAbstractTransfer;
 use Generated\Shared\Transfer\ProductConcreteTransfer;
 use Generated\Shared\Transfer\RestAddressTransfer;
@@ -300,6 +304,55 @@ class AvalaraTaxFacadeTest extends Unit
     }
 
     /**
+     * @return void
+     */
+    public function testIsQuoteTaxCalculationValidWillReturnTrueIfRequestWasSuccessful(): void
+    {
+        // Arrange
+        $avalaraCreateTransactionResponseTransfer = (new AvalaraCreateTransactionResponseBuilder([
+            AvalaraCreateTransactionResponseTransfer::IS_SUCCESSFUL => true,
+        ]))->build();
+
+        $quoteTransfer = (new QuoteBuilder())
+            ->build()
+            ->setAvalaraCreateTransactionResponse($avalaraCreateTransactionResponseTransfer);
+        $checkoutResponseTransfer = new CheckoutResponseTransfer();
+
+        // Act
+        $result = $this->tester->getFacade()->isQuoteTaxCalculationValid($quoteTransfer, $checkoutResponseTransfer);
+
+        // Assert
+        $this->assertTrue($result);
+        $this->assertCount(0, $checkoutResponseTransfer->getErrors());
+    }
+
+    /**
+     * @return void
+     */
+    public function testIsQuoteTaxCalculationValidWillReturnFalseAndErrorIfRequestWasNotSuccessful(): void
+    {
+        // Arrange
+        $expectedErrorMessage = 'Some error message';
+        $avalaraCreateTransactionResponseTransfer = (new AvalaraCreateTransactionResponseBuilder([
+            AvalaraCreateTransactionResponseTransfer::IS_SUCCESSFUL => false,
+        ]))->withMessage([MessageTransfer::MESSAGE => $expectedErrorMessage])->build();
+
+        $quoteTransfer = (new QuoteBuilder())
+            ->build()
+            ->setAvalaraCreateTransactionResponse($avalaraCreateTransactionResponseTransfer);
+        $checkoutResponseTransfer = new CheckoutResponseTransfer();
+
+        // Act
+        $result = $this->tester->getFacade()->isQuoteTaxCalculationValid($quoteTransfer, $checkoutResponseTransfer);
+
+        // Assert
+        $this->assertFalse($result);
+        $this->assertFalse($checkoutResponseTransfer->getIsSuccess());
+        $this->assertCount(1, $checkoutResponseTransfer->getErrors());
+        $this->assertSame($expectedErrorMessage, $checkoutResponseTransfer->getErrors()->offsetGet(0)->getMessage());
+    }
+
+    /**
      * @param \stdClass $transactionModelMock
      *
      * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
@@ -403,8 +456,8 @@ class AvalaraTaxFacadeTest extends Unit
 
         $addressTransfer = (new AddressBuilder([
             AddressTransfer::COUNTRY => static::TEST_COUNTRY,
-            AddressTransfer::CITY => static::TEST_CITY_NAME_1,
-            AddressTransfer::ZIP_CODE => static::TEST_ZIP_CODE_1,
+            AddressTransfer::CITY => static::TEST_CITY_NAME_2,
+            AddressTransfer::ZIP_CODE => static::TEST_ZIP_CODE_2,
         ]))->build();
 
         return $itemBuilder->withShipment([

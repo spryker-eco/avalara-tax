@@ -14,6 +14,8 @@ use SprykerEco\Zed\AvalaraTax\Business\Builder\AvalaraTransactionBuilderInterfac
 use SprykerEco\Zed\AvalaraTax\Business\Calculator\CartItemAvalaraTaxCalculatorInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Calculator\MultiShipmentCartItemAvalaraTaxCalculator;
 use SprykerEco\Zed\AvalaraTax\Business\Calculator\SingleShipmentCartItemAvalaraTaxCalculator;
+use SprykerEco\Zed\AvalaraTax\Business\Checker\AvalaraTaxQuoteChecker;
+use SprykerEco\Zed\AvalaraTax\Business\Checker\AvalaraTaxQuoteCheckerInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraResolveAddressExecutor;
 use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraResolveAddressExecutorInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutor;
@@ -159,6 +161,14 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     public function createAvalaraTaxCodeExpander(): AvalaraTaxCodeExpanderInterface
     {
         return new AvalaraTaxCodeExpander($this->getRepository());
+    }
+
+    /**
+     * @return \SprykerEco\Zed\AvalaraTax\Business\Checker\AvalaraTaxQuoteCheckerInterface
+     */
+    public function createAvalaraTaxQuoteChecker(): AvalaraTaxQuoteCheckerInterface
+    {
+        return new AvalaraTaxQuoteChecker();
     }
 
     /**

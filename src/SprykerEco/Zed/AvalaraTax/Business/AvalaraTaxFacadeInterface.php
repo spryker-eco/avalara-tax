@@ -12,6 +12,7 @@ use Generated\Shared\Transfer\CartChangeTransfer;
 use Generated\Shared\Transfer\CheckoutDataTransfer;
 use Generated\Shared\Transfer\CheckoutResponseTransfer;
 use Generated\Shared\Transfer\ProductConcreteTransfer;
+use Generated\Shared\Transfer\QuoteTransfer;
 
 interface AvalaraTaxFacadeInterface
 {
@@ -74,4 +75,19 @@ interface AvalaraTaxFacadeInterface
      * @return \Generated\Shared\Transfer\CheckoutResponseTransfer
      */
     public function validateCheckoutDataShippingAddress(CheckoutDataTransfer $checkoutDataTransfer): CheckoutResponseTransfer;
+
+    /**
+     * Specification:
+     * - Requires `QuoteTransfer.avalaraCreateTransactionResponse` to be set.
+     * - Returns `true` if calculation request to Avalara was successful.
+     * - Adds errors from `QuoteTransfer.avalaraCreateTransactionResponse.messages` to `CheckoutResponseTransfer.errors` in case of failed request.
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     * @param \Generated\Shared\Transfer\CheckoutResponseTransfer $checkoutResponseTransfer
+     *
+     * @return bool
+     */
+    public function isQuoteTaxCalculationValid(QuoteTransfer $quoteTransfer, CheckoutResponseTransfer $checkoutResponseTransfer): bool;
 }
