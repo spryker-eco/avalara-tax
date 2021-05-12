@@ -71,18 +71,17 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
         ArrayObject $avalaraTransactionLineTransfers,
         array $zipCodeRegionNameMap
     ): void {
-        foreach ($avalaraTransactionLineTransfers as $avalaraTransactionLineTransfer) {
-            if ($itemTransfer->getGroupKeyOrFail() !== $avalaraTransactionLineTransfer->getRef2OrFail()) {
-                continue;
-            }
+        $avalaraTransactionLineTransfer = $this->findAvalaraLineItemTransferForItemTransfer(
+            $itemTransfer,
+            $avalaraTransactionLineTransfers,
+            $zipCodeRegionNameMap
+        );
 
-            $avalaraTransactionLineTransfer = $this->findAvalaraLineItemTransferForItemTransfer($itemTransfer, $avalaraTransactionLineTransfers, $zipCodeRegionNameMap);
-            if (!$avalaraTransactionLineTransfer) {
-                continue;
-            }
-
-            $this->calculateItemTaxByAvalaraTransactionLineItem($itemTransfer, $avalaraTransactionLineTransfer);
+        if (!$avalaraTransactionLineTransfer) {
+            return;
         }
+
+        $this->calculateItemTaxByAvalaraTransactionLineItem($itemTransfer, $avalaraTransactionLineTransfer);
     }
 
     /**
@@ -99,6 +98,10 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
     ): ?AvalaraTransactionLineTransfer {
         foreach ($avalaraTransactionLineTransfers as $avalaraTransactionLineTransfer) {
             if ($avalaraTransactionLineTransfer->getRef1OrFail() !== AvalaraTransactionRequestMapper::CART_ITEM_AVALARA_LINE_TYPE) {
+                continue;
+            }
+
+            if ($itemTransfer->getGroupKeyOrFail() !== $avalaraTransactionLineTransfer->getRef2OrFail()) {
                 continue;
             }
 
