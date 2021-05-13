@@ -10,18 +10,27 @@
     "spryker/calculation-extension": "^1.0.0",
     "spryker/cart-extension": "^4.0.0",
     "spryker/checkout-rest-api-extension": "^1.0.0",
+    "spryker/checkout-extension": "^1.2.0",
     "spryker/kernel": "^3.30.0",
     "spryker/money": "^2.0.0",
     "spryker/product": "^6.0.0",
     "spryker/product-extension": "^1.0.0",
     "spryker/sales": "^11.0.0",
     "spryker/store": "^1.1.0",
+    "spryker/transfer": "^3.25.0",
     "spryker/util-encoding": "^2.0.0"
   },
   "require-dev": {
     "spryker/code-sniffer": "*",
     "spryker/propel": "*",
     "spryker/testify": "*"
+  },
+  "suggest": {
+    "spryker-eco/avalara-tax-product-option": "If you want to calculate product option taxes using Avalara tax provider.",
+    "spryker-eco/avalara-tax-shipment": "If you want to calculate shipment taxes using Avalara tax provider.",
+    "spryker/calculation": "If you want to use Calculation plugins.",
+    "spryker/cart": "If you want to use Cart plugins.",
+    "spryker/checkout": "If you want to use Checkout plugins."
   },
   "autoload": {
     "psr-4": {

@@ -17,10 +17,16 @@ use SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLoggerInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionResponseMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface;
+use stdClass;
 use Throwable;
 
 class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
 {
+    /**
+     * @var \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer[]
+     */
+    protected static $avalaraCreateTransactionResponseCache;
+
     /**
      * @var \SprykerEco\Zed\AvalaraTax\Business\Builder\AvalaraTransactionBuilderInterface
      */
@@ -79,6 +85,12 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
         CalculableObjectTransfer $calculableObjectTransfer,
         string $transactionTypeId
     ): AvalaraCreateTransactionResponseTransfer {
+        $cacheKey = $this->generateCacheKey($calculableObjectTransfer);
+
+        if (isset(static::$avalaraCreateTransactionResponseCache[$cacheKey])) {
+            return static::$avalaraCreateTransactionResponseCache[$cacheKey];
+        }
+
         $avalaraCreateTransactionRequestTransfer = $this->avalaraTransactionRequestMapper
             ->mapCalculableObjectTransferToAvalaraCreateTransactionRequestTransfer(
                 $calculableObjectTransfer,
@@ -108,6 +120,19 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
             $this->avalaraTransactionLogger->logAvalaraApiTransaction($avalaraApiLogTransfer);
         }
 
+        return $this->buildAvalaraCreateTransactionResponse($transactionModel, $cacheKey);
+    }
+
+    /**
+     * @param \stdClass|\Avalara\TransactionModel $transactionModel
+     * @param string $cacheKey
+     *
+     * @return \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer
+     */
+    protected function buildAvalaraCreateTransactionResponse(
+        stdClass $transactionModel,
+        string $cacheKey
+    ): AvalaraCreateTransactionResponseTransfer {
         $avalaraCreateTransactionResponseTransfer = (new AvalaraCreateTransactionResponseTransfer())
             ->setIsSuccessful(true);
 
@@ -117,9 +142,24 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
                 ->addMessage((new MessageTransfer())->setValue($avalaraApiLogTransfer->getErrorMessage()));
         }
 
-        return $this->avalaraTransactionResponseMapper->mapAvalaraTransactionModelToAvalaraCreateTransactionResponseTransfer(
-            $transactionModel,
-            $avalaraCreateTransactionResponseTransfer
-        );
+        static::$avalaraCreateTransactionResponseCache[$cacheKey] = $this->avalaraTransactionResponseMapper
+            ->mapAvalaraTransactionModelToAvalaraCreateTransactionResponseTransfer(
+                $transactionModel,
+                $avalaraCreateTransactionResponseTransfer
+            );
+
+        return static::$avalaraCreateTransactionResponseCache[$cacheKey];
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
+     *
+     * @return string
+     */
+    protected function generateCacheKey(CalculableObjectTransfer $calculableObjectTransfer): string
+    {
+        $key = serialize($calculableObjectTransfer->toArray());
+
+        return md5($key);
     }
 }
