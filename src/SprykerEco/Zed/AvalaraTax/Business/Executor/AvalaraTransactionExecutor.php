@@ -11,6 +11,7 @@ use Generated\Shared\Transfer\AvalaraApiLogTransfer;
 use Generated\Shared\Transfer\AvalaraCreateTransactionRequestTransfer;
 use Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer;
 use Generated\Shared\Transfer\CalculableObjectTransfer;
+use Generated\Shared\Transfer\MessageTransfer;
 use SprykerEco\Zed\AvalaraTax\Business\Builder\AvalaraTransactionBuilderInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLoggerInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapperInterface;
@@ -117,6 +118,12 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
                 ->setErrorMessage($e->getMessage());
         } finally {
             $this->avalaraTransactionLogger->logAvalaraApiTransaction($avalaraApiLogTransfer);
+        }
+
+        if (!$avalaraApiLogTransfer->getIsSuccessful()) {
+            return (new AvalaraCreateTransactionResponseTransfer())
+                ->setIsSuccessful(false)
+                ->addMessage((new MessageTransfer())->setValue($avalaraApiLogTransfer->getErrorMessage()));
         }
 
         return $this->buildAvalaraCreateTransactionResponse($transactionModel, $cacheKey);
