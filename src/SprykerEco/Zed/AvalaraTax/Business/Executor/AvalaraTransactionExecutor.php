@@ -110,6 +110,10 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
         $avalaraCreateTransactionResponseTransfer = (new AvalaraCreateTransactionResponseTransfer())
             ->setIsSuccessful(true);
 
+        if (!$avalaraApiLogTransfer->getIsSuccessful()) {
+            return $avalaraCreateTransactionResponseTransfer->setIsSuccessful(false);
+        }
+
         return $this->avalaraTransactionResponseMapper->mapAvalaraTransactionModelToAvalaraCreateTransactionResponseTransfer(
             $transactionModel,
             $avalaraCreateTransactionResponseTransfer
