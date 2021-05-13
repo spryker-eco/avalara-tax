@@ -81,7 +81,8 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
             (string)$this->resolveAvalaraTransactionType($calculableObjectTransfer)
         );
 
-        $calculableObjectTransfer->getOriginalQuoteOrFail()->setAvalaraCreateTransactionResponse($avalaraCreateTransactionResponseTransfer);
+        $this->setAvalaraCreateTransactionResponseToOriginalQuote($calculableObjectTransfer, $avalaraCreateTransactionResponseTransfer);
+
         if (!$avalaraCreateTransactionResponseTransfer->getIsSuccessful()) {
             return;
         }
@@ -196,5 +197,23 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
     protected function convertToPercents(float $number): float
     {
         return $number * 100.0;
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
+     * @param \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
+     *
+     * @return void
+     */
+    protected function setAvalaraCreateTransactionResponseToOriginalQuote(
+        CalculableObjectTransfer $calculableObjectTransfer,
+        AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
+    ): void {
+        if (!$calculableObjectTransfer->getOriginalQuote()) {
+            return;
+        }
+
+        $calculableObjectTransfer->getOriginalQuoteOrFail()
+            ->setAvalaraCreateTransactionResponse($avalaraCreateTransactionResponseTransfer);
     }
 }
