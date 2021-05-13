@@ -204,7 +204,7 @@
         <property name="name" type="string"/>
         <property name="sumDiscountAmountAggregation" type="int"/>
         <property name="sumPrice" type="int"/>
-        <property name="quantity" type="int"/>
+        <property name="warehouse" type="Stock"/>
     </transfer>
 
     <transfer name="Address">

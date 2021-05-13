@@ -7,6 +7,7 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Business\Builder;
 
+use ArrayObject;
 use Generated\Shared\Transfer\AvalaraAddressTransfer;
 use Generated\Shared\Transfer\AvalaraCreateTransactionRequestTransfer;
 use Generated\Shared\Transfer\AvalaraLineItemTransfer;
@@ -123,7 +124,7 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
         }
 
         if ($avalaraLineItemTransfer->getSourceAddress() !== null) {
-            $transactionBuilder = $this->addItemLevelAddress($transactionBuilder, $avalaraLineItemTransfer->getSourceAddressOrFail());
+            $transactionBuilder = $this->addItemLevelAddress($transactionBuilder, $avalaraLineItemTransfer->getSourceAddress());
         }
 
         return $transactionBuilder;
@@ -131,7 +132,7 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
 
     /**
      * @param \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface $transactionBuilder
-     * @param \Generated\Shared\Transfer\AvalaraAddressTransfer $avalaraAddressTransfer
+     * @param \ArrayObject|\Generated\Shared\Transfer\AvalaraAddressTransfer $avalaraAddressTransfer
      *
      * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
      */
