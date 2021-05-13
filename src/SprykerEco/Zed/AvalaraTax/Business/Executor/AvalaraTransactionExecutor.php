@@ -115,8 +115,6 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
             $avalaraApiLogTransfer
                 ->setIsSuccessful(false)
                 ->setErrorMessage($e->getMessage());
-
-            throw $e;
         } finally {
             $this->avalaraTransactionLogger->logAvalaraApiTransaction($avalaraApiLogTransfer);
         }
