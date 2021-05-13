@@ -120,31 +120,27 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
             $this->avalaraTransactionLogger->logAvalaraApiTransaction($avalaraApiLogTransfer);
         }
 
-        return $this->buildAvalaraCreateTransactionResponse($transactionModel, $avalaraApiLogTransfer, $cacheKey);
+        if (!$avalaraApiLogTransfer->getIsSuccessful()) {
+            return (new AvalaraCreateTransactionResponseTransfer())
+                ->setIsSuccessful(false)
+                ->addMessage((new MessageTransfer())->setValue($avalaraApiLogTransfer->getErrorMessage()));
+        }
+
+        return $this->buildAvalaraCreateTransactionResponse($transactionModel, $cacheKey);
     }
 
     /**
      * @param \stdClass|\Avalara\TransactionModel $transactionModel
-     * @param \Generated\Shared\Transfer\AvalaraApiLogTransfer $avalaraApiLogTransfer
      * @param string $cacheKey
      *
      * @return \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer
      */
     protected function buildAvalaraCreateTransactionResponse(
         stdClass $transactionModel,
-        AvalaraApiLogTransfer $avalaraApiLogTransfer,
         string $cacheKey
     ): AvalaraCreateTransactionResponseTransfer {
         $avalaraCreateTransactionResponseTransfer = (new AvalaraCreateTransactionResponseTransfer())
             ->setIsSuccessful(true);
-
-        if (!$avalaraApiLogTransfer->getIsSuccessful()) {
-            static::$avalaraCreateTransactionResponseCache[$cacheKey] = $avalaraCreateTransactionResponseTransfer
-                ->setIsSuccessful(false)
-                ->addMessage((new MessageTransfer())->setValue($avalaraApiLogTransfer->getErrorMessage()));
-
-            return static::$avalaraCreateTransactionResponseCache[$cacheKey];
-        }
 
         static::$avalaraCreateTransactionResponseCache[$cacheKey] = $this->avalaraTransactionResponseMapper
             ->mapAvalaraTransactionModelToAvalaraCreateTransactionResponseTransfer(
