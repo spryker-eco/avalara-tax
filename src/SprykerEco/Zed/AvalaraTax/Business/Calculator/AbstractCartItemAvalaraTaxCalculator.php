@@ -72,7 +72,7 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
      */
     public function calculateTax(CalculableObjectTransfer $calculableObjectTransfer): void
     {
-        if (!$this->hasShipmentAddress($calculableObjectTransfer)) {
+        if (!$this->isCalculationApplicable($calculableObjectTransfer)) {
             return;
         }
 
@@ -81,7 +81,8 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
             (string)$this->resolveAvalaraTransactionType($calculableObjectTransfer)
         );
 
-        $calculableObjectTransfer->getOriginalQuoteOrFail()->setAvalaraCreateTransactionResponse($avalaraCreateTransactionResponseTransfer);
+        $this->setAvalaraCreateTransactionResponseToOriginalQuote($calculableObjectTransfer, $avalaraCreateTransactionResponseTransfer);
+
         if (!$avalaraCreateTransactionResponseTransfer->getIsSuccessful()) {
             return;
         }
@@ -89,6 +90,20 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
         $this->calculateTaxForItemTransfers($calculableObjectTransfer->getItems(), $avalaraCreateTransactionResponseTransfer);
 
         $this->executeCreateTransactionRequestAfterPlugins($calculableObjectTransfer, $avalaraCreateTransactionResponseTransfer);
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
+     *
+     * @return bool
+     */
+    protected function isCalculationApplicable(CalculableObjectTransfer $calculableObjectTransfer): bool
+    {
+        if (!$calculableObjectTransfer->getItems()->count()) {
+            return false;
+        }
+
+        return $this->hasShipmentAddress($calculableObjectTransfer);
     }
 
     /**
@@ -182,5 +197,23 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
     protected function convertToPercents(float $number): float
     {
         return $number * 100.0;
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
+     * @param \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
+     *
+     * @return void
+     */
+    protected function setAvalaraCreateTransactionResponseToOriginalQuote(
+        CalculableObjectTransfer $calculableObjectTransfer,
+        AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
+    ): void {
+        if (!$calculableObjectTransfer->getOriginalQuote()) {
+            return;
+        }
+
+        $calculableObjectTransfer->getOriginalQuoteOrFail()
+            ->setAvalaraCreateTransactionResponse($avalaraCreateTransactionResponseTransfer);
     }
 }

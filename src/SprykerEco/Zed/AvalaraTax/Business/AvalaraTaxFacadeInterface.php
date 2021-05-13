@@ -9,7 +9,10 @@ namespace SprykerEco\Zed\AvalaraTax\Business;
 
 use Generated\Shared\Transfer\CalculableObjectTransfer;
 use Generated\Shared\Transfer\CartChangeTransfer;
+use Generated\Shared\Transfer\CheckoutDataTransfer;
+use Generated\Shared\Transfer\CheckoutResponseTransfer;
 use Generated\Shared\Transfer\ProductConcreteTransfer;
+use Generated\Shared\Transfer\QuoteTransfer;
 
 interface AvalaraTaxFacadeInterface
 {
@@ -57,4 +60,34 @@ interface AvalaraTaxFacadeInterface
      * @return \Generated\Shared\Transfer\CartChangeTransfer
      */
     public function expandCartItemsWithAvalaraTaxCode(CartChangeTransfer $cartChangeTransfer): CartChangeTransfer;
+
+    /**
+     * Specification:
+     * - Validates `CheckoutDataTransfer.shippingAddress` if it is set.
+     * - Validates `CheckoutDataTransfer.shipments.shippingAddress`.
+     * - Sends request to Avalara address resolve endpoint.
+     * - Maps response from avalara to `CheckoutResponseTransfer`.
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\CheckoutDataTransfer $checkoutDataTransfer
+     *
+     * @return \Generated\Shared\Transfer\CheckoutResponseTransfer
+     */
+    public function validateCheckoutDataShippingAddress(CheckoutDataTransfer $checkoutDataTransfer): CheckoutResponseTransfer;
+
+    /**
+     * Specification:
+     * - Requires `QuoteTransfer.avalaraCreateTransactionResponse` to be set.
+     * - Returns `true` if calculation request to Avalara was successful.
+     * - Adds errors from `QuoteTransfer.avalaraCreateTransactionResponse.messages` to `CheckoutResponseTransfer.errors` in case of failed request.
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     * @param \Generated\Shared\Transfer\CheckoutResponseTransfer $checkoutResponseTransfer
+     *
+     * @return bool
+     */
+    public function isQuoteTaxCalculationValid(QuoteTransfer $quoteTransfer, CheckoutResponseTransfer $checkoutResponseTransfer): bool;
 }

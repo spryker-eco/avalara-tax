@@ -45,4 +45,29 @@ class AvalaraTaxToAvalaraAvaTaxClientAdapter implements AvalaraTaxToAvalaraTaxCl
     {
         return $this->avaTaxClient->createTransaction($include, $createTransactionModel);
     }
+
+    /**
+     * @param string $line1
+     * @param string $line2
+     * @param string $city
+     * @param string $postalCode
+     * @param string $country
+     * @param string|null $line3
+     * @param string|null $region
+     * @param int $textCase
+     *
+     * @return \stdClass|\Avalara\AddressResolutionModel
+     */
+    public function resolveAddress(
+        string $line1,
+        string $line2,
+        string $city,
+        string $postalCode,
+        string $country,
+        ?string $line3,
+        ?string $region,
+        int $textCase = 1
+    ) {
+        return $this->avaTaxClient->resolveAddress($line1, $line2, $line3, $city, $region, $postalCode, $country, $textCase);
+    }
 }
