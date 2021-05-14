@@ -244,6 +244,7 @@
 
     <transfer name="Message">
         <property name="message" type="string"/>
+        <property name="value" type="string"/>
     </transfer>
 
     <transfer name="CheckoutData">
@@ -271,12 +272,12 @@
         <property name="iso2Code" type="string"/>
     </transfer>
 
-    <transfer name="CheckoutResponse">
-        <property name="errors" type="CheckoutError[]" singular="error"/>
-        <property name="isSuccess" type="bool"/>
+    <transfer name="Stock">
+        <property name="address" type="StockAddress"/>
     </transfer>
 
-    <transfer name="CheckoutError">
+    <transfer name="StockAddress">
+        <property name="country" type="Country"/>
     </transfer>
 
 </transfers>

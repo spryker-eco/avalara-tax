@@ -77,8 +77,6 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
      * @param \Generated\Shared\Transfer\CalculableObjectTransfer $calculableObjectTransfer
      * @param string $transactionTypeId
      *
-     * @throws \Exception
-     *
      * @return \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer
      */
     public function executeAvalaraCreateTransaction(
@@ -112,21 +110,21 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
             $avalaraApiLogTransfer
                 ->setIsSuccessful(true)
                 ->setResponse($this->utilEncodingService->encodeJson((array)$transactionModel));
+
+            $avalaraCreateTransactionResponseTransfer = $this->buildAvalaraCreateTransactionResponse($transactionModel, $cacheKey);
         } catch (Throwable $e) {
             $avalaraApiLogTransfer
                 ->setIsSuccessful(false)
                 ->setErrorMessage($e->getMessage());
+
+            $avalaraCreateTransactionResponseTransfer = (new AvalaraCreateTransactionResponseTransfer())
+                ->setIsSuccessful(false)
+                ->addMessage((new MessageTransfer())->setValue($avalaraApiLogTransfer->getErrorMessage()));
         } finally {
             $this->avalaraTransactionLogger->logAvalaraApiTransaction($avalaraApiLogTransfer);
         }
 
-        if (!$avalaraApiLogTransfer->getIsSuccessful()) {
-            return (new AvalaraCreateTransactionResponseTransfer())
-                ->setIsSuccessful(false)
-                ->addMessage((new MessageTransfer())->setValue($avalaraApiLogTransfer->getErrorMessage()));
-        }
-
-        return $this->buildAvalaraCreateTransactionResponse($transactionModel, $cacheKey);
+        return $avalaraCreateTransactionResponseTransfer;
     }
 
     /**

@@ -7,7 +7,6 @@
 
 namespace SprykerEco\Zed\AvalaraTax\Business\Builder;
 
-use ArrayObject;
 use Generated\Shared\Transfer\AvalaraAddressTransfer;
 use Generated\Shared\Transfer\AvalaraCreateTransactionRequestTransfer;
 use Generated\Shared\Transfer\AvalaraLineItemTransfer;
@@ -132,7 +131,7 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
 
     /**
      * @param \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface $transactionBuilder
-     * @param \ArrayObject|\Generated\Shared\Transfer\AvalaraAddressTransfer $avalaraAddressTransfer
+     * @param \Generated\Shared\Transfer\AvalaraAddressTransfer $avalaraAddressTransfer
      *
      * @return \SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface
      */
