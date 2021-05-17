@@ -245,6 +245,7 @@
 
     <transfer name="Message">
         <property name="value" type="string"/>
+        <property name="message" type="string"/>
     </transfer>
 
     <transfer name="CheckoutData">

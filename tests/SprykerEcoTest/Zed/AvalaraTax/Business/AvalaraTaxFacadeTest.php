@@ -30,6 +30,7 @@ use Generated\Shared\Transfer\ProductConcreteTransfer;
 use Generated\Shared\Transfer\RestAddressTransfer;
 use Generated\Shared\Transfer\RestShipmentsTransfer;
 use Generated\Shared\Transfer\ShipmentTransfer;
+use Generated\Shared\Transfer\StoreTransfer;
 use RuntimeException;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTaxClientInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface;
@@ -58,6 +59,7 @@ class AvalaraTaxFacadeTest extends Unit
     protected const TEST_ZIP_CODE_2 = '48326';
 
     protected const TEST_COUNTRY = 'US';
+    protected const TEST_STORE_NAME = 'US';
 
     /**
      * @var \SprykerEcoTest\Zed\AvalaraTax\AvalaraTaxBusinessTester
@@ -113,6 +115,7 @@ class AvalaraTaxFacadeTest extends Unit
         $quoteTransfer = (new QuoteBuilder())->build();
         $calculableObjectTransfer = (new CalculableObjectBuilder([CalculableObjectTransfer::PRICE_MODE => static::PRICE_MODE_GROSS]))
             ->withCurrency()
+            ->withStore([StoreTransfer::NAME => static::TEST_STORE_NAME])
             ->build();
         $calculableObjectTransfer->setOriginalQuote($quoteTransfer)
             ->addItem($itemTransfer1)
@@ -150,6 +153,7 @@ class AvalaraTaxFacadeTest extends Unit
 
         $quoteTransfer = (new QuoteBuilder())->build();
         $calculableObjectTransfer = (new CalculableObjectBuilder([CalculableObjectTransfer::PRICE_MODE => static::PRICE_MODE_GROSS]))
+            ->withStore([StoreTransfer::NAME => static::TEST_STORE_NAME])
             ->withShippingAddress([
                 AddressTransfer::COUNTRY => static::TEST_COUNTRY,
                 AddressTransfer::CITY => static::TEST_CITY_NAME_1,
