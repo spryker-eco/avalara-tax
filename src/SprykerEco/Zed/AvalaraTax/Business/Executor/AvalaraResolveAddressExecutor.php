@@ -112,7 +112,7 @@ class AvalaraResolveAddressExecutor implements AvalaraResolveAddressExecutorInte
         } catch (Throwable $e) {
             $avalaraResolveAddressResponseTransfer
                 ->setIsSuccessful(false)
-                ->addMessage((new MessageTransfer())->setMessage($e->getMessage()));
+                ->addMessage((new MessageTransfer())->setValue($e->getMessage()));
         }
 
         return $avalaraResolveAddressResponseTransfer;
