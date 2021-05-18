@@ -98,8 +98,6 @@ class ExpandQuoteItemsWithWarehouseTest extends Unit
      */
     public function testExpandQuoteItemsWithWarehouseInCaseEmptyStockProduct(): void
     {
-        // Arrange
-
         // Act
         $quoteTransfer = $this->tester->getFacade()->expandQuoteItemsWithWarehouse($this->quoteTransfer);
 

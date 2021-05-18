@@ -49,7 +49,7 @@ class WarehouseExpander implements WarehouseExpanderInterface
         );
 
         foreach ($quoteTransfer->getItems() as $itemTransfer) {
-            $this->expandQuoteItemWithWarehouse($itemTransfer, $indexedStockProductTransfers, $indexedStockTransfers);
+            $itemTransfer = $this->expandQuoteItemWithWarehouse($itemTransfer, $indexedStockProductTransfers, $indexedStockTransfers);
         }
 
         return $quoteTransfer;
