@@ -281,4 +281,16 @@
         <property name="country" type="Country"/>
     </transfer>
 
+    <transfer name="StockCollection">
+        <property name="stocks" type="Stock[]" singular="stock"/>
+    </transfer>
+
+    <transfer name="StockCriteriaFilter">
+        <property name="storeNames" type="string[]" singular="storeName"/>
+        <property name="stockNames" type="string[]" singular="stockName"/>
+    </transfer>
+
+    <transfer name="StockProduct">
+    </transfer>
+
 </transfers>

@@ -22,12 +22,16 @@ use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutor;
 use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutorInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxCodeExpander;
 use SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxCodeExpanderInterface;
+use SprykerEco\Zed\AvalaraTax\Business\Expander\WarehouseExpander;
+use SprykerEco\Zed\AvalaraTax\Business\Expander\WarehouseExpanderInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraResolveAddressRequestMapper;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraResolveAddressRequestMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapper;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionResponseMapper;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionResponseMapperInterface;
+use SprykerEco\Zed\AvalaraTax\Business\Reader\StockProductReader;
+use SprykerEco\Zed\AvalaraTax\Business\Reader\StockProductReaderInterface;
 use SprykerEco\Zed\AvalaraTax\Business\StrategyResolver\CartItemTaxCalculatorStrategyResolver;
 use SprykerEco\Zed\AvalaraTax\Business\StrategyResolver\CartItemTaxCalculatorStrategyResolverInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Validator\CheckoutDataAddressValidator;
@@ -35,6 +39,7 @@ use SprykerEco\Zed\AvalaraTax\Business\Validator\CheckoutDataAddressValidatorInt
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTaxClientInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeInterface;
+use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToStockFacadeInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface;
 
 /**
@@ -158,11 +163,40 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
+     * @return \SprykerEco\Zed\AvalaraTax\Business\Expander\WarehouseExpanderInterface
+     */
+    public function createWarehouseExpander(): WarehouseExpanderInterface
+    {
+        return new WarehouseExpander(
+            $this->createStockProductReader()
+        );
+    }
+
+    /**
+     * @return \SprykerEco\Zed\AvalaraTax\Business\Reader\StockProductReaderInterface
+     */
+    public function createStockProductReader(): StockProductReaderInterface
+    {
+        return new StockProductReader(
+            $this->getRepository(),
+            $this->getStockFacade()
+        );
+    }
+
+    /**
      * @return \SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeInterface
      */
     public function getMoneyFacade(): AvalaraTaxToMoneyFacadeInterface
     {
         return $this->getProvidedDependency(AvalaraTaxDependencyProvider::FACADE_MONEY);
+    }
+
+    /**
+     * @return \SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToStockFacadeInterface
+     */
+    public function getStockFacade(): AvalaraTaxToStockFacadeInterface
+    {
+        return $this->getProvidedDependency(AvalaraTaxDependencyProvider::FACADE_STOCK);
     }
 
     /**
