@@ -24,4 +24,12 @@ interface AvalaraTaxRepositoryInterface
      * @return string[]
      */
     public function getProductConcreteAvalaraTaxCodesBySkus(array $productConcreteSkus): array;
+
+    /**
+     * @param string[] $productConcreteSkus
+     * @param string $storeName
+     *
+     * @return \Generated\Shared\Transfer\StockProductTransfer[]
+     */
+    public function getStockProductsByProductConcreteSkusForStore(array $productConcreteSkus, string $storeName): array;
 }

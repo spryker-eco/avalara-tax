@@ -105,4 +105,20 @@ class AvalaraTaxFacade extends AbstractFacade implements AvalaraTaxFacadeInterfa
             ->createAvalaraTaxQuoteChecker()
             ->isQuoteTaxCalculationValid($quoteTransfer, $checkoutResponseTransfer);
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     *
+     * @return \Generated\Shared\Transfer\QuoteTransfer
+     */
+    public function expandQuoteItemsWithWarehouse(QuoteTransfer $quoteTransfer): QuoteTransfer
+    {
+        return $this->getFactory()
+            ->createWarehouseExpander()
+            ->expandQuoteItemsWithWarehouse($quoteTransfer);
+    }
 }
