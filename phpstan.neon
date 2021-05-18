@@ -10,7 +10,6 @@ parameters:
         - '#Call to method .+\(\) on an unknown class Generated\\Zed\\Ide\\AutoCompletion#'
         - '#Access to property \$.+ on an unknown class Avalara\\.+#'
         - '#Call to an undefined method .+SpyWishlistItemQuery::leftJoinWithSpyProduct\(\)#'
-        - '#Call to static method create() on an unknown class Orm\Zed\Product\Persistence\SpyProductAbstractQuery.#'
         - '#Call to method save\(\) on an unknown class Orm\\.+#'
         - '#Return typehint of method .+ has invalid type .+Query#'
         - '#Access to constant .+ on an unknown class .+TableMap#'
