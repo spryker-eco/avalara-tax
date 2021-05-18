@@ -9,8 +9,10 @@ namespace SprykerEco\Zed\AvalaraTax\Persistence;
 
 use Orm\Zed\Product\Persistence\SpyProductAbstractQuery;
 use Orm\Zed\Product\Persistence\SpyProductQuery;
+use Orm\Zed\Stock\Persistence\SpyStockProductQuery;
 use Spryker\Zed\Kernel\Persistence\AbstractPersistenceFactory;
 use SprykerEco\Zed\AvalaraTax\AvalaraTaxDependencyProvider;
+use SprykerEco\Zed\AvalaraTax\Persistence\Propel\Mapper\StockProductMapper;
 use SprykerEco\Zed\AvalaraTax\Persistence\Propel\Mapper\TaxAvalaraLogApiMapper;
 
 /**
@@ -29,6 +31,14 @@ class AvalaraTaxPersistenceFactory extends AbstractPersistenceFactory
     }
 
     /**
+     * @return \SprykerEco\Zed\AvalaraTax\Persistence\Propel\Mapper\StockProductMapper
+     */
+    public function createStockProductMapper(): StockProductMapper
+    {
+        return new StockProductMapper();
+    }
+
+    /**
      * @return \Orm\Zed\Product\Persistence\SpyProductAbstractQuery
      */
     public function getProductAbstractPropelQuery(): SpyProductAbstractQuery
@@ -42,5 +52,13 @@ class AvalaraTaxPersistenceFactory extends AbstractPersistenceFactory
     public function getProductPropelQuery(): SpyProductQuery
     {
         return $this->getProvidedDependency(AvalaraTaxDependencyProvider::PROPEL_QUERY_PRODUCT);
+    }
+
+    /**
+     * @return \Orm\Zed\Stock\Persistence\SpyStockProductQuery
+     */
+    public function getStockProductPropelQuery(): SpyStockProductQuery
+    {
+        return $this->getProvidedDependency(AvalaraTaxDependencyProvider::PROPEL_QUERY_STOCK_PRODUCT);
     }
 }

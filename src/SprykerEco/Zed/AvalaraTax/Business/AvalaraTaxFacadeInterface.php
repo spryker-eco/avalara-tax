@@ -90,4 +90,19 @@ interface AvalaraTaxFacadeInterface
      * @return bool
      */
     public function isQuoteTaxCalculationValid(QuoteTransfer $quoteTransfer, CheckoutResponseTransfer $checkoutResponseTransfer): bool;
+
+    /**
+     * Specification:
+     * - Expects `QuoteTransfer.items` to be provided.
+     * - Requires `QuoteTransfer.store.name` to be set.
+     * - Retrieves prioritized (with max stock quantity) stock from Persistence by concrete products SKUs and store.
+     * - Expands `QuoteTransfer.items` with warehouse property.
+     *
+     * @api
+     *
+     * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
+     *
+     * @return \Generated\Shared\Transfer\QuoteTransfer
+     */
+    public function expandQuoteItemsWithWarehouse(QuoteTransfer $quoteTransfer): QuoteTransfer;
 }
