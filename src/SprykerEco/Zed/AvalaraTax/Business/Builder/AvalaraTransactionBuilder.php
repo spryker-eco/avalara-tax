@@ -123,7 +123,7 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
         }
 
         if ($avalaraLineItemTransfer->getSourceAddress() !== null) {
-            $transactionBuilder = $this->addItemLevelAddress($transactionBuilder, $avalaraLineItemTransfer->getSourceAddress());
+            $transactionBuilder = $this->addItemLevelAddress($transactionBuilder, $avalaraLineItemTransfer->getSourceAddressOrFail());
         }
 
         return $transactionBuilder;

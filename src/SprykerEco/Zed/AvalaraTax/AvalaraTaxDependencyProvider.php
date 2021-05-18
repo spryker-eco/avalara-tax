@@ -14,7 +14,6 @@ use Spryker\Zed\Kernel\Container;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraAvaTaxClientAdapter;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTransactionBuilderAdapter;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeBridge;
-use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToStoreFacadeBridge;
 use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceBridge;
 
 /**
@@ -23,7 +22,6 @@ use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingService
 class AvalaraTaxDependencyProvider extends AbstractBundleDependencyProvider
 {
     public const FACADE_MONEY = 'FACADE_MONEY';
-    public const FACADE_STORE = 'FACADE_STORE';
 
     public const SERVICE_UTIL_ENCODING = 'SERVICE_UTIL_ENCODING';
 
@@ -46,7 +44,6 @@ class AvalaraTaxDependencyProvider extends AbstractBundleDependencyProvider
         $container = parent::provideBusinessLayerDependencies($container);
 
         $container = $this->addMoneyFacade($container);
-        $container = $this->addStoreFacade($container);
         $container = $this->addUtilEncodingService($container);
         $container = $this->addAvalaraTaxClient($container);
         $container = $this->addAvalaraTransactionBuilder($container);
@@ -80,20 +77,6 @@ class AvalaraTaxDependencyProvider extends AbstractBundleDependencyProvider
     {
         $container->set(static::FACADE_MONEY, function (Container $container) {
             return new AvalaraTaxToMoneyFacadeBridge($container->getLocator()->money()->facade());
-        });
-
-        return $container;
-    }
-
-    /**
-     * @param \Spryker\Zed\Kernel\Container $container
-     *
-     * @return \Spryker\Zed\Kernel\Container
-     */
-    protected function addStoreFacade(Container $container): Container
-    {
-        $container->set(static::FACADE_STORE, function (Container $container) {
-            return new AvalaraTaxToStoreFacadeBridge($container->getLocator()->store()->facade());
         });
 
         return $container;

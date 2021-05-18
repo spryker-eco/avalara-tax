@@ -13,10 +13,10 @@ use Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer;
 use Generated\Shared\Transfer\CalculableObjectTransfer;
 use Generated\Shared\Transfer\MessageTransfer;
 use SprykerEco\Zed\AvalaraTax\Business\Builder\AvalaraTransactionBuilderInterface;
-use SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLoggerInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionResponseMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface;
+use SprykerEco\Zed\AvalaraTax\Persistence\AvalaraTaxEntityManagerInterface;
 use stdClass;
 use Throwable;
 
@@ -43,9 +43,9 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
     protected $avalaraTransactionResponseMapper;
 
     /**
-     * @var \SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLoggerInterface
+     * @var \SprykerEco\Zed\AvalaraTax\Persistence\AvalaraTaxEntityManagerInterface
      */
-    protected $avalaraTransactionLogger;
+    protected $avalaraTaxEntityManager;
 
     /**
      * @var \SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface
@@ -56,20 +56,20 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
      * @param \SprykerEco\Zed\AvalaraTax\Business\Builder\AvalaraTransactionBuilderInterface $avalaraTransactionBuilder
      * @param \SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapperInterface $avalaraTransactionRequestMapper
      * @param \SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionResponseMapperInterface $avalaraTransactionResponseMapper
-     * @param \SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLoggerInterface $avalaraTransactionLogger
+     * @param \SprykerEco\Zed\AvalaraTax\Persistence\AvalaraTaxEntityManagerInterface $avalaraTaxEntityManager
      * @param \SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface $utilEncodingService
      */
     public function __construct(
         AvalaraTransactionBuilderInterface $avalaraTransactionBuilder,
         AvalaraTransactionRequestMapperInterface $avalaraTransactionRequestMapper,
         AvalaraTransactionResponseMapperInterface $avalaraTransactionResponseMapper,
-        AvalaraTransactionLoggerInterface $avalaraTransactionLogger,
+        AvalaraTaxEntityManagerInterface $avalaraTaxEntityManager,
         AvalaraTaxToUtilEncodingServiceInterface $utilEncodingService
     ) {
         $this->avalaraTransactionBuilder = $avalaraTransactionBuilder;
         $this->avalaraTransactionRequestMapper = $avalaraTransactionRequestMapper;
         $this->avalaraTransactionResponseMapper = $avalaraTransactionResponseMapper;
-        $this->avalaraTransactionLogger = $avalaraTransactionLogger;
+        $this->avalaraTaxEntityManager = $avalaraTaxEntityManager;
         $this->utilEncodingService = $utilEncodingService;
     }
 
@@ -101,6 +101,7 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
         );
 
         $avalaraApiLogTransfer = (new AvalaraApiLogTransfer())
+            ->setStoreName($calculableObjectTransfer->getStoreOrFail()->getNameOrFail())
             ->setRequest($this->utilEncodingService->encodeJson($transactionBuilder->toArray()))
             ->setTransactionType($transactionTypeId);
 
@@ -121,7 +122,7 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
                 ->setIsSuccessful(false)
                 ->addMessage((new MessageTransfer())->setValue($avalaraApiLogTransfer->getErrorMessage()));
         } finally {
-            $this->avalaraTransactionLogger->logAvalaraApiTransaction($avalaraApiLogTransfer);
+            $this->avalaraTaxEntityManager->saveTaxAvalaraApiLog($avalaraApiLogTransfer);
         }
 
         return $avalaraCreateTransactionResponseTransfer;

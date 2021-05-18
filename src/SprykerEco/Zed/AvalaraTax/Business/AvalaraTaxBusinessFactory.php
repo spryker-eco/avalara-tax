@@ -22,8 +22,6 @@ use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutor;
 use SprykerEco\Zed\AvalaraTax\Business\Executor\AvalaraTransactionExecutorInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxCodeExpander;
 use SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxCodeExpanderInterface;
-use SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLogger;
-use SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLoggerInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraResolveAddressRequestMapper;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraResolveAddressRequestMapperInterface;
 use SprykerEco\Zed\AvalaraTax\Business\Mapper\AvalaraTransactionRequestMapper;
@@ -37,7 +35,6 @@ use SprykerEco\Zed\AvalaraTax\Business\Validator\CheckoutDataAddressValidatorInt
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToAvalaraTaxClientInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\External\AvalaraTaxToTransactionBuilderInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeInterface;
-use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToStoreFacadeInterface;
 use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface;
 
 /**
@@ -92,7 +89,7 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
             $this->createAvalaraTransactionBuilder(),
             $this->createAvalaraTransactionRequestMapper(),
             $this->createAvalaraTransactionResponseMapper(),
-            $this->createAvalaraTransactionLogger(),
+            $this->getEntityManager(),
             $this->getUtilEncodingService()
         );
     }
@@ -145,17 +142,6 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \SprykerEco\Zed\AvalaraTax\Business\Logger\AvalaraTransactionLoggerInterface
-     */
-    public function createAvalaraTransactionLogger(): AvalaraTransactionLoggerInterface
-    {
-        return new AvalaraTransactionLogger(
-            $this->getEntityManager(),
-            $this->getStoreFacade()
-        );
-    }
-
-    /**
      * @return \SprykerEco\Zed\AvalaraTax\Business\Expander\AvalaraTaxCodeExpanderInterface
      */
     public function createAvalaraTaxCodeExpander(): AvalaraTaxCodeExpanderInterface
@@ -177,14 +163,6 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     public function getMoneyFacade(): AvalaraTaxToMoneyFacadeInterface
     {
         return $this->getProvidedDependency(AvalaraTaxDependencyProvider::FACADE_MONEY);
-    }
-
-    /**
-     * @return \SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToStoreFacadeInterface
-     */
-    public function getStoreFacade(): AvalaraTaxToStoreFacadeInterface
-    {
-        return $this->getProvidedDependency(AvalaraTaxDependencyProvider::FACADE_STORE);
     }
 
     /**
