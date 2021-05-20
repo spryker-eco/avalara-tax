@@ -82,7 +82,7 @@ class AvalaraTaxRepository extends AbstractRepository implements AvalaraTaxRepos
                 ->filterBySku_In($productConcreteSkus)
                 ->orderBySku()
             ->endUse()
-            ->where('(' . SpyStockProductTableMap::COL_IS_NEVER_OUT_OF_STOCK . '=1 OR ' . SpyStockProductTableMap::COL_QUANTITY . '>0)')
+            ->where('(' . SpyStockProductTableMap::COL_IS_NEVER_OUT_OF_STOCK . '=true OR ' . SpyStockProductTableMap::COL_QUANTITY . '>0)')
             ->find();
 
         if ($stockProductEntities->count() === 0) {

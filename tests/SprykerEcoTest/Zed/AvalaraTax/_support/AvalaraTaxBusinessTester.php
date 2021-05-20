@@ -52,7 +52,7 @@ class AvalaraTaxBusinessTester extends Actor
             ->filterByFkProduct($productConcreteTransfer->getIdProductConcreteOrFail())
             ->orderByIsNeverOutOfStock(Criteria::DESC)
             ->orderByQuantity(Criteria::DESC)
-            ->where('(' . SpyStockProductTableMap::COL_IS_NEVER_OUT_OF_STOCK . '=1 OR ' . SpyStockProductTableMap::COL_QUANTITY . '>0)')
+            ->where('(' . SpyStockProductTableMap::COL_IS_NEVER_OUT_OF_STOCK . '=true OR ' . SpyStockProductTableMap::COL_QUANTITY . '>0)')
             ->findOne();
 
         if (!$stockProductEntity) {
