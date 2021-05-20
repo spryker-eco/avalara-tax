@@ -146,7 +146,7 @@
         <column name="ref1" type="VARCHAR" required="false" size="255"/>
         <column name="ref2" type="VARCHAR" required="false" size="255"/>
         <column name="reporting_date" type="DATE" required="true"/>
-        <column name="revAccount" type="VARCHAR" required="false" size="255"/>
+        <column name="rev_account" type="VARCHAR" required="false" size="255"/>
         <column name="sourcing" type="VARCHAR" required="true" size="255"/>
         <column name="tax" type="DECIMAL" required="true" size="30" scale="15"/>
         <column name="taxable_amount" type="DECIMAL" required="true" size="20" scale="10"/>
