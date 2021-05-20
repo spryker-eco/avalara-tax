@@ -1,0 +1,22 @@
+parameters:
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
+    ignoreErrors:
+        - '#Parameter .+ of method .+ has invalid typehint type .+Transfer#'
+        - '#Call to method .+ on an unknown class .+Transfer#'
+        - '#Return typehint of method .+ has invalid type .+Transfer#'
+        - '#Parameter .+ of anonymous function has invalid typehint type .+Transfer#'
+        - '#Property .+ has unknown class .+Transfer as its type#'
+        - '#Instantiated class .+Transfer not found#'
+        - '#Call to method .+\(\) on an unknown class Generated\\Zed\\Ide\\AutoCompletion#'
+        - '#Call to static method create\(\) on an unknown class .+Query.#'
+        - '#Call to method .+\(\) on an unknown class Orm\\.+#'
+        - '#Return typehint of method .+ has invalid type Orm\\.+#'
+        - '#Access to constant .+ on an unknown class .+TableMap#'
+        - '#Instantiated class Orm\\.+\\AvalaraTax\\.+ not found#'
+        - '#Parameter \$.+ of method .+ has invalid typehint type Orm\\.+#'
+        - '#PHPDoc tag @param for parameter \$[\w\d]* with type Avalara\\[\w]*\|stdClass is not subtype of native type stdClass#'
+        - '#Parameter \#\d+ \$\w* of method SprykerEco\\[\w\\]*\:\:\w*\(\) expects stdClass, Avalara\\[\w]*\|stdClass given#'
+    excludePaths:
+        - src/SprykerEco/Zed/AvalaraTax/Dependency/External/*
+        - src/SprykerEco/Zed/AvalaraTax/Persistence/Propel/Abstract*.php

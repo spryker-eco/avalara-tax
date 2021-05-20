@@ -1,0 +1,298 @@
+<?xml version="1.0"?>
+<transfers xmlns="spryker:transfer-01"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="spryker:transfer-01 http://static.spryker.com/transfer-01.xsd">
+
+    <transfer name="AvalaraApiLog">
+        <property name="errorMessage" type="string"/>
+        <property name="transactionType" type="string"/>
+        <property name="storeName" type="string"/>
+        <property name="isSuccessful" type="bool"/>
+        <property name="request" type="string"/>
+        <property name="response" type="string"/>
+    </transfer>
+
+    <transfer name="AvalaraAddress">
+        <property name="type" type="string"/>
+        <property name="address" type="Address"/>
+    </transfer>
+
+    <transfer name="AvalaraLineItem">
+        <property name="amount" type="decimal"/>
+        <property name="quantity" type="int"/>
+        <property name="taxCode" type="string"/>
+        <property name="itemCode" type="string"/>
+        <property name="reference1" type="string"/>
+        <property name="reference2" type="string"/>
+        <property name="description" type="string"/>
+        <property name="sourceAddress" type="AvalaraAddress"/>
+        <property name="shippingAddress" type="AvalaraAddress"/>
+        <property name="taxIncluded" type="bool"/>
+    </transfer>
+
+    <transfer name="AvalaraCreateTransaction">
+        <property name="companyCode" type="string"/>
+        <property name="customerCode" type="string"/>
+        <property name="type" type="string"/>
+        <property name="currencyCode" type="string"/>
+        <property name="purchaseOrderNo" type="string"/>
+        <property name="lines" type="AvalaraLineItem[]" singular="line"/>
+        <property name="shippingAddress" type="AvalaraAddress" deprecated="Use item level shipping addresses (AvalaraLineItem.shippingAddress) instead."/>
+        <property name="withCommit" type="bool"/>
+    </transfer>
+
+    <transfer name="AvalaraCreateTransactionRequest">
+        <property name="transaction" type="AvalaraCreateTransaction"/>
+    </transfer>
+
+    <transfer name="AvalaraTransactionLine">
+        <property name="id" type="int"/>
+        <property name="transactionId" type="int"/>
+        <property name="lineNumber" type="int"/>
+        <property name="boundaryOverrideId" type="int"/>
+        <property name="entityUseCode" type="string"/>
+        <property name="description" type="string"/>
+        <property name="destinationAddressId" type="int"/>
+        <property name="originAddressId" type="int"/>
+        <property name="discountAmount" type="decimal"/>
+        <property name="discountTypeId" type="int"/>
+        <property name="exemptAmount" type="decimal"/>
+        <property name="exemptCertId" type="int"/>
+        <property name="exemptNo" type="string"/>
+        <property name="isItemTaxable" type="bool"/>
+        <property name="isSSTP" type="bool"/>
+        <property name="itemCode" type="string"/>
+        <property name="lineAmount" type="decimal"/>
+        <property name="quantity" type="decimal"/>
+        <property name="ref1" type="string"/>
+        <property name="ref2" type="string"/>
+        <property name="reportingDate" type="string"/>
+        <property name="revAccount" type="string"/>
+        <property name="sourcing" type="string"/>
+        <property name="tax" type="decimal"/>
+        <property name="taxableAmount" type="decimal"/>
+        <property name="taxCalculated" type="decimal"/>
+        <property name="taxCode" type="string"/>
+        <property name="taxCodeId" type="int"/>
+        <property name="taxDate" type="string"/>
+        <property name="taxEngine" type="string"/>
+        <property name="taxOverrideType" type="string"/>
+        <property name="businessIdentificationNo" type="string"/>
+        <property name="taxOverrideAmount" type="decimal"/>
+        <property name="taxOverrideReason" type="string"/>
+        <property name="taxIncluded" type="bool"/>
+        <property name="details" type="string"/>
+        <property name="nonPassthroughDetails" type="string"/>
+        <property name="lineLocationTypes" type="string"/>
+        <property name="parameters" type="string"/>
+        <property name="hsCode" type="string"/>
+        <property name="costInsuranceFreight" type="int"/>
+        <property name="vatCode" type="string"/>
+        <property name="vatNumberTypeId" type="int"/>
+        <property name="taxAmountByTaxTypes" type="string"/>
+        <property name="deemedSupplier" type="string"/>
+    </transfer>
+
+    <transfer name="AvalaraTransaction">
+        <property name="id" type="int"/>
+        <property name="code" type="string"/>
+        <property name="companyId" type="string"/>
+        <property name="date" type="string"/>
+        <property name="paymentDate" type="string"/>
+        <property name="status" type="string"/>
+        <property name="type" type="string"/>
+        <property name="batchCode" type="string"/>
+        <property name="currencyCode" type="string"/>
+        <property name="exchangeRateCurrencyCode" type="string"/>
+        <property name="entityUseCode" type="string"/>
+        <property name="customerCode" type="string"/>
+        <property name="exemptNo" type="string"/>
+        <property name="reconciled" type="bool"/>
+        <property name="reportingLocationCode" type="string"/>
+        <property name="purchaseOrderNo" type="string"/>
+        <property name="referenceCode" type="string"/>
+        <property name="salesPersonCode" type="string"/>
+        <property name="taxOverrideType" type="string"/>
+        <property name="taxOverrideAmount" type="decimal"/>
+        <property name="taxOverrideReason" type="string"/>
+        <property name="totalAmount" type="decimal"/>
+        <property name="totalExempt" type="decimal"/>
+        <property name="totalDiscount" type="decimal"/>
+        <property name="totalTax" type="decimal"/>
+        <property name="totalTaxable" type="decimal"/>
+        <property name="totalTaxCalculated" type="decimal"/>
+        <property name="adjustmentReason" type="string"/>
+        <property name="adjustmentDescription" type="string"/>
+        <property name="locked" type="bool"/>
+        <property name="region" type="string"/>
+        <property name="country" type="string"/>
+        <property name="version" type="int"/>
+        <property name="softwareVersion" type="string"/>
+        <property name="originAddressId" type="int"/>
+        <property name="destinationAddressId" type="int"/>
+        <property name="exchangeRateEffectiveDate" type="string"/>
+        <property name="exchangeRate" type="int"/>
+        <property name="description" type="string"/>
+        <property name="email" type="string"/>
+        <property name="businessIdentificationNo" type="string"/>
+        <property name="modifiedUserId" type="string"/>
+        <property name="modifiedDate" type="string"/>
+        <property name="taxDate" type="string"/>
+        <property name="lines" type="AvalaraTransactionLine[]" singular="line"/>
+        <property name="addresses" type="string"/>
+        <property name="locationTypes" type="string"/>
+        <property name="summary" type="string"/>
+        <property name="taxDetailsByTaxType" type="string"/>
+        <property name="parameters" type="string"/>
+        <property name="messages" type="string"/>
+        <property name="invoiceMessages" type="string"/>
+        <property name="customerSupplierName" type="string"/>
+        <property name="dataSourceId" type="int"/>
+    </transfer>
+
+    <transfer name="AvalaraCreateTransactionResponse">
+        <property name="isSuccessful" type="bool"/>
+        <property name="messages" type="Message[]" singular="message"/>
+        <property name="transaction" type="AvalaraTransaction"/>
+    </transfer>
+
+    <transfer name="AvalaraAddressValidationInfo">
+        <property name="line1" type="string"/>
+        <property name="line2" type="string"/>
+        <property name="line3" type="string"/>
+        <property name="textCase" type="string"/>
+        <property name="city" type="string"/>
+        <property name="region" type="string"/>
+        <property name="country" type="string"/>
+        <property name="postalCode" type="string"/>
+        <property name="latitude" type="float"/>
+        <property name="longitude" type="float"/>
+    </transfer>
+
+    <transfer name="AvalaraResolveAddressRequest">
+        <property name="addresses" type="AvalaraAddressValidationInfo[]" singular="address"/>
+    </transfer>
+
+    <transfer name="AvalaraResolveAddressResponse">
+        <property name="isSuccessful" type="bool"/>
+        <property name="messages" type="Message[]" singular="message"/>
+    </transfer>
+
+    <transfer name="Quote">
+        <property name="orderReference" type="string"/>
+        <property name="avalaraCreateTransactionResponse" type="AvalaraCreateTransactionResponse"/>
+    </transfer>
+
+    <transfer name="ProductConcrete">
+        <property name="fkProductAbstract" type="int"/>
+        <property name="avalaraTaxCode" type="string"/>
+    </transfer>
+
+    <transfer name="ProductAbstract">
+        <property name="avalaraTaxCode" type="string"/>
+    </transfer>
+
+    <transfer name="Item">
+        <property name="avalaraTaxCode" type="string"/>
+        <property name="shipment" type="Shipment"/>
+        <property name="taxRate" type="float"/>
+        <property name="sumTaxAmount" type="int"/>
+        <property name="amount" type="decimal"/>
+        <property name="quantity" type="int"/>
+        <property name="sku" type="string"/>
+        <property name="groupKey" type="string"/>
+        <property name="name" type="string"/>
+        <property name="sumDiscountAmountAggregation" type="int"/>
+        <property name="sumPrice" type="int"/>
+        <property name="warehouse" type="Stock"/>
+    </transfer>
+
+    <transfer name="Address">
+        <property name="address1" type="string"/>
+        <property name="address2" type="string"/>
+        <property name="address3" type="string"/>
+        <property name="city" type="string"/>
+        <property name="region" type="string"/>
+        <property name="zipCode" type="string"/>
+        <property name="iso2Code" type="string"/>
+        <property name="country" type="Country"/>
+    </transfer>
+
+    <transfer name="CalculableObject">
+        <property name="items" type="Item[]" singular="item"/>
+        <property name="shippingAddress" type="Address"/>
+        <property name="currency" type="Currency"/>
+        <property name="priceMode" type="string"/>
+        <property name="originalQuote" type="Quote"/>
+        <property name="store" type="Store"/>
+    </transfer>
+
+    <transfer name="CartChange">
+        <property name="items" type="Item[]" singular="item"/>
+    </transfer>
+
+    <transfer name="Shipment">
+        <property name="shippingAddress" type="Address"/>
+    </transfer>
+
+    <transfer name="Store">
+        <property name="name" type="string"/>
+    </transfer>
+
+    <transfer name="Currency">
+        <property name="code" type="string"/>
+    </transfer>
+
+    <transfer name="Message">
+        <property name="value" type="string"/>
+        <property name="message" type="string"/>
+    </transfer>
+
+    <transfer name="CheckoutData">
+        <property name="shippingAddress" type="Address"/>
+        <property name="shipments" type="RestShipments[]" singular="shipment"/>
+    </transfer>
+
+    <transfer name="CheckoutResponse">
+        <property name="isSuccess" type="bool"/>
+        <property name="errors" type="CheckoutError[]" singular="error"/>
+    </transfer>
+
+    <transfer name="CheckoutError">
+    </transfer>
+
+    <transfer name="Country">
+        <property name="iso2Code" type="string"/>
+    </transfer>
+
+    <transfer name="RestShipments">
+        <property name="shippingAddress" type="RestAddress"/>
+    </transfer>
+
+    <transfer name="RestAddress">
+        <property name="iso2Code" type="string"/>
+    </transfer>
+
+    <transfer name="Stock">
+        <property name="address" type="StockAddress"/>
+    </transfer>
+
+    <transfer name="StockAddress">
+        <property name="country" type="Country"/>
+    </transfer>
+
+    <transfer name="StockCollection">
+        <property name="stocks" type="Stock[]" singular="stock"/>
+    </transfer>
+
+    <transfer name="StockCriteriaFilter">
+        <property name="storeNames" type="string[]" singular="storeName"/>
+        <property name="stockNames" type="string[]" singular="stockName"/>
+        <property name="isActive" type="bool"/>
+    </transfer>
+
+    <transfer name="StockProduct">
+        <property name="stockType" type="string"/>
+    </transfer>
+
+</transfers>
