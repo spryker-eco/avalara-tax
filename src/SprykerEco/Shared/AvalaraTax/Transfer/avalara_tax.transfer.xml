@@ -292,6 +292,7 @@
     </transfer>
 
     <transfer name="StockProduct">
+        <property name="stockType" type="string"/>
     </transfer>
 
 </transfers>

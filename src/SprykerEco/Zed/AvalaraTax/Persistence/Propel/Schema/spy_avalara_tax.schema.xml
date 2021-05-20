@@ -6,8 +6,8 @@
 
     <table name="spy_tax_avalara_api_log">
         <column name="id_tax_avalara_api_log" required="true" type="INTEGER" primaryKey="true" autoIncrement="true"/>
-        <column name="store_name" required="true" type="VARCHAR"/>
-        <column name="transaction_type" required="true" type="VARCHAR"/>
+        <column name="store_name" required="true" type="VARCHAR" size="255"/>
+        <column name="transaction_type" required="true" type="VARCHAR" size="255"/>
         <column name="is_successful" required="true" type="BOOLEAN"/>
         <column name="error_message" required="false" type="CLOB"/>
         <column name="request" required="true" type="CLOB"/>
