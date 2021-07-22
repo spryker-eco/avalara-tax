@@ -113,7 +113,7 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
      */
     protected function resolveAvalaraTransactionType(CalculableObjectTransfer $calculableObjectTransfer): int
     {
-        if ($calculableObjectTransfer->getOriginalQuote() && $calculableObjectTransfer->getOriginalQuoteOrFail()->getOrderReference()) {
+        if ($calculableObjectTransfer->getOriginalOrder()) {
             return $this->avalaraTaxConfig->getAfterOrderPlacedTransactionTypeId();
         }
 
