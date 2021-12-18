@@ -14,7 +14,7 @@ use Generated\Shared\Transfer\AvalaraResolveAddressRequestTransfer;
 class AvalaraResolveAddressRequestMapper implements AvalaraResolveAddressRequestMapperInterface
 {
     /**
-     * @param \Generated\Shared\Transfer\AddressTransfer[] $addressTransfers
+     * @param array<\Generated\Shared\Transfer\AddressTransfer> $addressTransfers
      * @param \Generated\Shared\Transfer\AvalaraResolveAddressRequestTransfer $avalaraResolveAddressRequestTransfer
      *
      * @return \Generated\Shared\Transfer\AvalaraResolveAddressRequestTransfer

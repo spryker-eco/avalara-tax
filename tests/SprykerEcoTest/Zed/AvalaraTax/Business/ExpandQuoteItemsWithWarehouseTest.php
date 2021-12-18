@@ -17,6 +17,9 @@ use Spryker\Shared\Kernel\Transfer\Exception\NullValueException;
 
 class ExpandQuoteItemsWithWarehouseTest extends Unit
 {
+    /**
+     * @var string
+     */
     protected const DEFAULT_STORE_NAME = 'DE';
 
     /**
@@ -211,7 +214,7 @@ class ExpandQuoteItemsWithWarehouseTest extends Unit
         $this->assertSame(12, $stockProductTransfer->getQuantityOrFail()->toInt());
         $this->assertSame(
             $quoteTransfer->getItems()->offsetGet(0)->getWarehouse()->getName(),
-            $stockProductTransfer->getStockTypeOrFail()
+            $stockProductTransfer->getStockTypeOrFail(),
         );
     }
 
@@ -250,7 +253,7 @@ class ExpandQuoteItemsWithWarehouseTest extends Unit
 
         $this->assertSame(
             $quoteTransfer->getItems()->offsetGet(0)->getWarehouse()->getName(),
-            $stockProductTransfer->getStockTypeOrFail()
+            $stockProductTransfer->getStockTypeOrFail(),
         );
     }
 
@@ -290,7 +293,7 @@ class ExpandQuoteItemsWithWarehouseTest extends Unit
         $this->assertSame(14, $stockProductTransfer->getQuantityOrFail()->toInt());
         $this->assertSame(
             $quoteTransfer->getItems()->offsetGet(0)->getWarehouse()->getName(),
-            $stockProductTransfer->getStockTypeOrFail()
+            $stockProductTransfer->getStockTypeOrFail(),
         );
     }
 }

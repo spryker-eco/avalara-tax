@@ -59,7 +59,7 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
             $this->getMoneyFacade(),
             $this->getConfig(),
             $this->getUtilEncodingService(),
-            $this->getCreateTransactionRequestAfterPlugins()
+            $this->getCreateTransactionRequestAfterPlugins(),
         );
     }
 
@@ -73,7 +73,7 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
             $this->getMoneyFacade(),
             $this->getConfig(),
             $this->getUtilEncodingService(),
-            $this->getCreateTransactionRequestAfterPlugins()
+            $this->getCreateTransactionRequestAfterPlugins(),
         );
     }
 
@@ -95,7 +95,7 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
             $this->createAvalaraTransactionRequestMapper(),
             $this->createAvalaraTransactionResponseMapper(),
             $this->getEntityManager(),
-            $this->getUtilEncodingService()
+            $this->getUtilEncodingService(),
         );
     }
 
@@ -106,7 +106,7 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     {
         return new AvalaraResolveAddressExecutor(
             $this->createAvalaraResolveAddressRequestMapper(),
-            $this->getAvalaraTaxClient()
+            $this->getAvalaraTaxClient(),
         );
     }
 
@@ -118,7 +118,7 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
         return new AvalaraTransactionRequestMapper(
             $this->getConfig(),
             $this->getMoneyFacade(),
-            $this->getCreateTransactionRequestExpanderPlugins()
+            $this->getCreateTransactionRequestExpanderPlugins(),
         );
     }
 
@@ -168,7 +168,7 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     public function createWarehouseExpander(): WarehouseExpanderInterface
     {
         return new WarehouseExpander(
-            $this->createStockProductReader()
+            $this->createStockProductReader(),
         );
     }
 
@@ -179,7 +179,7 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     {
         return new StockProductReader(
             $this->getRepository(),
-            $this->getStockFacade()
+            $this->getStockFacade(),
         );
     }
 
@@ -224,7 +224,7 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestExpanderPluginInterface[]
+     * @return array<\SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestExpanderPluginInterface>
      */
     public function getCreateTransactionRequestExpanderPlugins(): array
     {
@@ -232,7 +232,7 @@ class AvalaraTaxBusinessFactory extends AbstractBusinessFactory
     }
 
     /**
-     * @return \SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestAfterPluginInterface[]
+     * @return array<\SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestAfterPluginInterface>
      */
     public function getCreateTransactionRequestAfterPlugins(): array
     {

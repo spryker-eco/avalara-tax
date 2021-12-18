@@ -19,17 +19,17 @@ interface AvalaraTaxRepositoryInterface
     /**
      * @phpstan-return array<string, string>
      *
-     * @param string[] $productConcreteSkus
+     * @param array<string> $productConcreteSkus
      *
-     * @return string[]
+     * @return array<string>
      */
     public function getProductConcreteAvalaraTaxCodesBySkus(array $productConcreteSkus): array;
 
     /**
-     * @param string[] $productConcreteSkus
+     * @param array<string> $productConcreteSkus
      * @param string $storeName
      *
-     * @return \Generated\Shared\Transfer\StockProductTransfer[]
+     * @return array<\Generated\Shared\Transfer\StockProductTransfer>
      */
     public function getStockProductsByProductConcreteSkusForStore(array $productConcreteSkus, string $storeName): array;
 }

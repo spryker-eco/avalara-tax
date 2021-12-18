@@ -29,7 +29,7 @@ class SingleShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalara
     }
 
     /**
-     * @param \ArrayObject|\Generated\Shared\Transfer\ItemTransfer[] $itemTransfers
+     * @param \Generated\Shared\Transfer\ItemTransfer[]|\ArrayObject $itemTransfers
      * @param \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
      *
      * @return void
@@ -39,7 +39,7 @@ class SingleShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalara
         AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
     ): void {
         $avalaraTransactionLineTransfersIndexedByGroupKey = $this->getCartItemAvalaraTransactionLineTransfersIndexedByGroupKey(
-            $avalaraCreateTransactionResponseTransfer->getTransactionOrFail()->getLines()
+            $avalaraCreateTransactionResponseTransfer->getTransactionOrFail()->getLines(),
         );
 
         foreach ($avalaraTransactionLineTransfersIndexedByGroupKey as $groupKey => $avalaraTransactionLineTransfer) {
@@ -48,7 +48,7 @@ class SingleShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalara
     }
 
     /**
-     * @param \ArrayObject|\Generated\Shared\Transfer\ItemTransfer[] $itemTransfers
+     * @param \Generated\Shared\Transfer\ItemTransfer[]|\ArrayObject $itemTransfers
      * @param string $groupKey
      * @param \Generated\Shared\Transfer\AvalaraTransactionLineTransfer $avalaraTransactionLineTransfer
      *
@@ -69,9 +69,9 @@ class SingleShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalara
     }
 
     /**
-     * @param \ArrayObject|\Generated\Shared\Transfer\AvalaraTransactionLineTransfer[] $avalaraTransactionLineTransfers
+     * @param \Generated\Shared\Transfer\AvalaraTransactionLineTransfer[]|\ArrayObject $avalaraTransactionLineTransfers
      *
-     * @return \Generated\Shared\Transfer\AvalaraTransactionLineTransfer[]
+     * @return array<\Generated\Shared\Transfer\AvalaraTransactionLineTransfer>
      */
     protected function getCartItemAvalaraTransactionLineTransfersIndexedByGroupKey(ArrayObject $avalaraTransactionLineTransfers): array
     {

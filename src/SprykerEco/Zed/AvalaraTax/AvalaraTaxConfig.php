@@ -14,11 +14,15 @@ class AvalaraTaxConfig extends AbstractBundleConfig
 {
     /**
      * @uses \Avalara\DocumentType::C_SALESORDER
+     *
+     * @var int
      */
     protected const AVALARA_TRANSACTION_TYPE_ID_SALES_ORDER = 0;
 
     /**
      * @uses \Avalara\DocumentType::C_SALESINVOICE
+     *
+     * @var int
      */
     protected const AVALARA_TRANSACTION_TYPE_ID_SALES_INVOICE = 1;
 

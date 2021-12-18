@@ -27,7 +27,7 @@ class AvalaraTaxToAvalaraAvaTaxClientAdapter implements AvalaraTaxToAvalaraTaxCl
             $avalaraTaxConfig->getApplicationName(),
             $avalaraTaxConfig->getApplicationVersion(),
             $avalaraTaxConfig->getMachineName(),
-            $avalaraTaxConfig->getEnvironmentName()
+            $avalaraTaxConfig->getEnvironmentName(),
         );
 
         $this->avaTaxClient

@@ -39,26 +39,66 @@ use stdClass;
 
 class AvalaraTaxFacadeTest extends Unit
 {
+    /**
+     * @var string
+     */
     protected const TEST_AVALARA_TAX_CODE = 'TESTCODE';
 
     /**
      * @uses \Spryker\Shared\Price\PriceConfig::PRICE_MODE_GROSS
+     *
+     * @var string
      */
     protected const PRICE_MODE_GROSS = 'GROSS_MODE';
 
+    /**
+     * @var string
+     */
     protected const TEST_SKU_1 = 'test-sku-1';
+
+    /**
+     * @var string
+     */
     protected const TEST_SUM_PRICE_1 = '33265';
 
+    /**
+     * @var string
+     */
     protected const TEST_SKU_2 = 'test-sku-2';
+
+    /**
+     * @var string
+     */
     protected const TEST_SUM_PRICE_2 = '36742';
 
+    /**
+     * @var string
+     */
     protected const TEST_CITY_NAME_1 = 'Detroit';
+
+    /**
+     * @var string
+     */
     protected const TEST_ZIP_CODE_1 = '48201';
 
+    /**
+     * @var string
+     */
     protected const TEST_CITY_NAME_2 = 'Auburn Hills';
+
+    /**
+     * @var string
+     */
     protected const TEST_ZIP_CODE_2 = '48326';
 
+    /**
+     * @var string
+     */
     protected const TEST_COUNTRY = 'US';
+
+    /**
+     * @var string
+     */
     protected const TEST_STORE_NAME = 'US';
 
     /**
@@ -132,7 +172,7 @@ class AvalaraTaxFacadeTest extends Unit
         $this->assertNotNull($resultItemTransfer1->getTaxRate());
         $this->assertNotNull($resultItemTransfer1->getSumTaxAmount());
 
-        /** @var \Generated\Shared\Transfer\ItemTransfer $resultItemTransfer1 */
+        /** @var \Generated\Shared\Transfer\ItemTransfer $resultItemTransfer2 */
         $resultItemTransfer2 = $calculableObjectTransfer->getItems()->offsetGet(1);
         $this->assertNotNull($resultItemTransfer2->getTaxRate());
         $this->assertNotNull($resultItemTransfer2->getSumTaxAmount());
@@ -176,7 +216,7 @@ class AvalaraTaxFacadeTest extends Unit
         $this->assertNotNull($resultItemTransfer1->getTaxRate());
         $this->assertNotNull($resultItemTransfer1->getSumTaxAmount());
 
-        /** @var \Generated\Shared\Transfer\ItemTransfer $resultItemTransfer1 */
+        /** @var \Generated\Shared\Transfer\ItemTransfer $resultItemTransfer2 */
         $resultItemTransfer2 = $calculableObjectTransfer->getItems()->offsetGet(1);
         $this->assertNotNull($resultItemTransfer2->getTaxRate());
         $this->assertNotNull($resultItemTransfer2->getSumTaxAmount());
