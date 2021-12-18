@@ -24,6 +24,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: ${{ matrix.php }}
+            extensions: mbstring, intl
+            tools: composer:v2
+
       - name: Configure sysctl limits
         run: |
           sudo swapoff -a
@@ -48,12 +55,6 @@ jobs:
         run: |
           composer --version
           composer install
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: mbstring, intl
-          tools: composer:v2
 
       - name: Run CodeStyle checks
         run: composer cs-check
