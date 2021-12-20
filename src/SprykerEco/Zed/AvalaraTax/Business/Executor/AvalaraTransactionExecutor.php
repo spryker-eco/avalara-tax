@@ -23,7 +23,7 @@ use Throwable;
 class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
 {
     /**
-     * @var \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer[]
+     * @var array<\Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer>
      */
     protected static $avalaraCreateTransactionResponseCache;
 
@@ -92,7 +92,7 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
         $avalaraCreateTransactionRequestTransfer = $this->avalaraTransactionRequestMapper
             ->mapCalculableObjectTransferToAvalaraCreateTransactionRequestTransfer(
                 $calculableObjectTransfer,
-                new AvalaraCreateTransactionRequestTransfer()
+                new AvalaraCreateTransactionRequestTransfer(),
             );
 
         $transactionBuilder = $this->avalaraTransactionBuilder->buildCreateTransaction(
@@ -144,7 +144,7 @@ class AvalaraTransactionExecutor implements AvalaraTransactionExecutorInterface
         static::$avalaraCreateTransactionResponseCache[$cacheKey] = $this->avalaraTransactionResponseMapper
             ->mapAvalaraTransactionModelToAvalaraCreateTransactionResponseTransfer(
                 $transactionModel,
-                $avalaraCreateTransactionResponseTransfer
+                $avalaraCreateTransactionResponseTransfer,
             );
 
         return static::$avalaraCreateTransactionResponseCache[$cacheKey];

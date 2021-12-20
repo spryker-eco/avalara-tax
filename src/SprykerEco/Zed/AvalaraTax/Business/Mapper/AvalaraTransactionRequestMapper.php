@@ -21,20 +21,29 @@ use SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeInterface
 
 class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapperInterface
 {
+    /**
+     * @var string
+     */
     public const CART_ITEM_AVALARA_LINE_TYPE = 'cart-item';
 
     /**
      * @uses \Spryker\Shared\Price\PriceConfig::PRICE_MODE_GROSS
+     *
+     * @var string
      */
     protected const PRICE_MODE_GROSS = 'GROSS_MODE';
 
     /**
      * @uses \Avalara\TransactionAddressType::C_SHIPTO
+     *
+     * @var string
      */
     protected const AVALARA_SHIP_TO_ADDRESS_TYPE = 'ShipTo';
 
     /**
      * @uses \Avalara\TransactionAddressType::C_SHIPFROM
+     *
+     * @var string
      */
     protected const AVALARA_SHIP_FROM_ADDRESS_TYPE = 'ShipFrom';
 
@@ -49,14 +58,14 @@ class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapper
     protected $moneyFacade;
 
     /**
-     * @var \SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestExpanderPluginInterface[]
+     * @var array<\SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestExpanderPluginInterface>
      */
     protected $createTransactionRequestExpanderPluginInterfaces;
 
     /**
      * @param \SprykerEco\Zed\AvalaraTax\AvalaraTaxConfig $avalaraTaxConfig
      * @param \SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeInterface $moneyFacade
-     * @param \SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestExpanderPluginInterface[] $createTransactionRequestExpanderPluginInterfaces
+     * @param array<\SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestExpanderPluginInterface> $createTransactionRequestExpanderPluginInterfaces
      */
     public function __construct(
         AvalaraTaxConfig $avalaraTaxConfig,
@@ -89,7 +98,7 @@ class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapper
 
         return $this->executeCreateTransactionRequestExpanderPlugins(
             $calculableObjectTransfer,
-            $avalaraCreateTransactionRequestTransfer->setTransaction($avalaraCreateTransactionTransfer)
+            $avalaraCreateTransactionRequestTransfer->setTransaction($avalaraCreateTransactionTransfer),
         );
     }
 
@@ -165,7 +174,7 @@ class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapper
         $avalaraShippingAddressTransfer = (new AvalaraAddressTransfer())->setType(static::AVALARA_SHIP_TO_ADDRESS_TYPE);
         $avalaraShippingAddressTransfer = $this->mapShipmentTransferToAvalaraAddressTransfer(
             $itemTransfer->getShipmentOrFail(),
-            $avalaraShippingAddressTransfer
+            $avalaraShippingAddressTransfer,
         );
 
         return $avalaraLineItemTransfer->setShippingAddress($avalaraShippingAddressTransfer);
@@ -193,7 +202,7 @@ class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapper
         $avalaraShippingAddressTransfer = (new AvalaraAddressTransfer())->setType(static::AVALARA_SHIP_FROM_ADDRESS_TYPE);
         $avalaraShippingAddressTransfer = $this->mapStockAddressTransferToAvalaraAddressTransfer(
             $stockAddressTransfer,
-            $avalaraShippingAddressTransfer
+            $avalaraShippingAddressTransfer,
         );
 
         return $avalaraLineItemTransfer->setSourceAddress($avalaraShippingAddressTransfer);
@@ -241,7 +250,7 @@ class AvalaraTransactionRequestMapper implements AvalaraTransactionRequestMapper
         foreach ($this->createTransactionRequestExpanderPluginInterfaces as $createTransactionRequestExpanderPluginInterface) {
             $avalaraCreateTransactionRequestTransfer = $createTransactionRequestExpanderPluginInterface->expand(
                 $avalaraCreateTransactionRequestTransfer,
-                $calculableObjectTransfer
+                $calculableObjectTransfer,
             );
         }
 

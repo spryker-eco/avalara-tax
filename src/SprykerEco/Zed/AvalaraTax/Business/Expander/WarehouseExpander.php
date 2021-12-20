@@ -40,12 +40,12 @@ class WarehouseExpander implements WarehouseExpanderInterface
         $storeName = $quoteTransfer->getStoreOrFail()->getNameOrFail();
         $indexedStockProductTransfers = $this->stockProductReader->getStockProductsIndexedByProductConcreteSku(
             $this->extractItemSkus($quoteTransfer),
-            $storeName
+            $storeName,
         );
 
         $indexedStockTransfers = $this->stockProductReader->getStocksIndexedByName(
             $this->extractStockNames($indexedStockProductTransfers),
-            $storeName
+            $storeName,
         );
 
         foreach ($quoteTransfer->getItems() as $itemTransfer) {
@@ -57,8 +57,8 @@ class WarehouseExpander implements WarehouseExpanderInterface
 
     /**
      * @param \Generated\Shared\Transfer\ItemTransfer $itemTransfer
-     * @param \Generated\Shared\Transfer\StockProductTransfer[] $stockProductTransfers
-     * @param \Generated\Shared\Transfer\StockTransfer[] $stockTransfers
+     * @param array<\Generated\Shared\Transfer\StockProductTransfer> $stockProductTransfers
+     * @param array<\Generated\Shared\Transfer\StockTransfer> $stockTransfers
      *
      * @return \Generated\Shared\Transfer\ItemTransfer
      */
@@ -83,9 +83,9 @@ class WarehouseExpander implements WarehouseExpanderInterface
     }
 
     /**
-     * @param \Generated\Shared\Transfer\StockProductTransfer[] $stockProductTransfers
+     * @param array<\Generated\Shared\Transfer\StockProductTransfer> $stockProductTransfers
      *
-     * @return string[]
+     * @return array<string>
      */
     protected function extractStockNames(array $stockProductTransfers): array
     {
@@ -101,7 +101,7 @@ class WarehouseExpander implements WarehouseExpanderInterface
     /**
      * @param \Generated\Shared\Transfer\QuoteTransfer $quoteTransfer
      *
-     * @return string[]
+     * @return array<string>
      */
     protected function extractItemSkus(QuoteTransfer $quoteTransfer): array
     {

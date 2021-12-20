@@ -23,19 +23,54 @@ use SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingService
  */
 class AvalaraTaxDependencyProvider extends AbstractBundleDependencyProvider
 {
+    /**
+     * @var string
+     */
     public const FACADE_MONEY = 'FACADE_MONEY';
+
+    /**
+     * @var string
+     */
     public const FACADE_STOCK = 'FACADE_STOCK';
 
+    /**
+     * @var string
+     */
     public const SERVICE_UTIL_ENCODING = 'SERVICE_UTIL_ENCODING';
 
+    /**
+     * @var string
+     */
     public const PROPEL_QUERY_PRODUCT_ABSTRACT = 'PROPEL_QUERY_PRODUCT_ABSTRACT';
+
+    /**
+     * @var string
+     */
     public const PROPEL_QUERY_PRODUCT = 'PROPEL_QUERY_PRODUCT';
+
+    /**
+     * @var string
+     */
     public const PROPEL_QUERY_STOCK_PRODUCT = 'PROPEL_QUERY_STOCK_PRODUCT';
 
+    /**
+     * @var string
+     */
     public const PLUGINS_CREATE_TRANSACTION_REQUEST_EXPANDER = 'PLUGINS_CREATE_TRANSACTION_REQUEST_EXPANDER';
+
+    /**
+     * @var string
+     */
     public const PLUGINS_CREATE_TRANSACTION_REQUEST_AFTER = 'PLUGINS_CREATE_TRANSACTION_REQUEST_AFTER';
 
+    /**
+     * @var string
+     */
     public const AVALARA_TAX_CLIENT = 'AVALARA_TAX_CLIENT';
+
+    /**
+     * @var string
+     */
     public const AVALARA_TRANSACTION_BUILDER = 'AVALARA_TRANSACTION_BUILDER';
 
     /**
@@ -184,7 +219,7 @@ class AvalaraTaxDependencyProvider extends AbstractBundleDependencyProvider
         $container->set(static::AVALARA_TRANSACTION_BUILDER, function (Container $container) {
             return new AvalaraTaxToAvalaraTransactionBuilderAdapter(
                 $container->get(static::AVALARA_TAX_CLIENT),
-                $this->getConfig()
+                $this->getConfig(),
             );
         });
 
@@ -220,7 +255,7 @@ class AvalaraTaxDependencyProvider extends AbstractBundleDependencyProvider
     }
 
     /**
-     * @return \SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestExpanderPluginInterface[]
+     * @return array<\SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestExpanderPluginInterface>
      */
     protected function getCreateTransactionRequestExpanderPlugins(): array
     {
@@ -228,7 +263,7 @@ class AvalaraTaxDependencyProvider extends AbstractBundleDependencyProvider
     }
 
     /**
-     * @return \SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestAfterPluginInterface[]
+     * @return array<\SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestAfterPluginInterface>
      */
     protected function getCreateTransactionRequestAfterPlugins(): array
     {

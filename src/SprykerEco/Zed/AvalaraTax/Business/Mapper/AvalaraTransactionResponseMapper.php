@@ -16,15 +16,54 @@ use stdClass;
 
 class AvalaraTransactionResponseMapper implements AvalaraTransactionResponseMapperInterface
 {
+    /**
+     * @var string
+     */
     protected const KEY_ADDRESSES = 'addresses';
+
+    /**
+     * @var string
+     */
     protected const KEY_LOCATION_TYPES = 'locationTypes';
+
+    /**
+     * @var string
+     */
     protected const KEY_SUMMARY = 'summary';
+
+    /**
+     * @var string
+     */
     protected const KEY_MESSAGE = 'messages';
+
+    /**
+     * @var string
+     */
     protected const KEY_INVOICE_MESSAGE = 'invoiceMessages';
+
+    /**
+     * @var string
+     */
     protected const KEY_DETAILS = 'details';
+
+    /**
+     * @var string
+     */
     protected const KEY_NON_PASSTHROUGH_DETAILS = 'nonPassthroughDetails';
+
+    /**
+     * @var string
+     */
     protected const KEY_LINE_LOCATION_TYPES = 'lineLocationTypes';
+
+    /**
+     * @var string
+     */
     protected const KEY_PARAMETERS = 'parameters';
+
+    /**
+     * @var string
+     */
     protected const KEY_TAX_AMOUNT_BY_TAX_TYPES = 'taxAmountByTaxTypes';
 
     /**
@@ -62,7 +101,7 @@ class AvalaraTransactionResponseMapper implements AvalaraTransactionResponseMapp
         foreach ($transactionModel->lines as $transactionLineModel) {
             $avalaraTransactionLineTransfers[] = $this->mapTransactionLineModelToAvalaraTransactionLineTransfer(
                 $transactionLineModel,
-                new AvalaraTransactionLineTransfer()
+                new AvalaraTransactionLineTransfer(),
             );
         }
         $avalaraTransactionTransfer->setLines(new ArrayObject($avalaraTransactionLineTransfers));
