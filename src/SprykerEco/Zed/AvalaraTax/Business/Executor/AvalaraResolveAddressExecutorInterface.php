@@ -12,7 +12,7 @@ use Generated\Shared\Transfer\AvalaraResolveAddressResponseTransfer;
 interface AvalaraResolveAddressExecutorInterface
 {
     /**
-     * @param \Generated\Shared\Transfer\AddressTransfer[] $addressTransfers
+     * @param array<\Generated\Shared\Transfer\AddressTransfer> $addressTransfers
      *
      * @return \Generated\Shared\Transfer\AvalaraResolveAddressResponseTransfer
      */

@@ -64,7 +64,7 @@ class AvalaraTaxCodeExpander implements AvalaraTaxCodeExpanderInterface
     /**
      * @param \ArrayObject<\Generated\Shared\Transfer\ItemTransfer> $itemTransfers
      *
-     * @return string[]
+     * @return array<string>
      */
     protected function extractProductConcreteSkuFromItemTransfers(ArrayObject $itemTransfers): array
     {

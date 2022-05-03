@@ -13,6 +13,8 @@ interface AvalaraTaxToAvalaraTaxClientInterface
 {
     /**
      * @uses \Avalara\TextCase::C_MIXED
+     *
+     * @var int
      */
     public const DEFAULT_ADDRESS_VALIDATION_TEXT_CASE = 1;
 

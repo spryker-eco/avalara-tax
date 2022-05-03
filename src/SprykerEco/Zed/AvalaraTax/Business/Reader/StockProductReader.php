@@ -36,10 +36,10 @@ class StockProductReader implements StockProductReaderInterface
     }
 
     /**
-     * @param string[] $skus
+     * @param array<string> $skus
      * @param string $storeName
      *
-     * @return \Generated\Shared\Transfer\StockProductTransfer[]
+     * @return array<\Generated\Shared\Transfer\StockProductTransfer>
      */
     public function getStockProductsIndexedByProductConcreteSku(array $skus, string $storeName): array
     {
@@ -54,10 +54,10 @@ class StockProductReader implements StockProductReaderInterface
     }
 
     /**
-     * @param string[] $stockNames
+     * @param array<string> $stockNames
      * @param string $storeName
      *
-     * @return \Generated\Shared\Transfer\StockTransfer[]
+     * @return array<\Generated\Shared\Transfer\StockTransfer>
      */
     public function getStocksIndexedByName(array $stockNames, string $storeName): array
     {

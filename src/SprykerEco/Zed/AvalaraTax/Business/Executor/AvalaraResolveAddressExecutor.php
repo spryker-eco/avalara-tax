@@ -41,7 +41,7 @@ class AvalaraResolveAddressExecutor implements AvalaraResolveAddressExecutorInte
     }
 
     /**
-     * @param \Generated\Shared\Transfer\AddressTransfer[] $addressTransfers
+     * @param array<\Generated\Shared\Transfer\AddressTransfer> $addressTransfers
      *
      * @return \Generated\Shared\Transfer\AvalaraResolveAddressResponseTransfer
      */
@@ -49,7 +49,7 @@ class AvalaraResolveAddressExecutor implements AvalaraResolveAddressExecutorInte
     {
         $avalaraResolveAddressRequestTransfer = $this->avalaraResolveAddressRequestMapper->mapAddressTransfersToAvalaraResolveAddressRequestTransfer(
             $addressTransfers,
-            new AvalaraResolveAddressRequestTransfer()
+            new AvalaraResolveAddressRequestTransfer(),
         );
 
         $avalaraResolveAddressResponseTransfer = (new AvalaraResolveAddressResponseTransfer())->setIsSuccessful(true);
@@ -77,7 +77,7 @@ class AvalaraResolveAddressExecutor implements AvalaraResolveAddressExecutorInte
 
         foreach ($addressResolutionModel->messages as $avaTaxMessage) {
             $avalaraResolveAddressResponseTransfer->addMessage(
-                (new MessageTransfer())->setMessage($avaTaxMessage->summary)
+                (new MessageTransfer())->setMessage($avaTaxMessage->summary),
             );
         }
 
@@ -102,12 +102,12 @@ class AvalaraResolveAddressExecutor implements AvalaraResolveAddressExecutorInte
                 $avalaraAddressValidationInfoTransfer->getPostalCodeOrFail(),
                 $avalaraAddressValidationInfoTransfer->getCountryOrFail(),
                 $avalaraAddressValidationInfoTransfer->getLine3(),
-                $avalaraAddressValidationInfoTransfer->getRegion()
+                $avalaraAddressValidationInfoTransfer->getRegion(),
             );
 
             $avalaraResolveAddressResponseTransfer = $this->handleAddressResolutionModel(
                 $addressResolutionModel,
-                $avalaraResolveAddressResponseTransfer
+                $avalaraResolveAddressResponseTransfer,
             );
         } catch (Throwable $e) {
             $avalaraResolveAddressResponseTransfer

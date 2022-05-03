@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "avalara/avataxclient": "^21.1.1",
-        "php": ">=7.3",
+        "php": ">=7.4",
         "spryker-eco/avalara-tax-extension": "^0.1.0",
         "spryker/calculation-extension": "^1.0.0",
         "spryker/cart-extension": "^4.2.0",

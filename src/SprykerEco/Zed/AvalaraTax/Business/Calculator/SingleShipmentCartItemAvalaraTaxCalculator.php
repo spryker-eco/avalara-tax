@@ -39,7 +39,7 @@ class SingleShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalara
         AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
     ): void {
         $avalaraTransactionLineTransfersIndexedByGroupKey = $this->getCartItemAvalaraTransactionLineTransfersIndexedByGroupKey(
-            $avalaraCreateTransactionResponseTransfer->getTransactionOrFail()->getLines()
+            $avalaraCreateTransactionResponseTransfer->getTransactionOrFail()->getLines(),
         );
 
         foreach ($avalaraTransactionLineTransfersIndexedByGroupKey as $groupKey => $avalaraTransactionLineTransfer) {
@@ -71,7 +71,7 @@ class SingleShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalara
     /**
      * @param \ArrayObject<\Generated\Shared\Transfer\AvalaraTransactionLineTransfer> $avalaraTransactionLineTransfers
      *
-     * @return \Generated\Shared\Transfer\AvalaraTransactionLineTransfer[]
+     * @return array<\Generated\Shared\Transfer\AvalaraTransactionLineTransfer>
      */
     protected function getCartItemAvalaraTransactionLineTransfersIndexedByGroupKey(ArrayObject $avalaraTransactionLineTransfers): array
     {

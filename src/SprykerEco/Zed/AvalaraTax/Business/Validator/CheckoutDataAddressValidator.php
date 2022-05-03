@@ -43,7 +43,7 @@ class CheckoutDataAddressValidator implements CheckoutDataAddressValidatorInterf
         }
 
         $avalaraResolveAddressResponseTransfer = $this->avalaraResolveAddressExecutor->executeResolveAddressRequest(
-            $this->extractShippingAddressesFromCheckoutDataTransfer($checkoutDataTransfer)
+            $this->extractShippingAddressesFromCheckoutDataTransfer($checkoutDataTransfer),
         );
 
         if ($avalaraResolveAddressResponseTransfer->getIsSuccessful()) {
@@ -52,7 +52,7 @@ class CheckoutDataAddressValidator implements CheckoutDataAddressValidatorInterf
 
         foreach ($avalaraResolveAddressResponseTransfer->getMessages() as $messageTransfer) {
             $checkoutResponseTransfer->addError(
-                (new CheckoutErrorTransfer())->fromArray($messageTransfer->toArray(), true)
+                (new CheckoutErrorTransfer())->fromArray($messageTransfer->toArray(), true),
             );
         }
 
@@ -62,7 +62,7 @@ class CheckoutDataAddressValidator implements CheckoutDataAddressValidatorInterf
     /**
      * @param \Generated\Shared\Transfer\CheckoutDataTransfer $checkoutDataTransfer
      *
-     * @return \Generated\Shared\Transfer\AddressTransfer[]
+     * @return array<\Generated\Shared\Transfer\AddressTransfer>
      */
     protected function extractShippingAddressesFromCheckoutDataTransfer(CheckoutDataTransfer $checkoutDataTransfer): array
     {

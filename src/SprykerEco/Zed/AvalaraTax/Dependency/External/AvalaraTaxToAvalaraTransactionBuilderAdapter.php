@@ -30,7 +30,7 @@ class AvalaraTaxToAvalaraTransactionBuilderAdapter implements AvalaraTaxToTransa
             $avalaraTaxClient,
             $avalaraTaxConfig->getCompanyCode(),
             $avalaraTaxConfig->getBeforeOrderPlacedTransactionTypeId(),
-            $avalaraTaxConfig->getDefaultCustomerCode()
+            $avalaraTaxConfig->getDefaultCustomerCode(),
         );
     }
 

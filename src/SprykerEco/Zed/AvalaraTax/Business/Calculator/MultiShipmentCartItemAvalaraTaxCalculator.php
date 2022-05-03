@@ -54,7 +54,7 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
             $this->calculateItemTax(
                 $itemTransfer,
                 $avalaraTransactionTransfer->getLines(),
-                $zipCodeRegionNameMap
+                $zipCodeRegionNameMap,
             );
         }
     }
@@ -62,7 +62,7 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
     /**
      * @param \Generated\Shared\Transfer\ItemTransfer $itemTransfer
      * @param \ArrayObject<\Generated\Shared\Transfer\AvalaraTransactionLineTransfer> $avalaraTransactionLineTransfers
-     * @param string[] $zipCodeRegionNameMap
+     * @param array<string> $zipCodeRegionNameMap
      *
      * @return void
      */
@@ -74,7 +74,7 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
         $avalaraTransactionLineTransfer = $this->findAvalaraLineItemTransferForItemTransfer(
             $itemTransfer,
             $avalaraTransactionLineTransfers,
-            $zipCodeRegionNameMap
+            $zipCodeRegionNameMap,
         );
 
         if (!$avalaraTransactionLineTransfer) {
@@ -87,7 +87,7 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
     /**
      * @param \Generated\Shared\Transfer\ItemTransfer $itemTransfer
      * @param \ArrayObject<\Generated\Shared\Transfer\AvalaraTransactionLineTransfer> $avalaraTransactionLineTransfers
-     * @param string[] $zipCodeRegionNameMap
+     * @param array<string> $zipCodeRegionNameMap
      *
      * @return \Generated\Shared\Transfer\AvalaraTransactionLineTransfer|null
      */
@@ -126,13 +126,13 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
     /**
      * @param \Generated\Shared\Transfer\AvalaraTransactionTransfer $avalaraTransactionTransfer
      *
-     * @return string[]
+     * @return array<string>
      */
     protected function getRegionZipCodeMap(AvalaraTransactionTransfer $avalaraTransactionTransfer): array
     {
         $zipCodeRegionMap = [];
 
-        /** @var \Avalara\TransactionAddressModel[] $avalaraTransactionAddressModels */
+        /** @var array<\Avalara\TransactionAddressModel> $avalaraTransactionAddressModels */
         $avalaraTransactionAddressModels = $this->utilEncodingService->decodeJson($avalaraTransactionTransfer->getAddressesOrFail(), false);
         foreach ($avalaraTransactionAddressModels as $avalaraTransactionAddressModel) {
             if (array_key_exists($avalaraTransactionAddressModel->postalCode, $zipCodeRegionMap)) {
@@ -152,7 +152,7 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
      */
     protected function extractRegionNameFromAvalaraTransactionLineTransfer(AvalaraTransactionLineTransfer $avalaraTransactionLineTransfer): ?string
     {
-        /** @var \Avalara\TransactionLineDetailModel[] $avalaraTransactionDetailModels */
+        /** @var array<\Avalara\TransactionLineDetailModel> $avalaraTransactionDetailModels */
         $avalaraTransactionDetailModels = $this->utilEncodingService->decodeJson($avalaraTransactionLineTransfer->getDetailsOrFail(), false);
         foreach ($avalaraTransactionDetailModels as $avalaraTransactionDetailModel) {
             if ($avalaraTransactionDetailModel->region === null) {

@@ -40,7 +40,7 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
     protected $utilEncodingService;
 
     /**
-     * @var \SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestAfterPluginInterface[]
+     * @var array<\SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestAfterPluginInterface>
      */
     protected $createTransactionRequestAfterPlugins;
 
@@ -49,7 +49,7 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
      * @param \SprykerEco\Zed\AvalaraTax\Dependency\Facade\AvalaraTaxToMoneyFacadeInterface $moneyFacade
      * @param \SprykerEco\Zed\AvalaraTax\AvalaraTaxConfig $avalaraTaxConfig
      * @param \SprykerEco\Zed\AvalaraTax\Dependency\Service\AvalaraTaxToUtilEncodingServiceInterface $utilEncodingService
-     * @param \SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestAfterPluginInterface[] $createTransactionRequestAfterPlugins
+     * @param array<\SprykerEco\Zed\AvalaraTaxExtension\Dependency\Plugin\CreateTransactionRequestAfterPluginInterface> $createTransactionRequestAfterPlugins
      */
     public function __construct(
         AvalaraTransactionExecutorInterface $avalaraTransactionExecutor,
@@ -78,7 +78,7 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
 
         $avalaraCreateTransactionResponseTransfer = $this->avalaraTransactionExecutor->executeAvalaraCreateTransaction(
             $calculableObjectTransfer,
-            (string)$this->resolveAvalaraTransactionType($calculableObjectTransfer)
+            (string)$this->resolveAvalaraTransactionType($calculableObjectTransfer),
         );
 
         $this->setAvalaraCreateTransactionResponseToOriginalQuote($calculableObjectTransfer, $avalaraCreateTransactionResponseTransfer);
@@ -180,7 +180,7 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
     {
         $taxRateSum = 0.0;
 
-        /** @var \Avalara\TransactionLineDetailModel[] $transactionLineDetailsDecoded */
+        /** @var array<\Avalara\TransactionLineDetailModel> $transactionLineDetailsDecoded */
         $transactionLineDetailsDecoded = $this->utilEncodingService->decodeJson($transactionLineDetails, false);
         foreach ($transactionLineDetailsDecoded as $transactionLineDetail) {
             $taxRateSum += $transactionLineDetail->rate ?? 0.0;
