@@ -54,7 +54,7 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
         if ($avalaraCreateTransactionTransfer->getShippingAddress()) {
             $transactionBuilder = $this->addTransactionLevelAddress(
                 $transactionBuilder,
-                $avalaraCreateTransactionTransfer->getShippingAddressOrFail()
+                $avalaraCreateTransactionTransfer->getShippingAddressOrFail(),
             );
         }
 
@@ -80,12 +80,12 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
         return $transactionBuilder->withAddress(
             $avalaraAddressTransfer->getTypeOrFail(),
             $addressTransfer->getAddress1OrFail(),
-            $addressTransfer->getAddress2OrFail(),
-            $addressTransfer->getAddress3() ?? '',
+            (string)$addressTransfer->getAddress2(),
+            (string)$addressTransfer->getAddress3(),
             $addressTransfer->getCityOrFail(),
             $addressTransfer->getZipCodeOrFail(),
             $addressTransfer->getIso2CodeOrFail(),
-            $addressTransfer->getRegion()
+            $addressTransfer->getRegion(),
         );
     }
 
@@ -103,11 +103,11 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
             $avalaraLineItemTransfer->getAmountOrFail()->toFloat(),
             $avalaraLineItemTransfer->getQuantityOrFail(),
             $avalaraLineItemTransfer->getItemCodeOrFail(),
-            $avalaraLineItemTransfer->getTaxCodeOrFail()
+            $avalaraLineItemTransfer->getTaxCodeOrFail(),
         );
         $transactionBuilder->withLineCustomFields(
             $avalaraLineItemTransfer->getReference1OrFail(),
-            $avalaraLineItemTransfer->getReference2OrFail()
+            $avalaraLineItemTransfer->getReference2OrFail(),
         );
 
         if ($avalaraLineItemTransfer->getDescription()) {
@@ -144,12 +144,12 @@ class AvalaraTransactionBuilder implements AvalaraTransactionBuilderInterface
         return $transactionBuilder->withLineAddress(
             $avalaraAddressTransfer->getTypeOrFail(),
             $addressTransfer->getAddress1OrFail(),
-            $addressTransfer->getAddress2OrFail(),
+            (string)$addressTransfer->getAddress2(),
             (string)$addressTransfer->getAddress3(),
             $addressTransfer->getCityOrFail(),
             $addressTransfer->getZipCodeOrFail(),
             $addressTransfer->getIso2CodeOrFail(),
-            $addressTransfer->getRegion()
+            $addressTransfer->getRegion(),
         );
     }
 }
