@@ -128,7 +128,7 @@ abstract class AbstractCartItemAvalaraTaxCalculator implements CartItemAvalaraTa
     abstract protected function hasShipmentAddress(CalculableObjectTransfer $calculableObjectTransfer): bool;
 
     /**
-     * @param \ArrayObject|\Generated\Shared\Transfer\ItemTransfer[] $itemTransfers
+     * @param \ArrayObject<\Generated\Shared\Transfer\ItemTransfer> $itemTransfers
      * @param \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
      *
      * @return void

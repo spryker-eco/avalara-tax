@@ -62,7 +62,7 @@ class AvalaraTaxCodeExpander implements AvalaraTaxCodeExpanderInterface
     }
 
     /**
-     * @param \ArrayObject|\Generated\Shared\Transfer\ItemTransfer[] $itemTransfers
+     * @param \ArrayObject<\Generated\Shared\Transfer\ItemTransfer> $itemTransfers
      *
      * @return string[]
      */
