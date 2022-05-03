@@ -38,7 +38,7 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
     }
 
     /**
-     * @param \Generated\Shared\Transfer\ItemTransfer[]|\ArrayObject $itemTransfers
+     * @param \ArrayObject<\Generated\Shared\Transfer\ItemTransfer> $itemTransfers
      * @param \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
      *
      * @return void
@@ -61,7 +61,7 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
 
     /**
      * @param \Generated\Shared\Transfer\ItemTransfer $itemTransfer
-     * @param \Generated\Shared\Transfer\AvalaraTransactionLineTransfer[]|\ArrayObject $avalaraTransactionLineTransfers
+     * @param \ArrayObject<\Generated\Shared\Transfer\AvalaraTransactionLineTransfer> $avalaraTransactionLineTransfers
      * @param array<string> $zipCodeRegionNameMap
      *
      * @return void
@@ -86,7 +86,7 @@ class MultiShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalaraT
 
     /**
      * @param \Generated\Shared\Transfer\ItemTransfer $itemTransfer
-     * @param \Generated\Shared\Transfer\AvalaraTransactionLineTransfer[]|\ArrayObject $avalaraTransactionLineTransfers
+     * @param \ArrayObject<\Generated\Shared\Transfer\AvalaraTransactionLineTransfer> $avalaraTransactionLineTransfers
      * @param array<string> $zipCodeRegionNameMap
      *
      * @return \Generated\Shared\Transfer\AvalaraTransactionLineTransfer|null

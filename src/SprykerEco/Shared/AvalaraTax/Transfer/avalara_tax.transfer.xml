@@ -181,6 +181,8 @@
     <transfer name="Quote">
         <property name="orderReference" type="string"/>
         <property name="avalaraCreateTransactionResponse" type="AvalaraCreateTransactionResponse"/>
+        <property name="store" type="Store"/>
+        <property name="items" type="Item[]" singular="item"/>
     </transfer>
 
     <transfer name="ProductConcrete">
@@ -274,6 +276,7 @@
     </transfer>
 
     <transfer name="Stock">
+        <property name="name" type="string"/>
         <property name="address" type="StockAddress"/>
     </transfer>
 
@@ -293,6 +296,7 @@
 
     <transfer name="StockProduct">
         <property name="stockType" type="string"/>
+        <property name="sku" type="string"/>
     </transfer>
 
 </transfers>
