@@ -29,7 +29,7 @@ class SingleShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalara
     }
 
     /**
-     * @param \Generated\Shared\Transfer\ItemTransfer[]|\ArrayObject $itemTransfers
+     * @param \ArrayObject<\Generated\Shared\Transfer\ItemTransfer> $itemTransfers
      * @param \Generated\Shared\Transfer\AvalaraCreateTransactionResponseTransfer $avalaraCreateTransactionResponseTransfer
      *
      * @return void
@@ -48,7 +48,7 @@ class SingleShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalara
     }
 
     /**
-     * @param \Generated\Shared\Transfer\ItemTransfer[]|\ArrayObject $itemTransfers
+     * @param \ArrayObject<\Generated\Shared\Transfer\ItemTransfer> $itemTransfers
      * @param string $groupKey
      * @param \Generated\Shared\Transfer\AvalaraTransactionLineTransfer $avalaraTransactionLineTransfer
      *
@@ -69,7 +69,7 @@ class SingleShipmentCartItemAvalaraTaxCalculator extends AbstractCartItemAvalara
     }
 
     /**
-     * @param \Generated\Shared\Transfer\AvalaraTransactionLineTransfer[]|\ArrayObject $avalaraTransactionLineTransfers
+     * @param \ArrayObject<\Generated\Shared\Transfer\AvalaraTransactionLineTransfer> $avalaraTransactionLineTransfers
      *
      * @return array<\Generated\Shared\Transfer\AvalaraTransactionLineTransfer>
      */
