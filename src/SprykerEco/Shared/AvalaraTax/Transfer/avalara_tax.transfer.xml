@@ -206,7 +206,7 @@
         <property name="name" type="string"/>
         <property name="sumDiscountAmountAggregation" type="int"/>
         <property name="sumPrice" type="int"/>
-        <property name="warehouse" type="Stock"/>
+        <property name="warehouse" type="Stock" strict="true"/>
     </transfer>
 
     <transfer name="Address">
