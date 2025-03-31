@@ -5,8 +5,8 @@
     "license": "MIT",
     "require": {
         "avalara/avataxclient": "^21.1.1",
-        "php": ">=7.4",
-        "spryker-eco/avalara-tax-extension": "^0.1.0",
+        "php": ">=8.1",
+        "spryker-eco/avalara-tax-extension": "^0.1.1",
         "spryker/calculation-extension": "^1.0.0",
         "spryker/cart-extension": "^4.2.0",
         "spryker/checkout-extension": "^1.2.0",
@@ -19,7 +19,7 @@
         "spryker/sales": "^11.0.0",
         "spryker/stock": "^8.3.0",
         "spryker/store": "^1.0.0",
-        "spryker/transfer": "^3.25.0",
+        "spryker/transfer": "^3.27.0",
         "spryker/util-encoding": "^2.0.0"
     },
     "require-dev": {
